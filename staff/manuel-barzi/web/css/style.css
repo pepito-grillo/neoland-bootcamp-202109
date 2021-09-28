@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+h1 {
+    color: blueviolet;
+    font-family: 'Bebas Neue';
+    text-align: center;
+}
+
+red-box {
+    background-color: red;
+}
+
+.cool {
+    background-color: greenyellow;
+}
+
+.nice {
+    color: dodgerblue;
+}
+
+/* BEM */
+
+/* Search */
+
+.search {
+    display: inline-block;
+    margin: 10px;
+}
+
+.search__body {
+    border-radius: 10px;
+    border-style: solid;
+    background-color: lightgray;
+}
+
+.search__title {
+    background-color: black;
+    border-radius: 5px;
+    border-style: solid;
+    border-color: darkgray;
+    color: white;
+}
+
+/* Button */
+
+.button {
+    border-radius: 5px;
+    border-style: solid;
+    margin: 5px;
+}
+
+/* Field */
+
+.field {
+    border-radius: 5px;
+    border-style: solid;
+    margin: 5px;
+}
+
+/* Register */
+
+.register {
+    display: inline-block;
+    background-color: yellow;
+    border-color: orange;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+/* Login */
+
+.login {
+    display: inline-block;
+    background-color: orange;
+    border-color: yellow;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+/* List */
+
+.list {
+    list-style: none;
+    background-color: skyblue;
+    border-color: plum;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 10px;
+}
+
+.list__item {
+    color: white;
+}
+
+/* Cart */
+
+.cart {
+    border-color: black;
+    border-width: 2px;
+    border-style: solid;
+}
+
+.cart__header {
+    background-color: lightgray;
+}
+
+.cart__footer {
+    background-color: lightblue;
+}
+
+
+

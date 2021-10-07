@@ -1,9 +1,9 @@
 function invertText(text) {
-    // NOTE console.log should not be used here, but return
-
     var result = ''
 
-    // NOTE use for loop to iterate on each character
+    for (var i = text.length - 1; i >= 0; i--) {
+        result = result + text[i]
+    }
 
     return result
 }

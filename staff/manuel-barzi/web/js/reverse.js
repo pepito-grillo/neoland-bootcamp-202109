@@ -1,3 +1,0 @@
-function reverse(array) {
-    // TODO
-}

@@ -1,5 +1,7 @@
 describe('TEST concat')
 
+// HINT pay attention to the keyword "arguments" (Seach in Google)
+
 // CASE 0
 
 var string = 'ho'
@@ -31,7 +33,6 @@ else
 
 
 // CASE 2
-// HINT pay attention to the keyword "arguments" (Seach in Google)
 
 var string = 'adios'
 var string2 = ' '

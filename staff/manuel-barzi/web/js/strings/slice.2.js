@@ -6,10 +6,7 @@ function slice(string, init, end) {
     // return aux
     var slice = ''
 
-    var start = init < 0? string.length + init : init
-    var finish = end? (end < 0? string.length + end : end) : string.length
-
-    for (var i = start; i < finish; i++) {
+    for (var i = init; i < (end? end : string.length); i++) {
         var char = string[i]
 
         slice += char // slice = slice + char

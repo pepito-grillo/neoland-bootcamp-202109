@@ -1,6 +1,6 @@
 console.log('TEST countEachVocal')
 
-// CASE 1
+// case 1
 
 var res = countEachVocal('hola mundo')
 
@@ -12,9 +12,9 @@ if (res instanceof Object
     && res.u === 1)
     console.log('test ok')
 else
-    console.error('test failed')
+    console.error('test ko')
 
-// CASE 2
+// case 2
 
 var res = countEachVocal('hello world')
 
@@ -26,9 +26,9 @@ if (res instanceof Object
     && res.u === 0)
     console.log('test ok')
 else
-    console.error('test failed')
+    console.error('test ko')
 
-// CASE 3
+// case 3
 
 var res = countEachVocal('murciélago cigüeña pingüino')
 
@@ -40,4 +40,4 @@ if (res instanceof Object
     && res.u === 3)
     console.log('test ok')
 else
-    console.error('test failed')
+    console.error('test ko')

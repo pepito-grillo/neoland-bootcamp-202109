@@ -1,6 +1,6 @@
 describe('TEST orderNumbers')
 
-// CASE 1 - order numbers in descendent mode
+// case 1 - order numbers in descendent mode
 
 var res = orderNumbers([1, 2, 3, 4], 'desc')
 
@@ -12,9 +12,9 @@ if (res instanceof Array
     && res[3] === 1)
     success('test ok')
 else
-    fail('test failed')
+    fail('test ko')
 
-// CASE 2 - order numbers in ascendant mode
+// case 2 - order numbers in ascendant mode
 
 var res = orderNumbers([4, 3, 2, 1], 'asc')
 
@@ -26,9 +26,9 @@ if (res instanceof Array
     && res[3] === 4)
     success('test ok')
 else
-    fail('test failed')
+    fail('test ko')
 
-// CASE 3 - order numbers in descendent mode
+// case 3 - order numbers in descendent mode
 
 var res = orderNumbers([56, 22, 23, 14, 102, 75, 1004], 'desc')
 
@@ -43,9 +43,9 @@ if (res instanceof Array
     && res[6] === 14)
     success('test ok')
 else
-    fail('test failed')
+    fail('test ko')
 
-// CASE 4 - order numbers in ascendant mode
+// case 4 - order numbers in ascendant mode
 
 var res = orderNumbers([42, 31.15, 12, 31.01, 11, 33], 'asc')
 
@@ -59,4 +59,4 @@ if (res instanceof Array
     && res[5] === 42)
     success('test ok')
 else
-    fail('test failed')
+    fail('test ko')

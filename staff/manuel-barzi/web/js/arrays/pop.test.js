@@ -1,6 +1,6 @@
 describe('TEST pop')
 
-describe('CASE 1')
+describe('case 1')
 
 var array = ['broccoli', 'cauliflower', 'cabbage', 'kale', 'tomato']
 var res = pop(array)
@@ -14,9 +14,9 @@ if (typeof res === 'string'
     && array[3] === 'kale')
     success('test ok')
 else
-    fail('test fail')
+    fail('test ko')
 
-describe('CASE 2')
+describe('case 2')
 
 var array = []
 var res = pop(array)
@@ -26,9 +26,9 @@ if (typeof res === 'undefined'
     && array.length === 0)
     success('test ok')
 else
-    fail('test fail')
+    fail('test ko')
 
-describe('CASE 3')
+describe('case 3')
 
 var object = { name: 'Peter' }
 var func = function() {}
@@ -50,4 +50,4 @@ if (typeof res === 'object'
     && array[8] === Math.PI) // this doesn't work => array[6] === NaN
     success('test ok')
 else
-    fail('test fail')
+    fail('test ko')

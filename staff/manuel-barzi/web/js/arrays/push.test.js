@@ -1,6 +1,6 @@
 describe('TEST push')
 
-describe('CASE 1')
+describe('case 1')
 
 var array = ['pigs', 'goats', 'sheep']
 var res = push(array, 'cows')
@@ -14,9 +14,9 @@ if (typeof res === 'number'
     && array[3] === 'cows')
     success('test ok')
 else
-    fail('test fail')
+    fail('test ko')
 
-describe('CASE 2')
+describe('case 2')
 
 var array = ['pigs', 'goats', 'sheep']
 var res = push(array, 'cows', 'chickens', 'cats', 'dogs', 'mouses')
@@ -34,4 +34,4 @@ if (typeof res === 'number'
     && array[7] === 'mouses')
     success('test ok')
 else
-    fail('test fail')
+    fail('test ko')

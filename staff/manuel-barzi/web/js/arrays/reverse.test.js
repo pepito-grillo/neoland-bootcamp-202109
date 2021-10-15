@@ -1,6 +1,6 @@
 describe('TEST reverse')
 
-// CASE 1
+// case 1
 
 var array = [1, 2, 3]
 var res = reverse(array)
@@ -13,9 +13,9 @@ if (res instanceof Array
     && res[2] === 1)
     success('test ok')
 else
-    fail('test failed')
+    fail('test ko')
 
-// CASE 2
+// case 2
 
 var array = ['a', 'b', 'c', 'd', 'e']
 var res = reverse(array)
@@ -30,9 +30,9 @@ if (res instanceof Array
     && res[4] === 'a')
     success('test ok')
 else
-    fail('test failed')
+    fail('test ko')
 
-// CASE 3
+// case 3
 
 var array = [true, false]
 var res = reverse(array)
@@ -44,6 +44,6 @@ if (res instanceof Array
     && res[1] === true)
     success('test ok')
 else
-    fail('test failed')
+    fail('test ko')
 
 // TODO add more test cases

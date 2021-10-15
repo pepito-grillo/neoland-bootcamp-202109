@@ -1,6 +1,6 @@
 describe('TEST split')
 
-// CASE 1
+// case 1
 
 var res = split('hola mundo', ' ')
 
@@ -10,9 +10,9 @@ if (res instanceof Array
     && res[1] === 'mundo')
     success('test ok')
 else
-    fail('test failed')
+    fail('test ko')
 
-// CASE 2
+// case 2
 
 var res = split('adiós mundo cruel', ' ')
 
@@ -23,9 +23,9 @@ if (res instanceof Array
     && res[2] === 'cruel')
     success('test ok')
 else
-    fail('test failed')
+    fail('test ko')
 
-// CASE 3
+// case 3
 
 var res = split('adiós,mundo,cruel', ',')
 
@@ -36,9 +36,9 @@ if (res instanceof Array
     && res[2] === 'cruel')
     success('test ok')
 else
-    fail('test failed')
+    fail('test ko')
 
-// CASE 4
+// case 4
 
 var res = split('hola', '')
 
@@ -50,9 +50,9 @@ if (res instanceof Array
     && res[3] === 'a')
     success('test ok')
 else
-    fail('test failed')
+    fail('test ko')
 
-// CASE 5
+// case 5
 
 var res = split('hola', 'ol')
 
@@ -62,4 +62,4 @@ if (res instanceof Array
     && res[1] === 'a')
     success('test ok')
 else
-    fail('test failed')
+    fail('test ko')

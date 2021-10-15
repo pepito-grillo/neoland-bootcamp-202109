@@ -1,6 +1,6 @@
 console.log('TEST getMostSoldProducts')
 
-// CASE 1
+// case 1
 
 var soldProducts = [
     { name: 'banana', quantity: 10 },
@@ -18,9 +18,9 @@ if (res instanceof Array
     && res[1] === 'melon')
     console.log('test ok')
 else
-    console.error('test failed')
+    console.error('test ko')
 
-// CASE 2
+// case 2
 
 var soldProducts = [
     { name: 'tesla', quantity: 10 },
@@ -37,9 +37,9 @@ if (res instanceof Array
     && res[0] === 'renault')
     console.log('test ok')
 else
-    console.error('test failed')
+    console.error('test ko')
 
-// CASE 3
+// case 3
 
 var soldProducts = [
     { name: 'socks', quantity: 100 },
@@ -58,4 +58,4 @@ if (res instanceof Array
     && res[0] === 'shoes')
     console.log('test ok')
 else
-    console.error('test failed')
+    console.error('test ko')

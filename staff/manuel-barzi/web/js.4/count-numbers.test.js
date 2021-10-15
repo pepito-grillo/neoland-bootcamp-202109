@@ -1,6 +1,6 @@
 console.log('TEST countNumbers')
 
-// CASE 1
+// case 1
 
 var res = countNumbers([1, 2, 3])
 
@@ -11,9 +11,9 @@ if (res instanceof Array
     && res[2] === 6)
     console.log('test ok')
 else
-    console.error('test failed')
+    console.error('test ko')
 
-// CASE 2
+// case 2
 
 var res = countNumbers([1, -2, 3])
 
@@ -24,9 +24,9 @@ if (res instanceof Array
     && res[2] === 2)
     console.log('test ok')
 else
-    console.error('test failed')
+    console.error('test ko')
 
-// CASE 3
+// case 3
 
 var res = countNumbers([1, 2, -3])
 
@@ -37,4 +37,4 @@ if (res instanceof Array
     && res[2] === 0)
     console.log('test ok')
 else
-    console.error('test failed')
+    console.error('test ko')

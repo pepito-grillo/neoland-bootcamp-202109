@@ -1,46 +1,46 @@
 console.log('TEST countLetters')
 
-// CASE 1
+// case 1
 
 var res = countLetters('hola mundo')
 
 if (res === 9)
     console.log('test ok')
 else
-    console.error('test failed')
+    console.error('test ko')
 
-// CASE 2
+// case 2
 
 var res = countLetters('hola')
 
 if (res === 4)
     console.log('test ok')
 else
-    console.error('test failed')
+    console.error('test ko')
 
-// CASE 3
+// case 3
 
 var res = countLetters('mundo')
 
 if (res === 5)
     console.log('test ok')
 else
-    console.error('test failed')
+    console.error('test ko')
 
-// CASE 4
+// case 4
 
 var res = countLetters('adios mundo cruel')
 
 if (res === 15)
     console.log('test ok')
 else
-    console.error('test failed')
+    console.error('test ko')
 
-// CASE 5
+// case 5
 
 var res = countLetters('lorem ipsum whatever wtf')
 
 if (res === 21)
     console.log('test ok')
 else
-    console.error('test failed')
+    console.error('test ko')

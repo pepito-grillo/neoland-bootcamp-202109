@@ -2,7 +2,7 @@ describe('TEST concat')
 
 // HINT pay attention to the keyword "arguments" (Seach in Google)
 
-// CASE 0
+// case 0
 
 var string = 'ho'
 var string2 = 'la'
@@ -14,9 +14,9 @@ if (typeof res === 'string'
     && res === string + string2) // hola
     success('test ok')
 else
-    fail('test fail')
+    fail('test ko')
 
-// CASE 1
+// case 1
 
 var string = 'hola'
 var string2 = ' '
@@ -29,10 +29,10 @@ if (typeof res === 'string'
     && res === string + string2 + string3) // hola mundo
     success('test ok')
 else
-    fail('test fail')
+    fail('test ko')
 
 
-// CASE 2
+// case 2
 
 var string = 'adios'
 var string2 = ' '
@@ -46,9 +46,9 @@ if (typeof res === 'string'
     && res === string + string2 + string3 + string2 + string4) // adios mundo cruel
     success('test ok')
 else
-    fail('test fail')
+    fail('test ko')
 
-// CASE 3
+// case 3
 
 var string = 'banana'
 var string2 = ' '
@@ -63,4 +63,4 @@ if (typeof res === 'string'
     && res === string + string2 + string3 + string2 + string4 + string2 + string5) // banana pera naranja melon
     success('test ok')
 else
-    fail('test fail')
+    fail('test ko')

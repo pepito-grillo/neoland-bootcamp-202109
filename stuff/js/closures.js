@@ -86,6 +86,7 @@ b1.updatePassword('123123123', '456456456')
 // console.log(b1.open('123123123')) // error
 console.log(b1.open('456456456'))
 
+var b2 = box('otro secreto', 'abcabcabc')
+console.log(b2.open('abcabcabc'))
 
-
-
+console.log(b1.open('456456456'))

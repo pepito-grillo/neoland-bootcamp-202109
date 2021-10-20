@@ -20,13 +20,13 @@ console.log(n instanceof Object)
 console.log(n instanceof Riccardo)
 console.log(n instanceof Nico)
 
-Riccardo.prototype.pop = function() {
+Riccardo.prototype.pop = function () {
     return '💩'
 }
 
 console.log(r.pop())
 
-Nico.prototype.dance = function() {
+Nico.prototype.dance = function () {
     return '🕺'
 }
 
@@ -57,29 +57,29 @@ var staff = [p, w, r, n, m, s, g, a]
 
 console.log(staff)
 
-var women = staff.filter(function(human) {
+var women = staff.filter(function (human) {
     return human.gender === 'female'
 })
 
 console.log(women)
 
-Human.prototype.walk = function() {
+Human.prototype.walk = function () {
     return '🚶🏻‍♀️'
 }
 
-Human.prototype.eat = function() {
+Human.prototype.eat = function () {
     return '🍔'
 }
 
-Human.prototype.pee = function() {
+Human.prototype.pee = function () {
     return '💦'
 }
 
-Human.prototype.poo = function() {
+Human.prototype.poo = function () {
     return '💩'
 }
 
-Human.prototype.toString = function() {
+Human.prototype.toString = function () {
     return this.name + ', ' + this.gender + ', ' + this.age
 }
 
@@ -87,7 +87,7 @@ console.log(r.toString())
 console.log(a.toString())
 console.log(r.toString === a.toString)
 
-Human.prototype.toString = function() { return this.name.toUpperCase() }
+Human.prototype.toString = function () { return this.name.toUpperCase() }
 
 console.log(r.toString())
 console.log(a.toString())
@@ -121,19 +121,19 @@ for (var i = 0; i < b2.length; i++) {
     console.log(element)
 }
 
-Biblio.prototype.forEach = function(callback) {
+Biblio.prototype.forEach = function (callback) {
     for (var i = 0; i < this.length; i++) {
         var element = this[i]
 
-        callback(element, i)        
+        callback(element, i)
     }
 }
 
-b.forEach(function(char) {
+b.forEach(function (char) {
     console.log(char)
 })
 
-b2.forEach(function(bool) {
+b2.forEach(function (bool) {
     console.error(bool)
 })
 
@@ -153,10 +153,10 @@ console.log(b)
 b.length = 1
 console.log(b)
 
-Biblio.prototype.push = function() {
+Biblio.prototype.push = function () {
     for (var i = 0; i < arguments.length; i++) {
         this[this.length] = arguments[i]
-        
+
         this.length++
     }
 
@@ -171,3 +171,41 @@ console.log(a)
 
 b.push('hola', 'mundo')
 console.log(b)
+
+//
+
+var socks1 = { type: 'socks', brand: 'adidas', quantity: 100 }
+var socks2 = { type: 'socks', brand: 'nike', quantity: 100 }
+var socks3 = { type: 'socks', brand: 'puma', quantity: 100 }
+var tshirt1 = { type: 't-shirt', brand: 'adidas', quantity: 100 }
+var tshirt2 = { type: 't-shirt', brand: 'nike', quantity: 100 }
+var tshirt3 = { type: 't-shirt', brand: 'puma', quantity: 100 }
+
+var products = [socks1, socks2, socks3, tshirt1, tshirt2, tshirt3]
+
+console.log(products.filter(function (product) {
+    return product.brand === 'adidas'
+}))
+
+function Product(type, brand, quantity) {
+    this.type = type
+    this.brand = brand
+    this.quantity = quantity
+}
+
+Product.prototype.toString = function() {
+    return '> ' + this.type + ', ' + this.brand + ', ' + this.quantity;
+}
+
+var socks1 = new Product('socks', 'adidas', 100)
+var socks2 = new Product('socks', 'nike', 100)
+var socks3 = new Product('socks', 'puma', 100)
+var tshirt1 = new Product('tshirt', 'adidas', 100)
+var tshirt2 = new Product('tshirt', 'nike', 100)
+var tshirt3 = new Product('tshirt', 'puma', 100)
+
+var products = [socks1, socks2, socks3, tshirt1, tshirt2, tshirt3]
+
+products.forEach(function(product) {
+    console.log(product.toString())
+})

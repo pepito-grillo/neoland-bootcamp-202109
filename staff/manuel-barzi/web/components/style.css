@@ -1,3 +1,132 @@
-.title {
-    background-color: yellow;
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+/* Resets */
+
+* {
+    /* border: 1px dashed black; */
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%; 
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+/* RESUSABLES */
+
+/* Button */
+
+.button {
+    border-radius: 5px;
+    border-style: solid;
+    margin: 5px;
+}
+
+/* Field */
+
+.field {
+    border-radius: 5px;
+    border-style: solid;
+    margin: 5px;
+}
+
+/* Panel */
+
+.panel {
+    display: inline-block;
+    background-color: lightgray;
+    border-color: darkgray;
+    border-width: 2px;
+    border-style: dashed;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.panel__title {
+    font-family: 'Bebas Neue';
+    font-size: 1rem;
+}
+
+.panel--light {
+    background-color: white;
+    border-color: black;
+}
+
+.panel--dark {
+    background-color: black;
+    color: white;
+    border-color: white;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* CUSTOM */
+
+/* Search */
+
+.search {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.search__body {
+    margin: 0;
+}
+
+.search__title {
+    background-color: black;
+    border-radius: 5px;
+    border-style: solid;
+    border-color: darkgray;
+    color: white;
+}
+
+.central {
+    display: flex;
+    height: 80%;
+    background-color: aqua;
+}
+
+.central__aside {
+    flex-basis: 10%;
+    background-color: aquamarine;
+}
+
+.central__main {
+    flex-basis: 80%;
+    display: flex;
+    flex-direction: column;
+}
+
+.central__main-title {
+    flex-basis: 10%;
+    background-color: darkgoldenrod;
+    margin: 0;
+}
+
+.central__main-body {
+    flex-basis: 90%;
+    background-color: hotpink;
+    margin: 0;
+}
+
+.header, .footer {
+    height: 10%;
+    background-color: burlywood;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-bar {
+    width: 50%;
+    background-color: cornflowerblue;
 }

@@ -1,3 +1,11 @@
+// data
+
+var users = [{
+    name: 'Pepito Grillo',
+    username: 'pepigri@mail.com',
+    password: '123123123'
+}]
+
 // views
 
 var landingContainer = document.querySelector('.landing')
@@ -10,7 +18,7 @@ var landingButtons = landingContainer.querySelectorAll('button')
 
 var signupButton = landingButtons[1]
 
-signupButton.onclick = function () {
+signupButton.onclick = function() {
     landingContainer.classList.add('container--off')
 
     signupContainer.classList.remove('container--off')
@@ -18,7 +26,7 @@ signupButton.onclick = function () {
 
 var landingSigninButton = landingButtons[0]
 
-landingSigninButton.onclick = function () {
+landingSigninButton.onclick = function() {
     landingContainer.classList.add('container--off')
 
     signinContainer.classList.remove('container--off')
@@ -28,7 +36,7 @@ var signupButtons = signupContainer.querySelectorAll('button')
 
 var signupSigninButton = signupButtons[0]
 
-signupSigninButton.onclick = function (event) {
+signupSigninButton.onclick = function(event) {
     event.preventDefault()
 
     signupContainer.classList.add('container--off')
@@ -40,7 +48,7 @@ var signinButtons = signinContainer.querySelectorAll('button')
 
 var signinSignupButton = signinButtons[0]
 
-signinSignupButton.onclick = function (event) {
+signinSignupButton.onclick = function(event) {
     event.preventDefault()
 
     signinContainer.classList.add('container--off')
@@ -48,7 +56,7 @@ signinSignupButton.onclick = function (event) {
     signupContainer.classList.remove('container--off')
 }
 
-signupContainer.onsubmit = function (event) {
+signupContainer.onsubmit = function(event) {
     event.preventDefault()
 
     var inputs = signupContainer.querySelectorAll('input')
@@ -65,41 +73,34 @@ signupContainer.onsubmit = function (event) {
     if (!username.length) return alert('username is empty')
     if (!password.length) return alert('password is empty')
 
-    var xhr = new XMLHttpRequest
-
-    xhr.onload = function () {
-        var status = xhr.status
-
-        if (status === 409) return alert('user already exists')
-
-        if (status === 201) {
-            signupContainer.reset()
-
-            signupContainer.classList.add('container--off')
-
-            postSignupContainer.classList.remove('container--off')
-        }
-
+    var user = {
+        name: name,
+        username: username,
+        password: password
     }
 
-    xhr.open('POST', 'https://b00tc4mp.herokuapp.com/api/v2/users')
+    users.push(user)
 
-    xhr.setRequestHeader('Content-Type', 'application/json')
+    // nameInput.value = ''
+    // usernameInput.value = ''
+    // passwordInput.value = ''
 
-    var body = '{ "name": "' + name + '", "username": "' + username + '", "password": "' + password + '" }'
+    signupContainer.reset()
 
-    xhr.send(body)
+    signupContainer.classList.add('container--off')
+
+    postSignupContainer.classList.remove('container--off')
 }
 
 var postSignupSigninButton = postSignupContainer.querySelector('button')
 
-postSignupSigninButton.onclick = function () {
+postSignupSigninButton.onclick = function() {
     postSignupContainer.classList.add('container--off')
 
     signinContainer.classList.remove('container--off')
 }
 
-signinContainer.onsubmit = function (event) {
+signinContainer.onsubmit = function(event) {
     event.preventDefault()
 
     var inputs = signinContainer.querySelectorAll('input')
@@ -113,49 +114,19 @@ signinContainer.onsubmit = function (event) {
     if (!username.length) return alert('username is empty')
     if (!password.length) return alert('password is empty')
 
-    var xhr = new XMLHttpRequest
+    var user = users.find(function(user) {
+        return user.username === username && user.password === password
+    })
 
-    xhr.onload = function () {
-        var status = xhr.status
+    if (!user) return alert('wrong credentials')
 
-        if (status === 401) return alert('wrong credentials')
+    signinContainer.reset()
 
-        if (status === 200) {
-            var response = xhr.responseText
+    signinContainer.classList.add('container--off')
 
-            var token = response.slice(10, -2)
+    var nameSpan = homeContainer.querySelector('.name')
 
-            var xhr2 = new XMLHttpRequest
+    nameSpan.innerText = user.name
 
-            xhr2.onload = function () {
-                var response = xhr2.responseText
-
-                var name = response.slice(9, response.indexOf(',') - 1)
-
-                signinContainer.reset()
-
-                signinContainer.classList.add('container--off')
-
-                var nameSpan = homeContainer.querySelector('.name')
-
-                nameSpan.innerText = name
-
-                homeContainer.classList.remove('container--off')
-            }
-
-            xhr2.open('GET', 'https://b00tc4mp.herokuapp.com/api/v2/users')
-
-            xhr2.setRequestHeader('Authorization', 'Bearer ' + token)
-
-            xhr2.send()
-        }
-    }
-
-    xhr.open('POST', 'https://b00tc4mp.herokuapp.com/api/v2/users/auth')
-
-    xhr.setRequestHeader('Content-Type', 'application/json')
-
-    var body = '{ "username": "' + username + '", "password": "' + password + '" }'
-
-    xhr.send(body)
+    homeContainer.classList.remove('container--off')
 }

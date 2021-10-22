@@ -124,9 +124,5 @@ signinContainer.onsubmit = function(event) {
 
     signinContainer.classList.add('container--off')
 
-    var nameSpan = homeContainer.querySelector('.name')
-
-    nameSpan.innerText = user.name
-
     homeContainer.classList.remove('container--off')
 }

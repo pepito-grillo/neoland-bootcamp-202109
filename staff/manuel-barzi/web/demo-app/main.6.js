@@ -6,7 +6,6 @@ var signinContainer = document.querySelector('.signin')
 var postSignupContainer = document.querySelector('.post-signup')
 var homeContainer = document.querySelector('.home')
 var profileContainer = document.querySelector('.profile')
-var unregisterContainer = document.querySelector('.unregister')
 
 var token
 
@@ -28,7 +27,9 @@ landingSigninButton.onclick = function () {
     signinContainer.classList.remove('container--off')
 }
 
-var signupSigninButton = signupContainer.querySelector('button')
+var signupButtons = signupContainer.querySelectorAll('button')
+
+var signupSigninButton = signupButtons[0]
 
 signupSigninButton.onclick = function (event) {
     event.preventDefault()
@@ -38,7 +39,9 @@ signupSigninButton.onclick = function (event) {
     signinContainer.classList.remove('container--off')
 }
 
-var signinSignupButton = signinContainer.querySelector('button')
+var signinButtons = signinContainer.querySelectorAll('button')
+
+var signinSignupButton = signinButtons[0]
 
 signinSignupButton.onclick = function (event) {
     event.preventDefault()
@@ -62,8 +65,8 @@ signupContainer.onsubmit = function (event) {
     var password = passwordInput.value
 
     if (!name.length) return alert('name is empty')
-    if (!username.length) return alert('username is empty')
-    if (!password.length) return alert('password is empty')
+    // if (!username.length) return alert('username is empty')
+    // if (!password.length) return alert('password is empty')
 
     var xhr = new XMLHttpRequest
 
@@ -136,14 +139,14 @@ signinContainer.onsubmit = function (event) {
 
             token = response.slice(10, -2)
 
-            signinContainer.reset()
-
             var xhr2 = new XMLHttpRequest
 
             xhr2.onload = function () {
                 var response = xhr2.responseText
 
                 var name = response.slice(9, response.indexOf(',') - 1)
+
+                signinContainer.reset()
 
                 signinContainer.classList.add('container--off')
 
@@ -171,29 +174,17 @@ signinContainer.onsubmit = function (event) {
     xhr.send(body)
 }
 
-var homeButtons = homeContainer.querySelectorAll('button')
-
-var homeProfileButton = homeButtons[0]
-
-var profileForm = profileContainer.querySelector('form')
+var homeProfileButton = homeContainer.querySelector('button')
 
 homeProfileButton.onclick = function() {
     homeContainer.classList.add('container--off')
 
-    profileForm.reset()
-
     profileContainer.classList.remove('container--off')
 }
 
-var homeSignoutButton = homeButtons[1]
+var profileButtons = profileContainer.querySelectorAll('button')
 
-homeSignoutButton.onclick = function() {
-    homeContainer.classList.add('container--off')
-
-    signinContainer.classList.remove('container--off')
-}
-
-var profileBackButton = profileForm.querySelector('button')
+var profileBackButton = profileButtons[1]
 
 profileBackButton.onclick = function(event) {
     event.preventDefault()
@@ -203,10 +194,10 @@ profileBackButton.onclick = function(event) {
     homeContainer.classList.remove('container--off')
 }
 
-profileForm.onsubmit = function (event) {
+profileContainer.onsubmit = function (event) {
     event.preventDefault()
     
-    var inputs = profileForm.querySelectorAll('input')
+    var inputs = profileContainer.querySelectorAll('input')
 
     var oldPasswordInput = inputs[0]
     var passwordInput = inputs[1]
@@ -230,81 +221,17 @@ profileForm.onsubmit = function (event) {
         if (status === 204) {
             profileContainer.classList.add('container--off')
 
-            profileForm.reset()
-
             homeContainer.classList.remove('container--off')
         }
     }
 
     xhr.open('PATCH', 'https://b00tc4mp.herokuapp.com/api/v2/users')
 
-    xhr.setRequestHeader('Authorization', 'Bearer ' + token)
-    
     xhr.setRequestHeader('Content-Type', 'application/json')
+    
+    xhr.setRequestHeader('Authorization', 'Bearer ' + token)
 
     var body = '{ "oldPassword": "' + oldPassword + '", "password" : "' + password + '" }'
     
-    xhr.send(body)
-}
-
-var profileUnregisterButton = profileContainer.querySelector('.profile>button')
-
-profileUnregisterButton.onclick = function() {
-    profileContainer.classList.add('container--off')
-
-    unregisterContainer.classList.remove('container--off')
-}
-
-var unregisterBackButton = unregisterContainer.querySelector('button')
-
-var unregisterForm = unregisterContainer.querySelector('form')
-
-unregisterBackButton.onclick = function(event) {
-    event.preventDefault()
-
-    unregisterContainer.classList.add('container--off')
-
-    unregisterForm.reset()
-
-    profileContainer.classList.remove('container--off')
-}
-
-unregisterForm.onsubmit = function(event) {
-    event.preventDefault()
-
-    var passwordInput = unregisterForm.querySelector('input')
-
-    var password = passwordInput.value
-
-    var xhr = new XMLHttpRequest
-
-    xhr.onload = function() {
-        var status = xhr.status
-
-        if (status === 400 || status === 401) {
-            var response = xhr.responseText
-
-            var message = response.slice(10, -2)
-
-            return alert(message)
-        }
-
-        if(status === 204) {
-            unregisterContainer.classList.add('container--off')
-
-            unregisterForm.reset()
-
-            landingContainer.classList.remove('container--off')
-        }
-    }
-
-    xhr.open('DELETE', 'https://b00tc4mp.herokuapp.com/api/v2/users')
-
-    xhr.setRequestHeader('Authorization', 'Bearer ' + token)
-
-    xhr.setRequestHeader('Content-Type', 'application/json')
-
-    var body = '{ "password" : "' + password + '" }'
-
     xhr.send(body)
 }

@@ -1,5 +1,132 @@
 // logic
 
+function signupUser(name, username, password, callback) {
+    if (!name.length) throw new Error('name is empty')
+    if (!username.length) throw new Error('username is empty')
+    if (!password.length) throw new Error('password is empty')
+
+    var xhr = new XMLHttpRequest
+
+    xhr.onload = function () {
+        var status = xhr.status
+
+        if (status === 409 || status === 400) {
+            var response = xhr.responseText
+
+            var message = response.slice(10, -2)
+
+            callback(new Error(message))
+        } else if (status === 201) {
+            callback(null)
+        }
+    }
+
+    xhr.open('POST', 'https://b00tc4mp.herokuapp.com/api/v2/users')
+
+    xhr.setRequestHeader('Content-Type', 'application/json')
+
+    var body = '{ "name": "' + name + '", "username": "' + username + '", "password": "' + password + '" }'
+
+    xhr.send(body)
+}
+
+function signinUser(username, password, callback) {
+    if (!username.length) throw new Error('username is empty')
+    if (!password.length) throw new Error('password is empty')
+
+    var xhr = new XMLHttpRequest
+
+    xhr.onload = function () {
+        var status = xhr.status
+
+        if (status === 401) {
+            var response = xhr.responseText
+
+            var message = response.slice(10, -2)
+
+            callback(new Error(message))
+        } else if (status === 200) {
+            var response = xhr.responseText
+
+            token = response.slice(10, -2)
+
+            callback(null, token)
+        }
+    }
+
+    xhr.open('POST', 'https://b00tc4mp.herokuapp.com/api/v2/users/auth')
+
+    xhr.setRequestHeader('Content-Type', 'application/json')
+
+    var body = '{ "username": "' + username + '", "password": "' + password + '" }'
+
+    xhr.send(body)
+}
+
+function retrieveUser(token, callback) {
+    if (!token) throw new Error('invalid token')
+
+    var xhr = new XMLHttpRequest
+
+    xhr.onload = function () {
+        var status = xhr.status
+
+        if (status === 401) {
+            var response = xhr.responseText
+
+            var message = response.slice(10, -2)
+
+            callback(new Error(message))
+        } else if (status === 200) {
+            var response = xhr.responseText
+
+            var user = JSON.parse(response)
+
+            callback(null, user)
+        }
+    }
+
+    xhr.open('GET', 'https://b00tc4mp.herokuapp.com/api/v2/users')
+
+    xhr.setRequestHeader('Authorization', 'Bearer ' + token)
+
+    xhr.send()
+}
+
+function updateUserPassword(token, oldPassword, password, callback) {
+    if (!token) throw new Error('invalid token')
+    if (!oldPassword.length) throw new Error('old password is empty')
+    if (!password.length) throw new Error('password is empty')
+
+    var xhr = new XMLHttpRequest
+
+    xhr.onload = function () {
+        var status = xhr.status
+
+        if (status === 400 || status === 401) {
+            var response = xhr.responseText
+
+            var message = response.slice(10, -2)
+
+            callback(new Error(message))
+        } else if (status === 204) {
+            callback(null)
+        }
+    }
+
+    xhr.open('PATCH', 'https://b00tc4mp.herokuapp.com/api/v2/users')
+
+    xhr.setRequestHeader('Authorization', 'Bearer ' + token)
+
+    xhr.setRequestHeader('Content-Type', 'application/json')
+
+    var body = '{ "oldPassword": "' + oldPassword + '", "password" : "' + password + '" }'
+
+    xhr.send(body)
+}
+
+// views
+
 var landingContainer = document.querySelector('.landing')
 var signupContainer = document.querySelector('.signup')
 var signinContainer = document.querySelector('.signin')
@@ -187,8 +314,6 @@ profileForm.onsubmit = function (event) {
 var profileUnregisterButton = profileContainer.querySelector('.profile>button')
 
 profileUnregisterButton.onclick = function () {
-    profileForm.reset()
-
     profileContainer.classList.add('container--off')
 
     unregisterContainer.classList.remove('container--off')
@@ -215,17 +340,35 @@ unregisterForm.onsubmit = function (event) {
 
     var password = passwordInput.value
 
-    try {
-        unregisterUser(token, password, function (error) {
-            if (error) return alert(error.message)
+    var xhr = new XMLHttpRequest
 
+    xhr.onload = function () {
+        var status = xhr.status
+
+        if (status === 400 || status === 401) {
+            var response = xhr.responseText
+
+            var message = response.slice(10, -2)
+
+            return alert(message)
+        }
+
+        if (status === 204) {
             unregisterContainer.classList.add('container--off')
 
             unregisterForm.reset()
 
             landingContainer.classList.remove('container--off')
-        })
-    } catch (error) {
-        alert(error.message)
+        }
     }
+
+    xhr.open('DELETE', 'https://b00tc4mp.herokuapp.com/api/v2/users')
+
+    xhr.setRequestHeader('Authorization', 'Bearer ' + token)
+
+    xhr.setRequestHeader('Content-Type', 'application/json')
+
+    var body = '{ "password" : "' + password + '" }'
+
+    xhr.send(body)
 }

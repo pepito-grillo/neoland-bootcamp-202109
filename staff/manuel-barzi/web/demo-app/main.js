@@ -1,5 +1,3 @@
-// logic
-
 var landingContainer = document.querySelector('.landing')
 var signupContainer = document.querySelector('.signup')
 var signinContainer = document.querySelector('.signin')

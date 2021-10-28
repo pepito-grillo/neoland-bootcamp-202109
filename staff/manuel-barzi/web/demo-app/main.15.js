@@ -298,7 +298,6 @@ unregisterForm.onsubmit = function (event) {
 
 var homeSearchForm = homeContainer.querySelector('.home__search')
 var homeResultsList = homeContainer.querySelector('.home__results')
-var homeDetail = homeContainer.querySelector('.home__detail')
 
 homeSearchForm.onsubmit = function (event) {
     event.preventDefault()
@@ -312,8 +311,6 @@ homeSearchForm.onsubmit = function (event) {
             if (error) return alert(error.message)
 
             homeResultsList.innerHTML = ''
-
-            homeResultsList.classList.remove('container--off')
 
             vehicles.forEach(function (vehicle) {
                 var item = document.createElement('li')
@@ -332,40 +329,9 @@ homeSearchForm.onsubmit = function (event) {
                 item.classList.add('home__result')
 
                 item.onclick = function() {
-                    try {
-                        retrieveVehicle(vehicle.id, function(error, vehicle) {
-                            if (error) return alert(error.message)
+                    alert(vehicle.id)
 
-                            homeResultsList.classList.add('container--off')
-
-                            var title = homeDetail.querySelector('h2')
-                            title.innerText = vehicle.name
-
-                            var image = homeDetail.querySelector('img')
-                            image.src = vehicle.image
-
-                            var description = homeDetail.querySelector('p')
-                            description.innerText = vehicle.description
-
-                            var year = homeDetail.querySelector('time')
-                            year.innerText = vehicle.year
-
-                            var other = homeDetail.querySelectorAll('span')
-
-                            other[0].innerText = vehicle.price
-                            other[1].innerText = vehicle.color
-                            other[2].innerText = vehicle.style
-                            other[3].innerText = vehicle.collection
-                            other[4].innerText = vehicle.maker
-
-                            var link = homeDetail.querySelector('a')
-                            link.src = vehicle.url
-
-                            homeDetail.classList.remove('container--off')
-                        })
-                    } catch(error) {
-                        alert(error.message)
-                    }
+                    // TODO call retrieveVehicle(...) and so on... ,)
                 }
 
                 homeResultsList.append(item)

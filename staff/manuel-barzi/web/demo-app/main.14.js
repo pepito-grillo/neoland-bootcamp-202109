@@ -152,10 +152,10 @@ signinContainer.onsubmit = function (event) {
                 retrieveUser(sessionStorage.token, function (error, user) {
                     if (error) {
                         alert(error.message)
-
+        
                         spinnerContainer.classList.add('container--off')
                         signinContainer.classList.remove('container--off')
-
+        
                         return
                     }
 
@@ -284,52 +284,6 @@ unregisterForm.onsubmit = function (event) {
             unregisterForm.reset()
 
             landingContainer.classList.remove('container--off')
-        })
-    } catch (error) {
-        alert(error.message)
-    }
-}
-
-var homeSearchForm = homeContainer.querySelector('.home__search')
-var homeResultsList = homeContainer.querySelector('.home__results')
-
-homeSearchForm.onsubmit = function (event) {
-    event.preventDefault()
-
-    var queryInput = homeSearchForm.querySelector('#query')
-
-    var query = queryInput.value
-
-    try {
-        searchVehicles(query, function (error, vehicles) {
-            if (error) return alert(error.message)
-
-            homeResultsList.innerHTML = ''
-
-            vehicles.forEach(function (vehicle) {
-                var item = document.createElement('li')
-
-                var image = document.createElement('img')
-                image.src = vehicle.thumbnail
-
-                var title = document.createElement('h2')
-                title.innerText = vehicle.name
-
-                var price = document.createElement('span')
-                price.innerText = vehicle.price + ' $'
-
-                item.append(image, title, price)
-
-                item.classList.add('home__result')
-
-                item.onclick = function() {
-                    alert(vehicle.id)
-
-                    // TODO call retrieveVehicle(...) and so on... ,)
-                }
-
-                homeResultsList.append(item)
-            })
         })
     } catch (error) {
         alert(error.message)

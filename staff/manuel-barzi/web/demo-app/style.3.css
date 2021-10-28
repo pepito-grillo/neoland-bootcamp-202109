@@ -70,11 +70,3 @@ html, body {
     width: 10vw;
     height: 10vw;
 }
-
-.home__results {
-    list-style: none;
-}
-
-.home__result {
-    cursor: pointer;
-}

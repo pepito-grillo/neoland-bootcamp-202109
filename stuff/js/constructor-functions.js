@@ -209,3 +209,27 @@ var products = [socks1, socks2, socks3, tshirt1, tshirt2, tshirt3]
 products.forEach(function(product) {
     console.log(product.toString())
 })
+
+//
+
+function Human(name) {
+    this.name = name
+
+    //this.salute = function() { return this.name + ' -> hello!' }
+    this.salute = function() { return name + ' -> hello!' }
+}
+
+Human.prototype.walk = function() { return this.name + ' -> 🚶🏻‍♂️' }
+
+var p = new Human('Peter')
+
+console.log(p.walk())
+console.log(p.salute())
+
+var w = new Human('Wendy')
+
+console.log(w.walk())
+console.log(w.salute())
+
+console.log(p.walk === w.walk) // true
+console.log(p.salute === w.salute) // false

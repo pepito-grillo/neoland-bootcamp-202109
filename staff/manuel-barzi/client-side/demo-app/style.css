@@ -90,6 +90,10 @@ html, body {
 
 .logo__text {
     color: dodgerblue;
-    margin: 1rem;
+    margin: 0 0 0 1rem;
     font-family: 'Henny Penny';
+}
+
+.time {
+    font-size: .75rem;
 }

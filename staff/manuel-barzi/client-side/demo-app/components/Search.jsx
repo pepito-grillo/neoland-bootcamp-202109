@@ -1,4 +1,6 @@
 function Search(props) {
+    logger.info('Search -> render')
+
     return <form className="home__search container" onSubmit={event => {
         event.preventDefault()
 

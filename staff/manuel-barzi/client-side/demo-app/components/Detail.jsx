@@ -1,4 +1,6 @@
 function Detail(props) {
+    logger.info('Detail -> render')
+
     return <div className="home__detail container container--vertical">
         <h2>{props.item.name}</h2><button className="button button-medium button">Back</button>
         <img className="home__detail-image" src={props.item.image} alt="" />

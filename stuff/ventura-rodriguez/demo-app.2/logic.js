@@ -9,10 +9,7 @@
  * @throws {TypeError} When any of the arguments does not match the correct type.
  * @throws {Error} When any of the arguments does not contain the correct format.
  */
- function signupUser(user, callback) {
-     const name = user.name
-     const username = user.username
-     const password = user.password
+ function signupUser(name, username, password, callback) {
     if (typeof name !== 'string')  throw new TypeError(name + ' is not a string')
     if (!name.trim().length) throw new Error('name is empty or blank')
     if (name.trim() !== name) throw new Error('blank spaces around name')

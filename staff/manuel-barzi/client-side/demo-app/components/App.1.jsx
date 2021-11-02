@@ -8,9 +8,6 @@ class App extends React.Component {
 
     render() {
         return <>
-            <Logo image="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Flat_tick_icon.svg/1200px-Flat_tick_icon.svg.png" text="Demo App" />
-            <Time />
-
             {this.state.view === 'landing' && <Landing
                 onSignIn={() => this.setState({ view: 'signin' })}
                 onSignUp={() => this.setState({ view: 'signup' })}

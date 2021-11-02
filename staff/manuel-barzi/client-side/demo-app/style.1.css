@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Henny+Penny&display=swap');
 
 /* resets */
 
@@ -82,14 +81,4 @@ html, body {
 
 .home__detail-image {
     max-width: 80vw;
-}
-
-.logo__image {
-    width: 5vw;
-}
-
-.logo__text {
-    color: dodgerblue;
-    margin: 1rem;
-    font-family: 'Henny Penny';
 }

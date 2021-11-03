@@ -63,6 +63,8 @@ class App extends React.Component {
         this.setState({ view: 'landing' })
     }
 
+    // goToSignIn() { this.setState({ view: 'signin' }) }
+    // goToSignIn = function() { this.setState({ view: 'signin' }) }.bind(this)
     goToSignIn = () => this.setState({ view: 'signin' })
 
     goToSignUp = () => this.setState({ view: 'signup' })

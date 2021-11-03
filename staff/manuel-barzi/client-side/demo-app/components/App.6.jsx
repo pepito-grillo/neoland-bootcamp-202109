@@ -46,9 +46,9 @@ class App extends React.Component {
     resetTokenAndGoToLanding = () => {
         delete sessionStorage.token
 
-        this.setState({
-            view: 'landing',
-            spinner: false
+        this.setState({ 
+            view: 'landing', 
+            spinner: false 
         })
     }
 
@@ -60,7 +60,7 @@ class App extends React.Component {
 
     hideSpinner = () => this.setState({ spinner: false })
 
-    signUp = (name, username, password) => {
+    onSignUp = (name, username, password) => {
         this.showSpinner()
 
         try {
@@ -73,7 +73,7 @@ class App extends React.Component {
                     return
                 }
 
-                this.setState({
+                this.setState({ 
                     view: 'post-signup',
                     spinner: false
                 })
@@ -85,7 +85,7 @@ class App extends React.Component {
         }
     }
 
-    signIn = (username, password) => {
+    onSignIn = (username, password) => {
         this.showSpinner()
 
         try {
@@ -104,7 +104,7 @@ class App extends React.Component {
                     retrieveUser(sessionStorage.token, (error, user) => {
                         if (error) {
                             alert(error.message)
-
+                                
                             this.hideSpinner()
 
                             return
@@ -143,19 +143,13 @@ class App extends React.Component {
                 onSignUp={this.goToSignUp}
             />}
 
-            {this.state.view === 'signup' && <SignUp onSignUp={this.signUp} onSignIn={this.goToSignIn} />}
+            {this.state.view === 'signup' && <SignUp onSignUp={this.onSignUp} onSignIn={this.goToSignIn} />}
 
             {this.state.view === 'post-signup' && <PostSignUp onSignIn={this.goToSignIn} />}
 
-            {this.state.view === 'signin' && <SignIn onSignIn={this.signIn} onSignUp={this.goToSignUp} />}
+            {this.state.view === 'signin' && <SignIn onSignIn={this.onSignIn} onSignUp={this.goToSignUp} />}
 
-            {this.state.view === 'home' &&
-                <Home
-                    name={this.state.name}
-                    onSignOut={this.resetTokenAndGoToLanding}
-                    onFlowStart={this.showSpinner}
-                    onFlowEnd={this.hideSpinner}
-                />}
+            {this.state.view === 'home' && <Home name={this.state.name} onSignOut={this.resetTokenAndGoToLanding} />}
 
             {this.state.spinner && <Spinner />}
         </>

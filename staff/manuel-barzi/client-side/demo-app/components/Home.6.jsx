@@ -71,6 +71,18 @@ class Home extends React.Component {
         this.props.onFlowStart()
 
         try {
+            // updateUserPassword(sessionStorage.token, oldPassword, password, function (error) {
+            //     if (error) {
+            //         alert(error.message)
+
+            //         this.props.onFlowEnd()
+
+            //         return
+            //     }
+
+            //     this.props.onFlowEnd()
+            // }.bind(this))
+
             updateUserPassword(sessionStorage.token, oldPassword, password, error => {
                 if (error) {
                     alert(error.message)
@@ -81,30 +93,6 @@ class Home extends React.Component {
                 }
 
                 this.props.onFlowEnd()
-            })
-        } catch (error) {
-            alert(error.message)
-
-            this.props.onFlowEnd()
-        }
-    }
-
-    unregister = password => {
-        this.props.onFlowStart()
-
-        try {
-            unregisterUser(sessionStorage.token, password, error => {
-                if (error) {
-                    alert(error.message)
-
-                    this.props.onFlowEnd()
-
-                    return
-                }
-
-                this.props.onFlowEnd()
-
-                this.props.onSignOut()
             })
         } catch (error) {
             alert(error.message)
@@ -133,7 +121,8 @@ class Home extends React.Component {
                 </>
             }
 
-            {this.state.view === 'profile' && <Profile onBack={this.goToSearch} onPasswordUpdate={this.updatePassword} onUnregister={this.unregister}/>}
+
+            {this.state.view === 'profile' && <Profile onBack={this.goToSearch} onPasswordUpdate={this.updatePassword} />}
         </div>
     }
 }

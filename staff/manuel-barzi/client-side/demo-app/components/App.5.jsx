@@ -5,10 +5,13 @@ class App extends React.Component {
         super()
 
         this.state = {
-            view: sessionStorage.token ? '' : 'landing',
-            name: null,
-            spinner: sessionStorage.token ? true : false
+            view: sessionStorage.token ? 'spinner' : 'landing',
+            name: null
         }
+        // this.state = { view: 'spinner' }
+
+        // this.goToSignIn = function() { this.setState({ view: 'signin' }) }.bind(this)
+        // this.goToSignIn = () => this.setState({ view: 'signin' })
     }
 
     componentDidMount() {
@@ -29,8 +32,7 @@ class App extends React.Component {
 
                     this.setState({
                         view: 'home',
-                        name,
-                        spinner: false
+                        name //name: name
                     })
                 })
             } catch (error) {
@@ -43,57 +45,63 @@ class App extends React.Component {
         }
     }
 
+    // resetTokenAndGoToLanding() {
+    //     delete sessionStorage.token
+
+    //     this.setState({ view: 'landing' })
+    // }
+
+    // resetTokenAndGoToLanding = function() {
+    //     delete sessionStorage.token
+
+    //     this.setState({ view: 'landing' })
+    // }.bind(this)
+
     resetTokenAndGoToLanding = () => {
         delete sessionStorage.token
 
-        this.setState({
-            view: 'landing',
-            spinner: false
-        })
+        this.setState({ view: 'landing' })
     }
 
+    // goToSignIn() { this.setState({ view: 'signin' }) }
+    // goToSignIn = function() { this.setState({ view: 'signin' }) }.bind(this)
     goToSignIn = () => this.setState({ view: 'signin' })
 
     goToSignUp = () => this.setState({ view: 'signup' })
 
-    showSpinner = () => this.setState({ spinner: true })
+    goToSpinner = () => this.setState({ view: 'spinner' })
 
-    hideSpinner = () => this.setState({ spinner: false })
-
-    signUp = (name, username, password) => {
-        this.showSpinner()
+    onSignUp = (name, username, password) => {
+        this.goToSpinner()
 
         try {
             signupUser(name, username, password, error => {
                 if (error) {
                     alert(error.message)
 
-                    this.hideSpinner()
+                    this.goToSignUp()
 
                     return
                 }
 
-                this.setState({
-                    view: 'post-signup',
-                    spinner: false
-                })
+                this.setState({ view: 'post-signup' })
             })
         } catch (error) {
             alert(error.message)
 
-            this.hideSpinner()
+            this.goToSignUp()
         }
     }
 
-    signIn = (username, password) => {
-        this.showSpinner()
+    onSignIn = (username, password) => {
+        this.goToSpinner()
 
         try {
             signinUser(username, password, (error, token) => {
                 if (error) {
                     alert(error.message)
 
-                    this.hideSpinner()
+                    this.goToSignIn()
 
                     return
                 }
@@ -104,8 +112,8 @@ class App extends React.Component {
                     retrieveUser(sessionStorage.token, (error, user) => {
                         if (error) {
                             alert(error.message)
-
-                            this.hideSpinner()
+                                
+                            this.goToSignIn()
 
                             return
                         }
@@ -114,20 +122,19 @@ class App extends React.Component {
 
                         this.setState({
                             view: 'home',
-                            name,
-                            spinner: false
+                            name //name: name
                         })
                     })
                 } catch (error) {
                     alert(error.message)
 
-                    this.hideSpinner()
+                    this.goToSignIn()
                 }
             })
         } catch (error) {
             alert(error.message)
 
-            this.hideSpinner()
+            this.goToSignIn()
         }
     }
 
@@ -143,21 +150,15 @@ class App extends React.Component {
                 onSignUp={this.goToSignUp}
             />}
 
-            {this.state.view === 'signup' && <SignUp onSignUp={this.signUp} onSignIn={this.goToSignIn} />}
+            {this.state.view === 'signup' && <SignUp onSignUp={this.onSignUp} onSignIn={this.goToSignIn} />}
 
             {this.state.view === 'post-signup' && <PostSignUp onSignIn={this.goToSignIn} />}
 
-            {this.state.view === 'signin' && <SignIn onSignIn={this.signIn} onSignUp={this.goToSignUp} />}
+            {this.state.view === 'signin' && <SignIn onSignIn={this.onSignIn} onSignUp={this.goToSignUp} />}
 
-            {this.state.view === 'home' &&
-                <Home
-                    name={this.state.name}
-                    onSignOut={this.resetTokenAndGoToLanding}
-                    onFlowStart={this.showSpinner}
-                    onFlowEnd={this.hideSpinner}
-                />}
+            {this.state.view === 'home' && <Home name={this.state.name} onSignOut={this.resetTokenAndGoToLanding} />}
 
-            {this.state.spinner && <Spinner />}
+            {this.state.view === 'spinner' && <Spinner />}
         </>
     }
 }

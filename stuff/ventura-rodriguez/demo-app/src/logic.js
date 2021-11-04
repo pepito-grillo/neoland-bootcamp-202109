@@ -9,35 +9,32 @@
  * @throws {TypeError} When any of the arguments does not match the correct type.
  * @throws {Error} When any of the arguments does not contain the correct format.
  */
- function signupUser(user, callback) {
-     const name = user.name
-     const username = user.username
-     const password = user.password
-    if (typeof name !== 'string')  throw new TypeError(name + ' is not a string')
+ function signupUser(name, username, password, callback) {
+    if (typeof name !== 'string') throw new TypeError(name + ' is not a string')
     if (!name.trim().length) throw new Error('name is empty or blank')
     if (name.trim() !== name) throw new Error('blank spaces around name')
 
-    if (typeof username !== 'string')  throw new TypeError(username + ' is not a string')
+    if (typeof username !== 'string') throw new TypeError(username + ' is not a string')
     if (!username.trim().length) throw new Error('username is empty or blank')
     if (/\r?\n|\r|\t| /g.test(username)) throw new Error('username has blank spaces')
     if (username.length < 4) throw new Error('username has less than 4 characters')
 
-    if (typeof password !== 'string')  throw new TypeError(password + ' is not a string')
+    if (typeof password !== 'string') throw new TypeError(password + ' is not a string')
     if (!password.trim().length) throw new Error('password is empty or blank')
     if (/\r?\n|\r|\t| /g.test(password)) throw new Error('password has blank spaces')
     if (password.length < 6) throw new Error('password has less than 6 characters')
 
     if (typeof callback !== 'function') throw new TypeError(callback + ' is not a function')
 
-    var xhr = new XMLHttpRequest
+    const xhr = new XMLHttpRequest
 
-    xhr.onload = function () {
-        var status = xhr.status
+    xhr.onload = () => {
+        const { status, responseText } = xhr
 
         if (status === 409 || status === 400) {
-            var response = JSON.parse(xhr.responseText)
+            const response = JSON.parse(responseText)
 
-            var message = response.error
+            const message = response.error
 
             callback(new Error(message))
         } else if (status === 201) {
@@ -49,40 +46,40 @@
 
     xhr.setRequestHeader('Content-Type', 'application/json')
 
-    var body = { name: name, username: username, password: password }
+    const body = { name, username, password }
 
     xhr.send(JSON.stringify(body))
 }
 
 // TODO document me
 function signinUser(username, password, callback) {
-    if (typeof username !== 'string')  throw new TypeError(username + ' is not a string')
+    if (typeof username !== 'string') throw new TypeError(username + ' is not a string')
     if (!username.trim().length) throw new Error('username is empty or blank')
     if (/\r?\n|\r|\t| /g.test(username)) throw new Error('username has blank spaces')
     if (username.length < 4) throw new Error('username has less than 4 characters')
 
-    if (typeof password !== 'string')  throw new TypeError(password + ' is not a string')
+    if (typeof password !== 'string') throw new TypeError(password + ' is not a string')
     if (!password.trim().length) throw new Error('password is empty or blank')
     if (/\r?\n|\r|\t| /g.test(password)) throw new Error('password has blank spaces')
     if (password.length < 6) throw new Error('password has less than 6 characters')
 
     if (typeof callback !== 'function') throw new TypeError(callback + ' is not a function')
 
-    var xhr = new XMLHttpRequest
+    const xhr = new XMLHttpRequest
 
-    xhr.onload = function () {
-        var status = xhr.status
+    xhr.onload = () => {
+        const { status, responseText } = xhr
 
         if (status === 401) {
-            var response = JSON.parse(xhr.responseText)
+            const response = JSON.parse(responseText)
 
-            var message = response.error
+            const message = response.error
 
             callback(new Error(message))
         } else if (status === 200) {
-            var response = JSON.parse(xhr.responseText)
+            const response = JSON.parse(responseText)
 
-            var token = response.token
+            const token = response.token
 
             callback(null, token)
         }
@@ -92,7 +89,7 @@ function signinUser(username, password, callback) {
 
     xhr.setRequestHeader('Content-Type', 'application/json')
 
-    var body = { username: username, password: password }
+    const body = { username, password }
 
     xhr.send(JSON.stringify(body))
 }
@@ -105,21 +102,21 @@ function retrieveUser(token, callback) {
 
     if (typeof callback !== 'function') throw new TypeError(callback + ' is not a function')
 
-    var xhr = new XMLHttpRequest
+    const xhr = new XMLHttpRequest
 
-    xhr.onload = function () {
-        var status = xhr.status
+    xhr.onload = () => {
+        const { status, responseText } = xhr
 
-        if (status === 401) {
-            var response = JSON.parse(xhr.responseText)
+        if (status === 401 || status === 404) {
+            const response = JSON.parse(responseText)
 
-            var message = response.error
+            const message = response.error
 
             callback(new Error(message))
         } else if (status === 200) {
-            var response = xhr.responseText
+            const response = responseText
 
-            var user = JSON.parse(response)
+            const user = JSON.parse(response)
 
             callback(null, user)
         }
@@ -137,27 +134,27 @@ function updateUserPassword(token, oldPassword, password, callback) {
     if (typeof token !== 'string') throw new TypeError(token + ' is not a string')
     if (!/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)$/.test(token)) throw new Error('invalid token')
 
-    if (typeof oldPassword !== 'string')  throw new TypeError(oldPassword + ' is not a string')
+    if (typeof oldPassword !== 'string') throw new TypeError(oldPassword + ' is not a string')
     if (!oldPassword.trim().length) throw new Error('oldPassword is empty or blank')
     if (/\r?\n|\r|\t| /g.test(oldPassword)) throw new Error('oldPassword has blank spaces')
     if (oldPassword.length < 6) throw new Error('oldPassword has less than 6 characters')
-    
-    if (typeof password !== 'string')  throw new TypeError(password + ' is not a string')
+
+    if (typeof password !== 'string') throw new TypeError(password + ' is not a string')
     if (!password.trim().length) throw new Error('password is empty or blank')
     if (/\r?\n|\r|\t| /g.test(password)) throw new Error('password has blank spaces')
     if (password.length < 6) throw new Error('password has less than 6 characters')
-    
-    if (typeof callback !== 'function') throw new TypeError(callback + ' is not a function')
-    
-    var xhr = new XMLHttpRequest
 
-    xhr.onload = function () {
-        var status = xhr.status
+    if (typeof callback !== 'function') throw new TypeError(callback + ' is not a function')
+
+    const xhr = new XMLHttpRequest
+
+    xhr.onload = () => {
+        const { status, responseText } = xhr
 
         if (status === 400 || status === 401) {
-            var response = JSON.parse(xhr.responseText)
+            const response = JSON.parse(responseText)
 
-            var message = response.error
+            const message = response.error
 
             callback(new Error(message))
         } else if (status === 204) {
@@ -171,7 +168,7 @@ function updateUserPassword(token, oldPassword, password, callback) {
 
     xhr.setRequestHeader('Content-Type', 'application/json')
 
-    var body = { oldPassword: oldPassword, password: password }
+    const body = { oldPassword, password }
 
     xhr.send(JSON.stringify(body))
 }
@@ -180,23 +177,23 @@ function updateUserPassword(token, oldPassword, password, callback) {
 function unregisterUser(token, password, callback) {
     if (typeof token !== 'string') throw new TypeError(token + ' is not a string')
     if (!/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)$/.test(token)) throw new Error('invalid token')
-    
-    if (typeof password !== 'string')  throw new TypeError(password + ' is not a string')
+
+    if (typeof password !== 'string') throw new TypeError(password + ' is not a string')
     if (!password.trim().length) throw new Error('password is empty or blank')
     if (/\r?\n|\r|\t| /g.test(password)) throw new Error('password has blank spaces')
     if (password.length < 6) throw new Error('password has less than 6 characters')
-    
+
     if (typeof callback !== 'function') throw new TypeError(callback + ' is not a function')
 
-    var xhr = new XMLHttpRequest
+    const xhr = new XMLHttpRequest
 
-    xhr.onload = function () {
-        var status = xhr.status
+    xhr.onload = () => {
+        const { status, responseText } = xhr
 
         if (status === 400 || status === 401) {
-            var response = JSON.parse(xhr.responseText)
+            const response = JSON.parse(responseText)
 
-            var message = response.error
+            const message = response.error
 
             callback(new Error(message))
         } else if (status === 204) {
@@ -210,7 +207,7 @@ function unregisterUser(token, password, callback) {
 
     xhr.setRequestHeader('Content-Type', 'application/json')
 
-    var body = { password: password }
+    const body = { password }
 
     xhr.send(JSON.stringify(body))
 }
@@ -219,13 +216,13 @@ function unregisterUser(token, password, callback) {
 function searchVehicles(query, callback) {
     if (typeof query !== 'string') throw new TypeError(query + ' is not a string')
 
-    var xhr = new XMLHttpRequest
+    const xhr = new XMLHttpRequest
 
-    xhr.onload = function () {
-        var status = xhr.status
+    xhr.onload = () => {
+        const { status, responseText } = xhr
 
         if (status === 200) {
-            var vehicles = JSON.parse(xhr.responseText)
+            const vehicles = JSON.parse(responseText)
 
             callback(null, vehicles)
         }
@@ -240,13 +237,13 @@ function searchVehicles(query, callback) {
 function retrieveVehicle(id, callback) {
     if (typeof id !== 'string') throw new TypeError(id + ' is not a string')
 
-    var xhr = new XMLHttpRequest
+    const xhr = new XMLHttpRequest
 
-    xhr.onload = function () {
-        var status = xhr.status
+    xhr.onload = () => {
+        const { status, responseText } = xhr
 
         if (status === 200) {
-            var vehicles = JSON.parse(xhr.responseText)
+            const vehicles = JSON.parse(responseText)
 
             if (!vehicles) return callback(new Error('no vehicle found with id ' + id))
 
@@ -257,4 +254,14 @@ function retrieveVehicle(id, callback) {
     xhr.open('GET', 'https://b00tc4mp.herokuapp.com/api/hotwheels/vehicles/' + id)
 
     xhr.send()
+}
+
+export {
+    signinUser,
+    signupUser,
+    retrieveUser,
+    updateUserPassword,
+    unregisterUser,
+    searchVehicles,
+    retrieveVehicle
 }

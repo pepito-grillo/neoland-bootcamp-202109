@@ -1,17 +1,14 @@
-// function SignUp(props) {
-function SignUp({ onSignUp, onSignIn }) {
+function SignUp(props) {
     logger.info('SignUp -> render')
-
+    
     return <form className="signup container container--vertical container--gapped" onSubmit={event => {
         event.preventDefault()
 
-        // const name = event.target.name.value
-        // const username = event.target.username.value
-        // const password = event.target.password.value
-        const { target: { name: { value: name }, username: { value: username }, password: { value: password } } } = event
+        const name = event.target.name.value
+        const username = event.target.username.value
+        const password = event.target.password.value
 
-        // props.onSignUp(name, username, password)
-        onSignUp(name, username, password)
+        props.onSignUp(name, username, password)
     }}>
         <input className="field" type="text" name="name" id="name" placeholder="name" />
         <input className="field" type="text" name="username" id="username" placeholder="username" />
@@ -21,8 +18,7 @@ function SignUp({ onSignUp, onSignIn }) {
             <button className="button button--medium" onClick={event => {
                 event.preventDefault()
 
-                // props.onSignIn()                
-                onSignIn()
+                props.onSignIn()                
             }}>Sign in</button>
             <button className="button button--medium button--dark">Sign up</button>
         </div>

@@ -1,6 +1,4 @@
-const { Component } = React
-
-class Profile extends Component {
+class Profile extends React.Component {
     constructor() {
         logger.info('Profile -> constructor')
 
@@ -16,18 +14,15 @@ class Profile extends Component {
     render() {
         logger.info('Profile -> render')
 
-        const { props: { onPasswordUpdate, onBack, onUnregister }, state: { view }, goToUnregister, goToUpdatePassword } = this
-
         return <>
             {this.state.view === 'update-password' && <div className="profile container container--vertical">
                 <form className="container container--vertical" onSubmit={event => {
                     event.preventDefault()
 
-                    // const oldPassword = event.target.oldPassword.value
-                    // const password = event.target.password.value
-                    const { target: { oldPassword: { value: oldPassword }, password: { value: password } } } = event
+                    const oldPassword = event.target.oldPassword.value
+                    const password = event.target.password.value
 
-                    onPasswordUpdate(oldPassword, password)
+                    this.props.onPasswordUpdate(oldPassword, password)
                 }}>
                     <input className="field" type="password" name="oldPassword" id="oldPassword" placeholder="old password" />
                     <input className="field" type="password" name="password" id="password" placeholder="new password" />
@@ -36,16 +31,16 @@ class Profile extends Component {
                         <button className="button button--medium" onClick={event => {
                             event.preventDefault()
 
-                            onBack()
+                            this.props.onBack()
                         }}>Go back</button>
                         <button className="button button--medium button--dark">Update</button>
                     </div>
                 </form>
 
-                <button className="button button--medium button--dark" onClick={goToUnregister}>Unregister</button>
+                <button className="button button--medium button--dark" onClick={this.goToUnregister}>Unregister</button>
             </div>}
 
-            {view === 'unregister' && <Unregister onBack={goToUpdatePassword} onUnregister={onUnregister} />}
+            {this.state.view === 'unregister' && <Unregister onBack={this.goToUpdatePassword} onUnregister={this.props.onUnregister} />}
         </>
     }
 }

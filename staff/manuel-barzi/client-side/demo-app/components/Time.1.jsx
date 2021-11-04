@@ -1,7 +1,7 @@
-class Time extends React.Component {
+class Time extends React.Component  {
     constructor() {
         logger.info('Time -> constructor')
-
+        
         super()
 
         this.state = { time: new Date }
@@ -12,7 +12,7 @@ class Time extends React.Component {
 
     componentDidMount() {
         logger.info('Time -> componentDidMount')
-
+        
         setInterval(() => this.setState({ time: new Date }), 1000)
         // this.setState({ time: new Date })
     }
@@ -20,8 +20,6 @@ class Time extends React.Component {
     render() {
         logger.info('Time -> render')
 
-        const { state: { time } } = this
-
-        return <time className="time container">{time.toLocaleTimeString()}</time>
+        return <time className="time container">{this.state.time.toLocaleTimeString()}</time>
     }
 }

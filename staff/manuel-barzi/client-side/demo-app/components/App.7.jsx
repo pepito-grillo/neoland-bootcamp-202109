@@ -1,6 +1,4 @@
-const { Component } = React
-
-class App extends Component {
+class App extends React.Component {
     constructor() {
         logger.info('App -> constructor')
 
@@ -16,16 +14,13 @@ class App extends Component {
     componentDidMount() {
         logger.info('App -> componentDidMount')
 
-        const { token } = sessionStorage
-        const { resetTokenAndGoToLanding } = this
-
-        if (token) {
+        if (sessionStorage.token) {
             try {
-                retrieveUser(token, (error, user) => {
+                retrieveUser(sessionStorage.token, (error, user) => {
                     if (error) {
                         alert(error.message)
 
-                        resetTokenAndGoToLanding()
+                        this.resetTokenAndGoToLanding()
 
                         return
                     }
@@ -38,14 +33,10 @@ class App extends Component {
                         spinner: false
                     })
                 })
-                //} catch (error) {
-            } catch ({ message }) {
-                // alert(error.message)
-                // const { message } = error
+            } catch (error) {
+                alert(error.message)
 
-                alert(message)
-
-                resetTokenAndGoToLanding()
+                this.resetTokenAndGoToLanding()
 
                 return
             }
@@ -70,16 +61,14 @@ class App extends Component {
     hideSpinner = () => this.setState({ spinner: false })
 
     signUp = (name, username, password) => {
-        const { showSpinner, hideSpinner } = this
-
-        showSpinner()
+        this.showSpinner()
 
         try {
             signupUser(name, username, password, error => {
                 if (error) {
                     alert(error.message)
 
-                    hideSpinner()
+                    this.hideSpinner()
 
                     return
                 }
@@ -89,24 +78,22 @@ class App extends Component {
                     spinner: false
                 })
             })
-        } catch ({ message }) {
-            alert(message)
+        } catch (error) {
+            alert(error.message)
 
-            hideSpinner()
+            this.hideSpinner()
         }
     }
 
     signIn = (username, password) => {
-        const { showSpinner, hideSpinner } = this
-
-        showSpinner()
+        this.showSpinner()
 
         try {
             signinUser(username, password, (error, token) => {
                 if (error) {
                     alert(error.message)
 
-                    hideSpinner()
+                    this.hideSpinner()
 
                     return
                 }
@@ -114,16 +101,16 @@ class App extends Component {
                 sessionStorage.token = token
 
                 try {
-                    retrieveUser(token, (error, user) => {
+                    retrieveUser(sessionStorage.token, (error, user) => {
                         if (error) {
                             alert(error.message)
 
-                            hideSpinner()
+                            this.hideSpinner()
 
                             return
                         }
 
-                        const { name } = user
+                        var name = user.name
 
                         this.setState({
                             view: 'home',
@@ -131,48 +118,46 @@ class App extends Component {
                             spinner: false
                         })
                     })
-                } catch ({ message }) {
-                    alert(message)
+                } catch (error) {
+                    alert(error.message)
 
-                    hideSpinner()
+                    this.hideSpinner()
                 }
             })
-        } catch ({ message }) {
-            alert(message)
+        } catch (error) {
+            alert(error.message)
 
-            hideSpinner()
+            this.hideSpinner()
         }
     }
 
     render() {
         logger.info('App -> render')
 
-        const { goToSignIn, goToSignUp, signUp, signIn, resetTokenAndGoToLanding, showSpinner, hideSpinner, state: { view, name, spinner } } = this
-
         return <>
             <Logo image="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Flat_tick_icon.svg/1200px-Flat_tick_icon.svg.png" text="Demo App" />
-            <Time />
+            {/* <Time /> */}
 
-            {view === 'landing' && <Landing
-                onSignIn={goToSignIn}
-                onSignUp={goToSignUp}
+            {this.state.view === 'landing' && <Landing
+                onSignIn={this.goToSignIn}
+                onSignUp={this.goToSignUp}
             />}
 
-            {view === 'signup' && <SignUp onSignUp={signUp} onSignIn={goToSignIn} />}
+            {this.state.view === 'signup' && <SignUp onSignUp={this.signUp} onSignIn={this.goToSignIn} />}
 
-            {view === 'post-signup' && <PostSignUp onSignIn={goToSignIn} />}
+            {this.state.view === 'post-signup' && <PostSignUp onSignIn={this.goToSignIn} />}
 
-            {view === 'signin' && <SignIn onSignIn={signIn} onSignUp={goToSignUp} />}
+            {this.state.view === 'signin' && <SignIn onSignIn={this.signIn} onSignUp={this.goToSignUp} />}
 
-            {view === 'home' &&
+            {this.state.view === 'home' &&
                 <Home
-                    name={name}
-                    onSignOut={resetTokenAndGoToLanding}
-                    onFlowStart={showSpinner}
-                    onFlowEnd={hideSpinner}
+                    name={this.state.name}
+                    onSignOut={this.resetTokenAndGoToLanding}
+                    onFlowStart={this.showSpinner}
+                    onFlowEnd={this.hideSpinner}
                 />}
 
-            {spinner && <Spinner />}
+            {this.state.spinner && <Spinner />}
         </>
     }
 }

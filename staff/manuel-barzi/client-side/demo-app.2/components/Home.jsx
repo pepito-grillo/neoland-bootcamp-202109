@@ -3,7 +3,7 @@ const { Component } = React
 
 class Home extends Component {
     constructor() {
-        logger.info('Home -> constructor')
+        logger.debug('Home -> constructor')
 
         super()
 
@@ -127,7 +127,7 @@ class Home extends Component {
     }
 
     render() {
-        logger.info('Home -> render')
+        logger.debug('Home -> render')
 
         const { state: { view, vehicle, vehicles }, props: { name, onSignOut }, goToProfile, goToItem, clearVehicle, updatePassword, goToSearch, search, unregister } = this
 

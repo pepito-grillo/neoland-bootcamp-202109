@@ -1,11 +1,12 @@
-// function Logo(props) {
-function Logo({ image, text }) {
-    logger.info('Logo -> render')
+import logger from '../logger'
 
-    // const { image, text } = props
+function Logo({ image, text }) {
+    logger.debug('Logo -> render')
 
     return <div className="logo container">
         <img className="logo__image" src={image} />
         <h1 className="logo__text">{text}</h1>
     </div>
 }
+
+export default Logo

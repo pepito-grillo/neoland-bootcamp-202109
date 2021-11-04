@@ -1,5 +1,5 @@
 function Profile(props) {
-    logger.info('Profile -> render')
+    logger.debug('Profile -> render')
 
     return <div className="profile container container--vertical">
         <form className="container container--vertical" onSubmit={event => {

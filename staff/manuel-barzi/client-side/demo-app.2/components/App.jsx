@@ -2,7 +2,7 @@ const { Component } = React
 
 class App extends Component {
     constructor() {
-        logger.info('App -> constructor')
+        logger.debug('App -> constructor')
 
         super()
 
@@ -14,7 +14,7 @@ class App extends Component {
     }
 
     componentDidMount() {
-        logger.info('App -> componentDidMount')
+        logger.debug('App -> componentDidMount')
 
         const { token } = sessionStorage
         const { resetTokenAndGoToLanding } = this
@@ -145,7 +145,7 @@ class App extends Component {
     }
 
     render() {
-        logger.info('App -> render')
+        logger.debug('App -> render')
 
         const { goToSignIn, goToSignUp, signUp, signIn, resetTokenAndGoToLanding, showSpinner, hideSpinner, state: { view, name, spinner } } = this
 

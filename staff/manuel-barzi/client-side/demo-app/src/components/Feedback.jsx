@@ -1,5 +1,14 @@
+import logger from '../logger.js'
+
 function Feedback({ level, message, onAccept }) {
-    logger.info('Feedback -> render')
+    logger.debug('Feedback -> render')
+
+    if (level === 'success')
+        logger.info(message)
+    else if (level === 'warn')
+        logger.warn(message)
+    else if (level === 'error')
+        logger.error(message)
 
     const className = `feedback__text ${level ? `feedback__text--${level}` : ''}`
 
@@ -10,3 +19,5 @@ function Feedback({ level, message, onAccept }) {
         </div>
     </div>
 }
+
+export default Feedback

@@ -2,7 +2,7 @@ const { Component } = React
 
 class App extends Component {
     constructor() {
-        logger.info('App -> constructor')
+        logger.debug('App -> constructor')
 
         super()
 
@@ -10,12 +10,13 @@ class App extends Component {
             view: sessionStorage.token ? '' : 'landing',
             name: null,
             spinner: sessionStorage.token ? true : false,
-            feedback: null
+            feedback: null,
+            level: 'error'
         }
     }
 
     componentDidMount() {
-        logger.info('App -> componentDidMount')
+        logger.debug('App -> componentDidMount')
 
         const { token } = sessionStorage
         const { resetTokenAndGoToLanding } = this
@@ -44,7 +45,7 @@ class App extends Component {
                 // alert(error.message)
                 // const { message } = error
 
-                alert(message)
+                showFeedback(message, 'warn')
 
                 resetTokenAndGoToLanding()
 
@@ -71,16 +72,16 @@ class App extends Component {
     hideSpinner = () => this.setState({ spinner: false })
 
     signUp = (name, username, password) => {
-        const { showSpinner, hideSpinner } = this
+        const { showSpinner, hideSpinner, showFeedback } = this
 
         showSpinner()
 
         try {
             signupUser(name, username, password, error => {
                 if (error) {
-                    alert(error.message)
-
                     hideSpinner()
+                    
+                    showFeedback(error.message)
 
                     return
                 }
@@ -91,25 +92,23 @@ class App extends Component {
                 })
             })
         } catch ({ message }) {
-            alert(message)
-
             hideSpinner()
+            
+            showFeedback(message, 'warn')
         }
     }
 
     signIn = (username, password) => {
-        const { showSpinner, hideSpinner } = this
+        const { showSpinner, hideSpinner, showFeedback } = this
 
         showSpinner()
 
         try {
             signinUser(username, password, (error, token) => {
                 if (error) {
-                    //alert(error.message)
-
                     hideSpinner()
 
-                    this.setState({ feedback: error.message })
+                    showFeedback(error.message)
 
                     return
                 }
@@ -119,9 +118,9 @@ class App extends Component {
                 try {
                     retrieveUser(token, (error, user) => {
                         if (error) {
-                            alert(error.message)
-
                             hideSpinner()
+
+                            showFeedback(error.message)
 
                             return
                         }
@@ -135,24 +134,26 @@ class App extends Component {
                         })
                     })
                 } catch ({ message }) {
-                    alert(message)
-
                     hideSpinner()
+                    
+                    showFeedback(message, 'warn')
                 }
             })
         } catch ({ message }) {
-            alert(message)
-
             hideSpinner()
+            
+            showFeedback(message, 'warn')
         }
     }
 
     acceptFeedback = () => this.setState({ feedback: null })
 
-    render() {
-        logger.info('App -> render')
+    showFeedback = (message, level = 'error') => this.setState({ feedback: message, level })  
 
-        const { goToSignIn, goToSignUp, signUp, signIn, resetTokenAndGoToLanding, showSpinner, hideSpinner, acceptFeedback, state: { view, name, spinner, feedback } } = this
+    render() {
+        logger.debug('App -> render')
+
+        const { goToSignIn, goToSignUp, signUp, signIn, resetTokenAndGoToLanding, showSpinner, hideSpinner, acceptFeedback, showFeedback, state: { view, name, spinner, feedback, level } } = this
 
         return <>
             <Logo image="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Flat_tick_icon.svg/1200px-Flat_tick_icon.svg.png" text="Demo App" />
@@ -175,11 +176,12 @@ class App extends Component {
                     onSignOut={resetTokenAndGoToLanding}
                     onFlowStart={showSpinner}
                     onFlowEnd={hideSpinner}
+                    onFeedback={showFeedback}
                 />}
 
             {spinner && <Spinner />}
 
-            {feedback && <Feedback level="error" message={feedback} onAccept={acceptFeedback} />}
+            {feedback && <Feedback level={level} message={feedback} onAccept={acceptFeedback} />}
         </>
     }
 }

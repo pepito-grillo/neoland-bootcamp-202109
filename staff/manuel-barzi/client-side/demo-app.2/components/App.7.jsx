@@ -1,6 +1,6 @@
 class App extends React.Component {
     constructor() {
-        logger.info('App -> constructor')
+        logger.debug('App -> constructor')
 
         super()
 
@@ -12,7 +12,7 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        logger.info('App -> componentDidMount')
+        logger.debug('App -> componentDidMount')
 
         if (sessionStorage.token) {
             try {
@@ -132,7 +132,7 @@ class App extends React.Component {
     }
 
     render() {
-        logger.info('App -> render')
+        logger.debug('App -> render')
 
         return <>
             <Logo image="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Flat_tick_icon.svg/1200px-Flat_tick_icon.svg.png" text="Demo App" />

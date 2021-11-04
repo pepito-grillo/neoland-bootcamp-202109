@@ -3,7 +3,7 @@ const { Component } = React
 
 class Home extends Component {
     constructor() {
-        logger.info('Home -> constructor')
+        logger.debug('Home -> constructor')
 
         super()
 
@@ -17,7 +17,7 @@ class Home extends Component {
     search = query => {
         // const onFlowStart = this.props.onFlowStart
         // const onFlowEnd = this.props.onFlowEnd
-        const { props: { onFlowStart, onFlowEnd } } = this
+        const { props: { onFlowStart, onFlowEnd, onFeedback } } = this
 
         onFlowStart()
 
@@ -26,9 +26,9 @@ class Home extends Component {
         try {
             searchVehicles(query, (error, vehicles) => {
                 if (error) {
-                    alert(error.message)
-
                     onFlowEnd()
+
+                    onFeedback(error.message)
 
                     return
                 }
@@ -37,24 +37,24 @@ class Home extends Component {
 
                 onFlowEnd()
             })
-        } catch (error) {
-            alert(error.message)
-
+        } catch ({ message }) {
             onFlowEnd()
+
+            onFeedback(message, 'warn')
         }
     }
 
     goToItem = vehicleId => {
-        const { props: { onFlowStart, onFlowEnd } } = this
+        const { props: { onFlowStart, onFlowEnd, onFeedback } } = this
 
         onFlowStart()
 
         try {
             retrieveVehicle(vehicleId, (error, vehicle) => {
                 if (error) {
-                    alert(error.message)
-
                     onFlowEnd()
+
+                    onFeedback(error.message)
 
                     return
                 }
@@ -63,10 +63,10 @@ class Home extends Component {
 
                 onFlowEnd()
             })
-        } catch (error) {
-            alert(error.message)
-
+        } catch ({ message }) {
             onFlowEnd()
+
+            onFeedback(message, 'warn')
         }
     }
 
@@ -77,57 +77,63 @@ class Home extends Component {
     goToSearch = () => this.setState({ view: 'search' })
 
     updatePassword = (oldPassword, password) => {
-        const { props: { onFlowStart, onFlowEnd } } = this
+        const { props: { onFlowStart, onFlowEnd, onFeedback } } = this
 
         onFlowStart()
 
         try {
             updateUserPassword(sessionStorage.token, oldPassword, password, error => {
                 if (error) {
-                    alert(error.message)
-
                     onFlowEnd()
+
+                    onFeedback(error.message)
 
                     return
                 }
 
                 onFlowEnd()
-            })
-        } catch (error) {
-            alert(error.message)
 
+                onFeedback('Password updated', 'success')
+            })
+        } catch ({ message }) {
             onFlowEnd()
+
+            onFeedback(message, 'warn')
         }
     }
 
     unregister = password => {
-        const { props: { onFlowStart, onFlowEnd, onSignOut } } = this
+        const { props: { onFlowStart, onFlowEnd, onSignOut, onFeedback } } = this
 
         onFlowStart()
 
         try {
             unregisterUser(sessionStorage.token, password, error => {
                 if (error) {
-                    alert(error.message)
-
                     onFlowEnd()
+
+                    onFeedback(error.message)
 
                     return
                 }
 
+                logger.info('User unregistered')
+
                 onFlowEnd()
+
+                onFeedback('User unregistered', 'success')
 
                 onSignOut()
             })
-        } catch (error) {
-            alert(error.message)
-
+        } catch ({ message }) {
             onFlowEnd()
+
+            onFeedback(message, 'warn')
         }
     }
 
     render() {
-        logger.info('Home -> render')
+        logger.debug('Home -> render')
 
         const { state: { view, vehicle, vehicles }, props: { name, onSignOut }, goToProfile, goToItem, clearVehicle, updatePassword, goToSearch, search, unregister } = this
 

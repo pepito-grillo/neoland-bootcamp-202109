@@ -1,6 +1,9 @@
-class Time extends React.Component {
+import { Component } from 'react'
+import logger from '../logger'
+
+class Time extends Component {
     constructor() {
-        logger.info('Time -> constructor')
+        logger.debug('Time -> constructor')
 
         super()
 
@@ -11,17 +14,19 @@ class Time extends React.Component {
     }
 
     componentDidMount() {
-        logger.info('Time -> componentDidMount')
+        logger.debug('Time -> componentDidMount')
 
         setInterval(() => this.setState({ time: new Date }), 1000)
         // this.setState({ time: new Date })
     }
 
     render() {
-        logger.info('Time -> render')
+        // logger.debug('Time -> render')
 
         const { state: { time } } = this
 
         return <time className="time container">{time.toLocaleTimeString()}</time>
     }
 }
+
+export default Time

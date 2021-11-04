@@ -1,6 +1,6 @@
 class Profile extends React.Component {
     constructor() {
-        logger.info('Profile -> constructor')
+        logger.debug('Profile -> constructor')
 
         super()
 
@@ -12,7 +12,7 @@ class Profile extends React.Component {
     goToUpdatePassword = () => this.setState({ view: 'update-password' })
 
     render() {
-        logger.info('Profile -> render')
+        logger.debug('Profile -> render')
 
         return <>
             {this.state.view === 'update-password' && <div className="profile container container--vertical">

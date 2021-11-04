@@ -1,6 +1,6 @@
 // function SignUp(props) {
 function SignUp({ onSignUp, onSignIn }) {
-    logger.info('SignUp -> render')
+    logger.debug('SignUp -> render')
 
     return <form className="signup container container--vertical container--gapped" onSubmit={event => {
         event.preventDefault()

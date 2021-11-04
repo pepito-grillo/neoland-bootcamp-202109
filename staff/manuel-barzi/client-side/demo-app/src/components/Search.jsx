@@ -1,5 +1,7 @@
+import logger from '../logger'
+
 function Search({ onSearch }) {
-    logger.info('Search -> render')
+    logger.debug('Search -> render')
 
     return <form className="home__search container" onSubmit={event => {
         event.preventDefault()
@@ -12,3 +14,5 @@ function Search({ onSearch }) {
         <button className="button button--medium button--dark">Search</button>
     </form>
 }
+
+export default Search

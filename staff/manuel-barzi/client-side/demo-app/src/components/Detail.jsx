@@ -1,5 +1,7 @@
+import logger from '../logger'
+
 function Detail({ item: { name, image, year, price, color, style, collection, maker, url }, onBack }) {
-    logger.info('Detail -> render')
+    logger.debug('Detail -> render')
 
     return <div className="home__detail container container--vertical">
         <h2>{name}</h2><button className="button button-medium button" onClick={onBack}>Back</button>
@@ -14,3 +16,5 @@ function Detail({ item: { name, image, year, price, color, style, collection, ma
         <a href={url}>original</a>
     </div>
 }
+
+export default Detail

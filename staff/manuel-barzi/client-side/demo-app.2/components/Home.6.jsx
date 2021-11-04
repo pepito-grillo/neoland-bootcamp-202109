@@ -1,6 +1,6 @@
 class Home extends React.Component {
     constructor() {
-        logger.info('Home -> constructor')
+        logger.debug('Home -> constructor')
 
         super()
 
@@ -102,7 +102,7 @@ class Home extends React.Component {
     }
 
     render() {
-        logger.info('Home -> render')
+        logger.debug('Home -> render')
 
         return <div className="home container container--gapped container--vertical">
             <div className="container">

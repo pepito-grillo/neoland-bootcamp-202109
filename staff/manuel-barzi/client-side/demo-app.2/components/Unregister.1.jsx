@@ -1,5 +1,5 @@
 function Unregister(props) {
-    logger.info('Unregister -> render')
+    logger.debug('Unregister -> render')
 
     return <div className="unregister container container--vertical">
         <form className="container container--vertical" onSubmit={event => {

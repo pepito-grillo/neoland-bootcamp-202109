@@ -1,5 +1,7 @@
+import logger from '../logger'
+
 function Unregister({ onUnregister, onBack }) {
-    logger.info('Unregister -> render')
+    logger.debug('Unregister -> render')
 
     return <div className="unregister container container--vertical">
         <form className="container container--vertical" onSubmit={event => {
@@ -23,3 +25,5 @@ function Unregister({ onUnregister, onBack }) {
         </form>
     </div>
 }
+
+export default Unregister

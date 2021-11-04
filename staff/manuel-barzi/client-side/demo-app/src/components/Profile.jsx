@@ -1,8 +1,10 @@
-const { Component } = React
+import { Component } from 'react'
+import logger from '../logger'
+import Unregister from './Unregister'
 
 class Profile extends Component {
     constructor() {
-        logger.info('Profile -> constructor')
+        logger.debug('Profile -> constructor')
 
         super()
 
@@ -14,7 +16,7 @@ class Profile extends Component {
     goToUpdatePassword = () => this.setState({ view: 'update-password' })
 
     render() {
-        logger.info('Profile -> render')
+        logger.debug('Profile -> render')
 
         const { props: { onPasswordUpdate, onBack, onUnregister }, state: { view }, goToUnregister, goToUpdatePassword } = this
 
@@ -49,3 +51,5 @@ class Profile extends Component {
         </>
     }
 }
+
+export default Profile

@@ -9,8 +9,7 @@ class App extends Component {
         this.state = {
             view: sessionStorage.token ? '' : 'landing',
             name: null,
-            spinner: sessionStorage.token ? true : false,
-            feedback: null
+            spinner: sessionStorage.token ? true : false
         }
     }
 
@@ -105,11 +104,9 @@ class App extends Component {
         try {
             signinUser(username, password, (error, token) => {
                 if (error) {
-                    //alert(error.message)
+                    alert(error.message)
 
                     hideSpinner()
-
-                    this.setState({ feedback: error.message })
 
                     return
                 }
@@ -147,12 +144,10 @@ class App extends Component {
         }
     }
 
-    acceptFeedback = () => this.setState({ feedback: null })
-
     render() {
         logger.info('App -> render')
 
-        const { goToSignIn, goToSignUp, signUp, signIn, resetTokenAndGoToLanding, showSpinner, hideSpinner, acceptFeedback, state: { view, name, spinner, feedback } } = this
+        const { goToSignIn, goToSignUp, signUp, signIn, resetTokenAndGoToLanding, showSpinner, hideSpinner, state: { view, name, spinner } } = this
 
         return <>
             <Logo image="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Flat_tick_icon.svg/1200px-Flat_tick_icon.svg.png" text="Demo App" />
@@ -178,8 +173,6 @@ class App extends Component {
                 />}
 
             {spinner && <Spinner />}
-
-            {feedback && <Feedback level="error" message={feedback} onAccept={acceptFeedback} />}
         </>
     }
 }

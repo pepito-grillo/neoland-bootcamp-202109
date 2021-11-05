@@ -13,7 +13,6 @@ import Results from './Results'
 import Detail from './Detail'
 import Profile from './Profile'
 import Favs from './Favs'
-import './Home.css'
 
 class Home extends Component {
     constructor() {

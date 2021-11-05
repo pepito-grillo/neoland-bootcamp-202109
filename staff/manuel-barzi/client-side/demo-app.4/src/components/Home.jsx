@@ -1,19 +1,13 @@
 import { Component } from 'react'
 import logger from '../logger'
-import {
-    searchVehicles,
-    retrieveVehicle,
-    updateUserPassword,
-    unregisterUser,
-    toggleFavVehicle,
-    retrieveFavVehicles
-} from '../logic'
+import { searchVehicles } from '../logic'
+import { retrieveVehicle } from '../logic'
+import { updateUserPassword } from '../logic'
+import { unregisterUser } from '../logic'
 import Search from './Search'
 import Results from './Results'
 import Detail from './Detail'
 import Profile from './Profile'
-import Favs from './Favs'
-import './Home.css'
 
 class Home extends Component {
     constructor() {
@@ -24,9 +18,7 @@ class Home extends Component {
         this.state = {
             vehicles: [],
             vehicle: null,
-            view: 'search',
-            favs: [],
-            query: null
+            view: 'search'
         }
     }
 
@@ -37,7 +29,7 @@ class Home extends Component {
 
         onFlowStart()
 
-        this.setState({ vehicle: null, vehicles: [], query })
+        this.setState({ vehicle: null, vehicles: [] })
 
         try {
             searchVehicles(query, (error, vehicles) => {
@@ -66,7 +58,7 @@ class Home extends Component {
         onFlowStart()
 
         try {
-            retrieveVehicle(sessionStorage.token, vehicleId, (error, vehicle) => {
+            retrieveVehicle(vehicleId, (error, vehicle) => {
                 if (error) {
                     onFlowEnd()
 
@@ -148,94 +140,29 @@ class Home extends Component {
         }
     }
 
-    toggleFav = id => {
-        const { props: { onFlowStart, onFlowEnd, onFeedback } } = this
-
-        onFlowStart()
-
-        try {
-            toggleFavVehicle(sessionStorage.token, id, error => {
-                if (error) {
-                    onFlowEnd()
-
-                    onFeedback(error.message)
-
-                    return
-                }
-
-                onFlowEnd()
-            })
-        } catch ({ message }) {
-            onFlowEnd()
-
-            onFeedback(message, 'warn')
-        }
-    }
-
-    goToFavs = () => {
-        const { props: { onFlowStart, onFlowEnd, onFeedback } } = this
-
-        onFlowStart()
-
-        try {
-            retrieveFavVehicles(sessionStorage.token, (error, favs) => {
-                if (error) {
-                    onFlowEnd()
-
-                    onFeedback(error.message)
-
-                    return
-                }
-
-                onFlowEnd()
-
-                this.setState({ view: 'favs', favs })
-            })
-        } catch ({ message }) {
-            onFlowEnd()
-
-            onFeedback(message, 'warn')
-        }
-    }
-
     render() {
         logger.debug('Home -> render')
 
-        const {
-            state: { view, vehicle, vehicles, favs, query },
-            props: { name, onSignOut },
-            goToProfile,
-            goToItem,
-            clearVehicle,
-            updatePassword,
-            goToSearch,
-            search,
-            unregister,
-            toggleFav,
-            goToFavs
-        } = this
+        const { state: { view, vehicle, vehicles }, props: { name, onSignOut }, goToProfile, goToItem, clearVehicle, updatePassword, goToSearch, search, unregister } = this
 
         return <div className="home container container--gapped container--vertical">
             <div className="container">
                 <p>Hello, <span className="name">{name ? name : 'World'}</span>!</p>
                 <button className="button button-medium button--dark" onClick={goToProfile}>Profile</button>
-                <button className="button button-medium button--dark" onClick={goToFavs}>Favs</button>
                 <button className="button button-medium button" onClick={onSignOut}>Sign out</button>
             </div>
 
             {
                 view === 'search' && <>
-                    <Search onSearch={search} query={query} />
+                    <Search onSearch={search} />
 
                     {!vehicle && <Results items={vehicles} onItem={goToItem} />}
 
-                    {vehicle && <Detail item={vehicle} onBack={clearVehicle} onToggleFav={toggleFav} />}
+                    {vehicle && <Detail item={vehicle} onBack={clearVehicle} />}
                 </>
             }
 
             {view === 'profile' && <Profile onBack={goToSearch} onPasswordUpdate={updatePassword} onUnregister={unregister} />}
-
-            {view === 'favs' && <Favs items={favs} onBack={goToSearch} />}
         </div>
     }
 }

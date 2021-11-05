@@ -6,9 +6,9 @@ function Results({ items, onItem }) {
     return items.length ?
         <ul className="home__results container container--vertical">
             {
-                items.map(({ id, name, thumbnail, image, price }) => <li className="home__result" onClick={() => onItem(id)}>
+                items.map(({ id, name, thumbnail, price }) => <li className="home__result" onClick={() => onItem(id)}>
                     <h2>{name}</h2>
-                    <img src={thumbnail || image} />
+                    <img src={thumbnail} />
                     <span>{price}</span>
                 </li>)
             }

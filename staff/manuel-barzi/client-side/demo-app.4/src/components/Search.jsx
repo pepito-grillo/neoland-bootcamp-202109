@@ -1,6 +1,6 @@
 import logger from '../logger'
 
-function Search({ onSearch, query }) {
+function Search({ onSearch }) {
     logger.debug('Search -> render')
 
     return <form className="home__search container" onSubmit={event => {
@@ -10,7 +10,7 @@ function Search({ onSearch, query }) {
 
         onSearch(query)
     }}>
-        <input className="field" type="text" placeholder="criteria" name="query" defaultValue={query} />
+        <input className="field" type="text" placeholder="criteria" name="query" />
         <button className="button button--medium button--dark">Search</button>
     </form>
 }

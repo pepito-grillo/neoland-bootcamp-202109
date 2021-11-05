@@ -1,5 +1,4 @@
 import logger from '../logger.js'
-import './Feedback.css'
 
 function Feedback({ level, message, onAccept }) {
     logger.debug('Feedback -> render')

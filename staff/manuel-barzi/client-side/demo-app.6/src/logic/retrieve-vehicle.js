@@ -19,6 +19,8 @@ function retrieveVehicle(token, id, callback) {
 
             const { favs = [] } = user
 
+            const isFav = favs.includes(id)
+
             const xhr2 = new XMLHttpRequest
 
             xhr2.onload = () => {
@@ -29,7 +31,7 @@ function retrieveVehicle(token, id, callback) {
 
                     if (!vehicle) return callback(new Error(`no vehicle found with id ${id}`))
 
-                    vehicle.isFav = favs.includes(vehicle.id)
+                    vehicle.isFav = isFav
 
                     callback(null, vehicle)
                 }

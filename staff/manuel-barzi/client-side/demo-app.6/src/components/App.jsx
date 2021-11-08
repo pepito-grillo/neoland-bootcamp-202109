@@ -190,9 +190,9 @@ class App extends Component {
                     onFeedback={showFeedback}
                 />}
 
-            {feedback && <Feedback level={level} message={feedback} onAccept={acceptFeedback} />}
-
             {spinner && <Spinner />}
+
+            {feedback && <Feedback level={level} message={feedback} onAccept={acceptFeedback} />}
         </>
     }
 }

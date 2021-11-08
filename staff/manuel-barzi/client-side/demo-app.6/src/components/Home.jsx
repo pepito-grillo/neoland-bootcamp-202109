@@ -40,7 +40,7 @@ class Home extends Component {
         this.setState({ vehicle: null, vehicles: [], query })
 
         try {
-            searchVehicles(sessionStorage.token, query, (error, vehicles) => {
+            searchVehicles(query, (error, vehicles) => {
                 if (error) {
                     onFlowEnd()
 
@@ -149,7 +149,7 @@ class Home extends Component {
     }
 
     toggleFav = id => {
-        const { props: { onFlowStart, onFlowEnd, onFeedback }, state: { vehicles, vehicle } } = this
+        const { props: { onFlowStart, onFlowEnd, onFeedback } } = this
 
         onFlowStart()
 
@@ -161,22 +161,6 @@ class Home extends Component {
                     onFeedback(error.message)
 
                     return
-                }
-
-                if (vehicle) {
-                    this.setState({ vehicle: { ...vehicle, isFav: !vehicle.isFav } })
-                }
-
-                if (vehicles.length) {
-                    this.setState({
-                        vehicles: vehicles.map(vehicle => {
-                            if (vehicle.id === id) {
-                                vehicle = { ...vehicle, isFav: !vehicle.isFav }
-                            }
-
-                            return vehicle
-                        })
-                    })
                 }
 
                 onFlowEnd()
@@ -243,7 +227,7 @@ class Home extends Component {
                 view === 'search' && <>
                     <Search onSearch={search} query={query} />
 
-                    {!vehicle && <Results items={vehicles} onItem={goToItem} onToggleFav={toggleFav} />}
+                    {!vehicle && <Results items={vehicles} onItem={goToItem} />}
 
                     {vehicle && <Detail item={vehicle} onBack={clearVehicle} onToggleFav={toggleFav} />}
                 </>

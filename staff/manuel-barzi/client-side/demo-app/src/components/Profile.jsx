@@ -1,55 +1,45 @@
-import { Component } from 'react'
+import { useState } from 'react'
 import logger from '../logger'
 import Unregister from './Unregister'
 
-class Profile extends Component {
-    constructor() {
-        logger.debug('Profile -> constructor')
+function Profile({ onPasswordUpdate, onBack, onUnregister }) {
+    logger.debug('Profile -> render')
 
-        super()
+    const [view, setView] = useState('update-password')
 
-        this.state = { view: 'update-password' }
-    }
+    const goToUnregister = () => setView('unregister')
 
-    goToUnregister = () => this.setState({ view: 'unregister' })
+    const goToUpdatePassword = () => setView('update-password')
 
-    goToUpdatePassword = () => this.setState({ view: 'update-password' })
+    return <>
+        {view === 'update-password' && <div className="profile container container--vertical">
+            <form className="container container--vertical" onSubmit={event => {
+                event.preventDefault()
 
-    render() {
-        logger.debug('Profile -> render')
+                // const oldPassword = event.target.oldPassword.value
+                // const password = event.target.password.value
+                const { target: { oldPassword: { value: oldPassword }, password: { value: password } } } = event
 
-        const { props: { onPasswordUpdate, onBack, onUnregister }, state: { view }, goToUnregister, goToUpdatePassword } = this
+                onPasswordUpdate(oldPassword, password)
+            }}>
+                <input className="field" type="password" name="oldPassword" id="oldPassword" placeholder="old password" />
+                <input className="field" type="password" name="password" id="password" placeholder="new password" />
 
-        return <>
-            {this.state.view === 'update-password' && <div className="profile container container--vertical">
-                <form className="container container--vertical" onSubmit={event => {
-                    event.preventDefault()
+                <div className="container">
+                    <button className="button button--medium" onClick={event => {
+                        event.preventDefault()
 
-                    // const oldPassword = event.target.oldPassword.value
-                    // const password = event.target.password.value
-                    const { target: { oldPassword: { value: oldPassword }, password: { value: password } } } = event
+                        onBack()
+                    }}>Go back</button>
+                    <button className="button button--medium button--dark">Update</button>
+                </div>
+            </form>
 
-                    onPasswordUpdate(oldPassword, password)
-                }}>
-                    <input className="field" type="password" name="oldPassword" id="oldPassword" placeholder="old password" />
-                    <input className="field" type="password" name="password" id="password" placeholder="new password" />
+            <button className="button button--medium button--dark" onClick={goToUnregister}>Unregister</button>
+        </div>}
 
-                    <div className="container">
-                        <button className="button button--medium" onClick={event => {
-                            event.preventDefault()
-
-                            onBack()
-                        }}>Go back</button>
-                        <button className="button button--medium button--dark">Update</button>
-                    </div>
-                </form>
-
-                <button className="button button--medium button--dark" onClick={goToUnregister}>Unregister</button>
-            </div>}
-
-            {view === 'unregister' && <Unregister onBack={goToUpdatePassword} onUnregister={onUnregister} />}
-        </>
-    }
+        {view === 'unregister' && <Unregister onBack={goToUpdatePassword} onUnregister={onUnregister} />}
+    </>
 }
 
 export default Profile

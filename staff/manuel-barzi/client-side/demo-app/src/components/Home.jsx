@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import { useState } from 'react'
 import logger from '../logger'
 import {
     searchVehicles,
@@ -15,29 +15,21 @@ import Profile from './Profile'
 import Favs from './Favs'
 import './Home.css'
 
-class Home extends Component {
-    constructor() {
-        logger.debug('Home -> constructor')
+function Home({ name, onFlowStart, onFlowEnd, onSignOut, onFeedback }) {
+    logger.debug('Home -> render')
 
-        super()
+    const [vehicles, setVehicles] = useState([])
+    const [vehicle, setVehicle] = useState(null)
+    const [view, setView] = useState('search')
+    const [favs, setFavs] = useState([])
+    const [query, setQuery] = useState(null)
 
-        this.state = {
-            vehicles: [],
-            vehicle: null,
-            view: 'search',
-            favs: [],
-            query: null
-        }
-    }
-
-    search = query => {
-        // const onFlowStart = this.props.onFlowStart
-        // const onFlowEnd = this.props.onFlowEnd
-        const { props: { onFlowStart, onFlowEnd, onFeedback } } = this
-
+    const search = query => {
         onFlowStart()
 
-        this.setState({ vehicle: null, vehicles: [], query })
+        setVehicle(null)
+        setVehicles([])
+        setQuery(query)
 
         try {
             searchVehicles(sessionStorage.token, query, (error, vehicles) => {
@@ -49,7 +41,7 @@ class Home extends Component {
                     return
                 }
 
-                this.setState({ vehicles })
+                setVehicles(vehicles)
 
                 onFlowEnd()
             })
@@ -60,9 +52,7 @@ class Home extends Component {
         }
     }
 
-    goToItem = vehicleId => {
-        const { props: { onFlowStart, onFlowEnd, onFeedback } } = this
-
+    const goToItem = vehicleId => {
         onFlowStart()
 
         try {
@@ -75,7 +65,8 @@ class Home extends Component {
                     return
                 }
 
-                this.setState({ vehicle })
+                setVehicle(vehicle)
+                setView('search')
 
                 onFlowEnd()
             })
@@ -86,15 +77,13 @@ class Home extends Component {
         }
     }
 
-    clearVehicle = () => this.setState({ vehicle: null })
+    const clearVehicle = () => setVehicle(null)
 
-    goToProfile = () => this.setState({ view: 'profile' })
+    const goToProfile = () => setView('profile')
 
-    goToSearch = () => this.setState({ view: 'search' })
+    const goToSearch = () => setView('search')
 
-    updatePassword = (oldPassword, password) => {
-        const { props: { onFlowStart, onFlowEnd, onFeedback } } = this
-
+    const updatePassword = (oldPassword, password) => {
         onFlowStart()
 
         try {
@@ -118,9 +107,7 @@ class Home extends Component {
         }
     }
 
-    unregister = password => {
-        const { props: { onFlowStart, onFlowEnd, onSignOut, onFeedback } } = this
-
+    const unregister = password => {
         onFlowStart()
 
         try {
@@ -148,9 +135,7 @@ class Home extends Component {
         }
     }
 
-    toggleFav = id => {
-        const { props: { onFlowStart, onFlowEnd, onFeedback }, state: { vehicles, vehicle } } = this
-
+    const toggleFav = id => {
         onFlowStart()
 
         try {
@@ -163,21 +148,20 @@ class Home extends Component {
                     return
                 }
 
-                if (vehicle) {
-                    this.setState({ vehicle: { ...vehicle, isFav: !vehicle.isFav } })
-                }
+                if (vehicle)
+                    setVehicle({ ...vehicle, isFav: !vehicle.isFav })
 
-                if (vehicles.length) {
-                    this.setState({
-                        vehicles: vehicles.map(vehicle => {
-                            if (vehicle.id === id) {
-                                vehicle = { ...vehicle, isFav: !vehicle.isFav }
-                            }
+                if (vehicles.length)
+                    setVehicles(vehicles.map(vehicle => {
+                        if (vehicle.id === id) {
+                            return { ...vehicle, isFav: !vehicle.isFav }
+                        }
 
-                            return vehicle
-                        })
-                    })
-                }
+                        return vehicle
+                    }))
+
+                if (favs.length)
+                    setFavs(favs.filter(vehicle => vehicle.id !== id))
 
                 onFlowEnd()
             })
@@ -188,9 +172,7 @@ class Home extends Component {
         }
     }
 
-    goToFavs = () => {
-        const { props: { onFlowStart, onFlowEnd, onFeedback } } = this
-
+    const goToFavs = () => {
         onFlowStart()
 
         try {
@@ -205,7 +187,8 @@ class Home extends Component {
 
                 onFlowEnd()
 
-                this.setState({ view: 'favs', favs })
+                setView('favs')
+                setFavs(favs)
             })
         } catch ({ message }) {
             onFlowEnd()
@@ -214,46 +197,28 @@ class Home extends Component {
         }
     }
 
-    render() {
-        logger.debug('Home -> render')
-
-        const {
-            state: { view, vehicle, vehicles, favs, query },
-            props: { name, onSignOut },
-            goToProfile,
-            goToItem,
-            clearVehicle,
-            updatePassword,
-            goToSearch,
-            search,
-            unregister,
-            toggleFav,
-            goToFavs
-        } = this
-
-        return <div className="home container container--gapped container--vertical">
-            <div className="container">
-                <p>Hello, <span className="name">{name ? name : 'World'}</span>!</p>
-                <button className="button button-medium button--dark" onClick={goToProfile}>Profile</button>
-                <button className="button button-medium button--dark" onClick={goToFavs}>Favs</button>
-                <button className="button button-medium button" onClick={onSignOut}>Sign out</button>
-            </div>
-
-            {
-                view === 'search' && <>
-                    <Search onSearch={search} query={query} />
-
-                    {!vehicle && <Results items={vehicles} onItem={goToItem} onToggleFav={toggleFav} />}
-
-                    {vehicle && <Detail item={vehicle} onBack={clearVehicle} onToggleFav={toggleFav} />}
-                </>
-            }
-
-            {view === 'profile' && <Profile onBack={goToSearch} onPasswordUpdate={updatePassword} onUnregister={unregister} />}
-
-            {view === 'favs' && <Favs items={favs} onBack={goToSearch} />}
+    return <div className="home container container--gapped container--vertical">
+        <div className="container">
+            <p>Hello, <span className="name">{name ? name : 'World'}</span>!</p>
+            <button className="button button-medium button--dark" onClick={goToProfile}>Profile</button>
+            <button className="button button-medium button--dark" onClick={goToFavs}>Favs</button>
+            <button className="button button-medium button" onClick={onSignOut}>Sign out</button>
         </div>
-    }
+
+        {
+            view === 'search' && <>
+                <Search onSearch={search} query={query} />
+
+                {!vehicle && <Results items={vehicles} onItem={goToItem} onToggleFav={toggleFav} />}
+
+                {vehicle && <Detail item={vehicle} onBack={clearVehicle} onToggleFav={toggleFav} />}
+            </>
+        }
+
+        {view === 'profile' && <Profile onBack={goToSearch} onPasswordUpdate={updatePassword} onUnregister={unregister} />}
+
+        {view === 'favs' && <Favs items={favs} onBack={goToSearch} onItem={goToItem} onToggleFav={toggleFav} />}
+    </div>
 }
 
 export default Home

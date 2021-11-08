@@ -1,7 +1,7 @@
 import Results from './Results'
 import logger from '../logger.js'
 
-function Favs({ items, onBack, onItem, onToggleFav }) {
+function Favs({ items, onBack }) {
     logger.debug('Favs -> render')
 
     return <>
@@ -11,7 +11,7 @@ function Favs({ items, onBack, onItem, onToggleFav }) {
             onBack()
         }}>Go back</button>
 
-        <Results items={items} onItem={onItem} onToggleFav={onToggleFav} />
+        <Results items={items} />
     </>
 }
 

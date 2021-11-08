@@ -41,11 +41,8 @@ function retrieveFavVehicles(token, callback) {
 
                             vehicles[index] = vehicle
 
-                            if (count === favs.length) {
-                                vehicles.forEach(vehicle => vehicle.isFav = true)
-
+                            if (count === favs.length)
                                 callback(null, vehicles)
-                            }
                         }
                     }
 

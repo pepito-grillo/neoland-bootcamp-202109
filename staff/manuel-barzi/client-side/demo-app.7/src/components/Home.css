@@ -1,0 +1,11 @@
+.home__results {
+    list-style: none;
+}
+
+.home__result {
+    cursor: pointer;
+}
+
+.home__detail-image {
+    max-width: 80vw;
+}

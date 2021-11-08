@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import { useState, useEffect } from 'react'
 import logger from '../logger'
 import { retrieveUser, signupUser, signinUser } from '../logic'
 import Logo from './Logo'
@@ -11,26 +11,19 @@ import Home from './Home'
 import Spinner from './Spinner'
 import Feedback from './Feedback'
 
-class App extends Component {
-    constructor() {
-        logger.debug('App -> constructor')
+function App() {
+    logger.debug('App -> render')
 
-        super()
+    const [view, setView] = useState(sessionStorage.token ? '' : 'landing')
+    const [name, setName] = useState(null)
+    const [spinner, setSpinner] = useState(sessionStorage.token ? true : false)
+    const [feedback, setFeedback] = useState(null)
+    const [level, setLevel] = useState(null)
 
-        this.state = {
-            view: sessionStorage.token ? '' : 'landing',
-            name: null,
-            spinner: sessionStorage.token ? true : false,
-            feedback: null,
-            level: 'error'
-        }
-    }
-
-    componentDidMount() {
-        logger.debug('App -> componentDidMount')
+    useEffect(() => {
+        logger.debug('App -> useEffect (componentDidMount)')
 
         const { token } = sessionStorage
-        const { resetTokenAndGoToLanding, showFeedback } = this
 
         if (token) {
             try {
@@ -45,17 +38,11 @@ class App extends Component {
 
                     var name = user.name
 
-                    this.setState({
-                        view: 'home',
-                        name,
-                        spinner: false
-                    })
+                    setView('home')
+                    setName(name)
+                    setSpinner(false)
                 })
-                //} catch (error) {
             } catch ({ message }) {
-                // alert(error.message)
-                // const { message } = error
-
                 showFeedback(message, 'warn')
 
                 resetTokenAndGoToLanding()
@@ -63,28 +50,32 @@ class App extends Component {
                 return
             }
         }
-    }
+    }, [])
 
-    resetTokenAndGoToLanding = () => {
+
+    // function resetTokenAndGoToLanding() {
+    //     delete sessionStorage.token
+
+    //     setView('landing')
+    //     setSpinner(false)
+    // }
+
+    const resetTokenAndGoToLanding = () => {
         delete sessionStorage.token
 
-        this.setState({
-            view: 'landing',
-            spinner: false
-        })
+        setView('landing')
+        setSpinner(false)
     }
 
-    goToSignIn = () => this.setState({ view: 'signin' })
+    const goToSignIn = () => setView('signin')
 
-    goToSignUp = () => this.setState({ view: 'signup' })
+    const goToSignUp = () => setView('signup')
 
-    showSpinner = () => this.setState({ spinner: true })
+    const showSpinner = () => setSpinner(true)
 
-    hideSpinner = () => this.setState({ spinner: false })
+    const hideSpinner = () => setSpinner(false)
 
-    signUp = (name, username, password) => {
-        const { showSpinner, hideSpinner, showFeedback } = this
-
+    const signUp = (name, username, password) => {
         showSpinner()
 
         try {
@@ -97,10 +88,8 @@ class App extends Component {
                     return
                 }
 
-                this.setState({
-                    view: 'post-signup',
-                    spinner: false
-                })
+                setView('post-signup')
+                setSpinner(false)
             })
         } catch ({ message }) {
             hideSpinner()
@@ -109,9 +98,7 @@ class App extends Component {
         }
     }
 
-    signIn = (username, password) => {
-        const { showSpinner, hideSpinner, showFeedback } = this
-
+    const signIn = (username, password) => {
         showSpinner()
 
         try {
@@ -138,11 +125,9 @@ class App extends Component {
 
                         const { name } = user
 
-                        this.setState({
-                            view: 'home',
-                            name,
-                            spinner: false
-                        })
+                        setView('home')
+                        setName(name)
+                        setSpinner(false)
                     })
                 } catch ({ message }) {
                     hideSpinner()
@@ -157,44 +142,41 @@ class App extends Component {
         }
     }
 
-    acceptFeedback = () => this.setState({ feedback: null })
+    const acceptFeedback = () => setFeedback(null)
 
-    showFeedback = (message, level = 'error') => this.setState({ feedback: message, level })
+    const showFeedback = (message, level = 'error') => {
+        setFeedback(message)
+        setLevel(level)
+    }
 
-    render() {
-        logger.debug('App -> render')
+    return <>
+        <Logo image="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Flat_tick_icon.svg/1200px-Flat_tick_icon.svg.png" text="Demo App" />
+        <Time />
 
-        const { goToSignIn, goToSignUp, signUp, signIn, resetTokenAndGoToLanding, showSpinner, hideSpinner, acceptFeedback, showFeedback, state: { view, name, spinner, feedback, level } } = this
+        {view === 'landing' && <Landing
+            onSignIn={goToSignIn}
+            onSignUp={goToSignUp}
+        />}
 
-        return <>
-            <Logo image="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Flat_tick_icon.svg/1200px-Flat_tick_icon.svg.png" text="Demo App" />
-            <Time />
+        {view === 'signup' && <SignUp onSignUp={signUp} onSignIn={goToSignIn} />}
 
-            {view === 'landing' && <Landing
-                onSignIn={goToSignIn}
-                onSignUp={goToSignUp}
+        {view === 'post-signup' && <PostSignUp onSignIn={goToSignIn} />}
+
+        {view === 'signin' && <SignIn onSignIn={signIn} onSignUp={goToSignUp} />}
+
+        {view === 'home' &&
+            <Home
+                name={name}
+                onSignOut={resetTokenAndGoToLanding}
+                onFlowStart={showSpinner}
+                onFlowEnd={hideSpinner}
+                onFeedback={showFeedback}
             />}
 
-            {view === 'signup' && <SignUp onSignUp={signUp} onSignIn={goToSignIn} />}
+        {feedback && <Feedback level={level} message={feedback} onAccept={acceptFeedback} />}
 
-            {view === 'post-signup' && <PostSignUp onSignIn={goToSignIn} />}
-
-            {view === 'signin' && <SignIn onSignIn={signIn} onSignUp={goToSignUp} />}
-
-            {view === 'home' &&
-                <Home
-                    name={name}
-                    onSignOut={resetTokenAndGoToLanding}
-                    onFlowStart={showSpinner}
-                    onFlowEnd={hideSpinner}
-                    onFeedback={showFeedback}
-                />}
-
-            {feedback && <Feedback level={level} message={feedback} onAccept={acceptFeedback} />}
-
-            {spinner && <Spinner />}
-        </>
-    }
+        {spinner && <Spinner />}
+    </>
 }
 
 export default App

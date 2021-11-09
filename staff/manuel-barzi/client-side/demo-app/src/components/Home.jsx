@@ -148,7 +148,7 @@ function Home({ name, onFlowStart, onFlowEnd, onSignOut, onFeedback }) {
                     return
                 }
 
-                if (vehicle)
+                if (vehicle && vehicle.id === id)
                     setVehicle({ ...vehicle, isFav: !vehicle.isFav })
 
                 if (vehicles.length)
@@ -187,8 +187,8 @@ function Home({ name, onFlowStart, onFlowEnd, onSignOut, onFeedback }) {
 
                 onFlowEnd()
 
-                setView('favs')
                 setFavs(favs)
+                setView('favs')
             })
         } catch ({ message }) {
             onFlowEnd()

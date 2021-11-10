@@ -6,18 +6,14 @@ import {
     updateUserPassword,
     unregisterUser,
     toggleFavVehicle,
-    retrieveFavVehicles,
-    addVehicleToCart,
-    retrieveVehiclesCart,
-    removeVehicleFromCart
+    retrieveFavVehicles
 } from '../logic'
-import './Home.css'
 import Search from './Search'
 import Results from './Results'
 import Detail from './Detail'
 import Profile from './Profile'
 import Favs from './Favs'
-import Cart from './Cart'
+import './Home.css'
 
 function Home({ name, onFlowStart, onFlowEnd, onSignOut, onFeedback }) {
     logger.debug('Home -> render')
@@ -27,7 +23,6 @@ function Home({ name, onFlowStart, onFlowEnd, onSignOut, onFeedback }) {
     const [view, setView] = useState('search')
     const [favs, setFavs] = useState([])
     const [query, setQuery] = useState(null)
-    const [cart, setCart] = useState([])
 
     const search = query => {
         onFlowStart()
@@ -202,102 +197,11 @@ function Home({ name, onFlowStart, onFlowEnd, onSignOut, onFeedback }) {
         }
     }
 
-    const addToCart = id => {
-        onFlowStart()
-
-        try {
-            addVehicleToCart(sessionStorage.token, id, error => {
-                if (error) {
-                    onFlowEnd()
-
-                    onFeedback(error.message)
-
-                    return
-                }
-
-                setCart(cart.map(vehicle => {
-                    if (vehicle.id === id)
-                        return { ...vehicle, qty: vehicle.qty + 1 }
-
-                    return vehicle
-                }))
-
-                onFlowEnd()
-            })
-        } catch ({ message }) {
-            onFlowEnd()
-
-            onFeedback(message, 'warn')
-        }
-    }
-
-    const goToCart = () => {
-        onFlowStart()
-
-        try {
-            retrieveVehiclesCart(sessionStorage.token, (error, vehicles) => {
-                if (error) {
-                    onFlowEnd()
-
-                    onFeedback(error.message)
-
-                    return
-                }
-
-                setCart(vehicles)
-
-                setView('cart')
-
-                onFlowEnd()
-            })
-        } catch ({ message }) {
-            onFlowEnd()
-
-            onFeedback(message, 'warn')
-        }
-    }
-
-    const removeFromCart = id => {
-        onFlowStart()
-
-        try {
-            removeVehicleFromCart(sessionStorage.token, id, error => {
-                if (error) {
-                    onFlowEnd()
-
-                    onFeedback(error.message)
-
-                    return
-                }
-
-                setCart(cart.reduce((accum, vehicle) => {
-                    if (vehicle.id === id) {
-                        if (vehicle.qty < 2)
-                            return accum
-
-                        vehicle = { ...vehicle, qty: vehicle.qty - 1 }
-                    }
-
-                    accum.push(vehicle)
-
-                    return accum
-                }, []))
-
-                onFlowEnd()
-            })
-        } catch ({ message }) {
-            onFlowEnd()
-
-            onFeedback(message, 'warn')
-        }
-    }
-
-    return <div className="container container--gapped container--vertical">
+    return <div className="home container container--gapped container--vertical">
         <div className="container">
             <p>Hello, <span className="name">{name ? name : 'World'}</span>!</p>
-            <button className={`button button-medium ${view === 'profile' && 'button--dark'}`} onClick={goToProfile}>Profile</button>
-            <button className={`button button-medium ${view === 'favs' && 'button--dark'}`} onClick={goToFavs}>Favs</button>
-            <button className={`button button-medium ${view === 'cart' && 'button--dark'}`} onClick={goToCart}>Cart</button>
+            <button className="button button-medium button--dark" onClick={goToProfile}>Profile</button>
+            <button className="button button-medium button--dark" onClick={goToFavs}>Favs</button>
             <button className="button button-medium button" onClick={onSignOut}>Sign out</button>
         </div>
 
@@ -307,15 +211,13 @@ function Home({ name, onFlowStart, onFlowEnd, onSignOut, onFeedback }) {
 
                 {!vehicle && <Results items={vehicles} onItem={goToItem} onToggleFav={toggleFav} />}
 
-                {vehicle && <Detail item={vehicle} onBack={clearVehicle} onToggleFav={toggleFav} onAddToCart={addToCart} />}
+                {vehicle && <Detail item={vehicle} onBack={clearVehicle} onToggleFav={toggleFav} />}
             </>
         }
 
         {view === 'profile' && <Profile onBack={goToSearch} onPasswordUpdate={updatePassword} onUnregister={unregister} />}
 
         {view === 'favs' && <Favs items={favs} onBack={goToSearch} onItem={goToItem} onToggleFav={toggleFav} />}
-
-        {view === 'cart' && <Cart items={cart} onBack={goToSearch} onItem={goToItem} onAdd={addToCart} onRemove={removeFromCart} />}
     </div>
 }
 

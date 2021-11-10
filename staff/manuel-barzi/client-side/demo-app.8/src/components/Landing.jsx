@@ -2,7 +2,7 @@ import logger from '../logger'
 
 function Landing({ onSignIn, onSignUp }) {
     logger.debug('Landing -> render')
-    return <div className="container container--vertical container--gapped">
+    return <div className="landing container container--vertical container--gapped">
         <button className="button button--medium button--dark" onClick={() => {
             logger.debug('calling sign in')
             onSignIn()

@@ -3,7 +3,7 @@ import logger from '../logger'
 function SignUp({ onSignUp, onSignIn }) {
     logger.debug('SignUp -> render')
 
-    return <form className="container container--vertical container--gapped" onSubmit={event => {
+    return <form className="signup container container--vertical container--gapped" onSubmit={event => {
         event.preventDefault()
 
         const { target: { name: { value: name }, username: { value: username }, password: { value: password } } } = event

@@ -1,12 +1,10 @@
 import logger from '../logger'
 
-import './Results.css'
-
 function Results({ items, onItem, onToggleFav }) {
     logger.debug('Results -> render')
 
     return items.length ?
-        <ul className="results container container--vertical">
+        <ul className="home__results container container--vertical">
             {
                 items.map(({ id, name, thumbnail, image, price, isFav }) => <li key={id} className="home__result" onClick={() => onItem(id)}>
                     <div className="container">
@@ -17,8 +15,8 @@ function Results({ items, onItem, onToggleFav }) {
                             onToggleFav(id)
                         }}>{isFav ? '💜' : '🤍'}</button>
                     </div>
-                    <img className="results__image" src={thumbnail || image} />
-                    <span>{price} $</span>
+                    <img src={thumbnail || image} />
+                    <span>{price}</span>
                 </li>)
             }
         </ul>

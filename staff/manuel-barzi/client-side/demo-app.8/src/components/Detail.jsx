@@ -15,16 +15,14 @@ function Detail({
         isFav
     },
     onBack,
-    onToggleFav,
-    onAddToCart
+    onToggleFav
 }) {
     logger.debug('Detail -> render')
 
-    return <div className="container container--vertical">
+    return <div className="home__detail container container--vertical">
         <h2>{name}</h2>
         <div className="container">
             <button className="button" onClick={onBack}>Go back</button>
-            <button className="button" onClick={() => onAddToCart(id)}>Add to Cart</button>
             <button className="button" onClick={() => onToggleFav(id)}>{isFav ? '💜' : '🤍'}</button>
         </div>
         <img className="home__detail-image" src={image} alt="" />

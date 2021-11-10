@@ -3,7 +3,7 @@ import logger from '../logger'
 function Search({ onSearch, query }) {
     logger.debug('Search -> render')
 
-    return <form className="container" onSubmit={event => {
+    return <form className="home__search container" onSubmit={event => {
         event.preventDefault()
 
         const query = event.target.query.value // DOM API

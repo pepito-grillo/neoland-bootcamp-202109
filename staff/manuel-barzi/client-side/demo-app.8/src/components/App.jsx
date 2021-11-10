@@ -36,7 +36,7 @@ function App() {
                         return
                     }
 
-                    const { name } = user
+                    var name = user.name
 
                     setView('home')
                     setName(name)
@@ -51,6 +51,14 @@ function App() {
             }
         }
     }, [])
+
+
+    // function resetTokenAndGoToLanding() {
+    //     delete sessionStorage.token
+
+    //     setView('landing')
+    //     setSpinner(false)
+    // }
 
     const resetTokenAndGoToLanding = () => {
         delete sessionStorage.token

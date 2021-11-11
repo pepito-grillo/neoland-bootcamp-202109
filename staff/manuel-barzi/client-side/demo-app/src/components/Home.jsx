@@ -109,9 +109,6 @@ function Home({ name, onFlowStart, onFlowEnd, onSignOut, onFeedback }) {
                     return
                 }
 
-                // if (vehicle && vehicle.id === id)
-                //     setVehicle({ ...vehicle, isFav: !vehicle.isFav })
-
                 if (vehicles.length)
                     setVehicles(vehicles.map(vehicle => {
                         if (vehicle.id === id) {

@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import logger from '../logger'
 import {
+    searchVehicles,
+    retrieveVehicle,
     updateUserPassword,
     unregisterUser,
     toggleFavVehicle,
@@ -16,33 +18,75 @@ import Detail from './Detail'
 import Profile from './Profile'
 import Favs from './Favs'
 import Cart from './Cart'
-import { Routes, Route, useNavigate } from 'react-router-dom'
 
 function Home({ name, onFlowStart, onFlowEnd, onSignOut, onFeedback }) {
     logger.debug('Home -> render')
 
     const [vehicles, setVehicles] = useState([])
+    const [vehicle, setVehicle] = useState(null)
     const [view, setView] = useState('search')
     const [favs, setFavs] = useState([])
     const [query, setQuery] = useState(null)
     const [cart, setCart] = useState([])
-    const navigate = useNavigate()
 
     const search = query => {
+        onFlowStart()
+
+        setVehicle(null)
+        setVehicles([])
         setQuery(query)
 
-        navigate(`/search?q=${query}`)
+        try {
+            searchVehicles(sessionStorage.token, query, (error, vehicles) => {
+                if (error) {
+                    onFlowEnd()
+
+                    onFeedback(error.message)
+
+                    return
+                }
+
+                setVehicles(vehicles)
+
+                onFlowEnd()
+            })
+        } catch ({ message }) {
+            onFlowEnd()
+
+            onFeedback(message, 'warn')
+        }
     }
 
-    const goToItem = id => navigate(`/vehicles/${id}`)
+    const goToItem = vehicleId => {
+        onFlowStart()
+
+        try {
+            retrieveVehicle(sessionStorage.token, vehicleId, (error, vehicle) => {
+                if (error) {
+                    onFlowEnd()
+
+                    onFeedback(error.message)
+
+                    return
+                }
+
+                setVehicle(vehicle)
+                setView('search')
+
+                onFlowEnd()
+            })
+        } catch ({ message }) {
+            onFlowEnd()
+
+            onFeedback(message, 'warn')
+        }
+    }
+
+    const clearVehicle = () => setVehicle(null)
 
     const goToProfile = () => setView('profile')
 
-    const goToSearch = () => {
-        setView('search')
-
-        search(query)
-    }
+    const goToSearch = () => setView('search')
 
     const updatePassword = (oldPassword, password) => {
         onFlowStart()
@@ -109,8 +153,8 @@ function Home({ name, onFlowStart, onFlowEnd, onSignOut, onFeedback }) {
                     return
                 }
 
-                // if (vehicle && vehicle.id === id)
-                //     setVehicle({ ...vehicle, isFav: !vehicle.isFav })
+                if (vehicle && vehicle.id === id)
+                    setVehicle({ ...vehicle, isFav: !vehicle.isFav })
 
                 if (vehicles.length)
                     setVehicles(vehicles.map(vehicle => {
@@ -261,17 +305,11 @@ function Home({ name, onFlowStart, onFlowEnd, onSignOut, onFeedback }) {
             view === 'search' && <>
                 <Search onSearch={search} query={query} />
 
-                <Routes>
-                    <Route path="/search" element={
-                        <Results onItem={goToItem} onToggleFav={toggleFav} onFlowStart={onFlowStart} onFlowEnd={onFlowEnd} onFeedback={onFeedback} />
-                    } />
-                    <Route path="/vehicles/:id" element={
-                        <Detail onBack={goToSearch} onToggleFav={toggleFav} onAddToCart={addToCart} onFlowStart={onFlowStart} onFlowEnd={onFlowEnd} onFeedback={onFeedback} />
-                    } />
-                </Routes>
+                {!vehicle && <Results items={vehicles} onItem={goToItem} onToggleFav={toggleFav} />}
+
+                {vehicle && <Detail item={vehicle} onBack={clearVehicle} onToggleFav={toggleFav} onAddToCart={addToCart} />}
             </>
         }
-
 
         {view === 'profile' && <Profile onBack={goToSearch} onPasswordUpdate={updatePassword} onUnregister={unregister} />}
 

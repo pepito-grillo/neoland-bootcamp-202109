@@ -1,0 +1,11 @@
+.cart__list {
+    list-style-type: none;
+}
+
+.cart__image {
+    width: 50vw;
+}
+
+.cart__total {
+    font-size: 2rem;
+}

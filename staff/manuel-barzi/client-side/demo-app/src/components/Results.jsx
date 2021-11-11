@@ -1,14 +1,48 @@
 import logger from '../logger'
 
 import './Results.css'
+import { useQuery } from '../hooks'
+import { useState, useEffect } from 'react'
+import { searchVehicles } from '../logic'
 
-function Results({ items, onItem, onToggleFav }) {
+function Results({ onItem, onToggleFav, onFlowStart, onFlowEnd, onFeedback  }) {
     logger.debug('Results -> render')
 
-    return items.length ?
+    const [vehicles, setVehicles] = useState()
+
+    const _query = useQuery()
+
+    const query = _query.getParam('q')
+
+    useEffect(() => {
+            onFlowStart()
+    
+    
+            try {
+                searchVehicles(sessionStorage.token, query, (error, vehicles) => {
+                    if (error) {
+                        onFlowEnd()
+    
+                        onFeedback(error.message)
+    
+                        return
+                    }
+    
+                    setVehicles(vehicles)
+    
+                    onFlowEnd()
+                })
+            } catch ({ message }) {
+                onFlowEnd()
+    
+                onFeedback(message, 'warn')
+            }
+    }, [query])
+
+    return vehicles && vehicles.length ?
         <ul className="results container container--vertical">
             {
-                items.map(({ id, name, thumbnail, image, price, isFav }) => <li key={id} className="home__result" onClick={() => onItem(id)}>
+                vehicles.map(({ id, name, thumbnail, image, price, isFav }) => <li key={id} className="home__result" onClick={() => onItem(id)}>
                     <div className="container">
                         <h2>{name}</h2>
                         <button className="button" onClick={event => {

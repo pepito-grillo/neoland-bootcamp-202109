@@ -57,11 +57,7 @@ function Favs({ onBack, onItem, onFlowStart, onFlowEnd, onFeedback }) {
     }
 
     return <>
-        <button className="button button--medium" onClick={event => {
-            event.preventDefault()
-
-            onBack()
-        }}>Go back</button>
+        <button className="button" onClick={onBack}>Go back</button>
 
         {vehicles && vehicles.length ?
         <ul className="favs container container--vertical">

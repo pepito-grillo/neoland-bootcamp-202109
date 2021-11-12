@@ -4,6 +4,8 @@ function Unregister({ onUnregister, onBack }) {
     logger.debug('Unregister -> render')
 
     return <div className="unregister container container--vertical">
+        <button className="button" onClick={onBack}>Go back</button>
+
         <form className="container container--vertical" onSubmit={event => {
             event.preventDefault()
 
@@ -15,11 +17,6 @@ function Unregister({ onUnregister, onBack }) {
             <input className="field" type="password" name="password" id="password" placeholder="password" />
 
             <div className="container">
-                <button className="button button--medium" onClick={event => {
-                    event.preventDefault()
-
-                    onBack()
-                }}>Go back</button>
                 <button className="button button--medium button--dark">Unregister</button>
             </div>
         </form>

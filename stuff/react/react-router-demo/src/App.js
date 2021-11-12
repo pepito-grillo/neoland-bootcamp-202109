@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import { Routes, Route, useParams, Link } from 'react-router-dom'
+import { Routes, Route, useParams, Link, Outlet } from 'react-router-dom'
 import retrieveVehicle from './logic/retrieve-vehicle'
 import { useState, useEffect } from 'react'
 
@@ -21,7 +21,7 @@ function App() {
           Learn React
         </a>
 
-        <Link to="/vehicles/FYF54">Go to KICK KART</Link>
+        {/* <Link to="/vehicles/FYF54">Go to KICK KART</Link>
         <Link to="/vehicles/FYG74">Go to ’65 MUSTANG 2+2 FASTBACK</Link>
 
         <Routes>
@@ -30,6 +30,13 @@ function App() {
           <Route path="/salute/:name" element={<Salute />} />
           <Route path="/products/:id" element={<Product />} />
           <Route path="/vehicles/:id" element={<Vehicle />} />
+        </Routes> */}
+
+        <Routes>
+          <Route path="/" element={<Root />}>
+            <Route path="one" element={<One />} />
+            <Route path="two" element={<Two />} />
+          </Route>
         </Routes>
       </header>
     </div>
@@ -70,6 +77,21 @@ function Vehicle() {
       <img src={vehicle.image} />
     </>}
   </div>
+}
+
+function Root() {
+  return <>
+    <h1>Root</h1>
+    <Outlet />
+  </>
+}
+
+function One() {
+  return <h2>One</h2>
+}
+
+function Two() {
+  return <h2>Two</h2>
 }
 
 export default App;

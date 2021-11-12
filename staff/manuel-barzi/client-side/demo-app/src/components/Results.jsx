@@ -1,43 +1,72 @@
 import logger from '../logger'
 
 import './Results.css'
-import { useQuery } from '../hooks'
+import { useQueryParams } from '../hooks'
 import { useState, useEffect } from 'react'
-import { searchVehicles } from '../logic'
+import { searchVehicles, toggleFavVehicle } from '../logic'
 
-function Results({ onItem, onToggleFav, onFlowStart, onFlowEnd, onFeedback  }) {
+function Results({ onItem, onFlowStart, onFlowEnd, onFeedback }) {
     logger.debug('Results -> render')
 
     const [vehicles, setVehicles] = useState()
 
-    const _query = useQuery()
+    const queryParams = useQueryParams()
 
-    const query = _query.getParam('q')
+    const query = queryParams.get('q')
 
     useEffect(() => {
-            onFlowStart()
-    
-    
-            try {
-                searchVehicles(sessionStorage.token, query, (error, vehicles) => {
-                    if (error) {
-                        onFlowEnd()
-    
-                        onFeedback(error.message)
-    
-                        return
-                    }
-    
-                    setVehicles(vehicles)
-    
+        onFlowStart()
+
+        try {
+            searchVehicles(sessionStorage.token, query, (error, vehicles) => {
+                if (error) {
                     onFlowEnd()
-                })
-            } catch ({ message }) {
+
+                    onFeedback(error.message)
+
+                    return
+                }
+
+                setVehicles(vehicles)
+
                 onFlowEnd()
-    
-                onFeedback(message, 'warn')
-            }
+            })
+        } catch ({ message }) {
+            onFlowEnd()
+
+            onFeedback(message, 'warn')
+        }
     }, [query])
+
+    const toggleFav = id => {
+        onFlowStart()
+
+        try {
+            toggleFavVehicle(sessionStorage.token, id, error => {
+                if (error) {
+                    onFlowEnd()
+
+                    onFeedback(error.message)
+
+                    return
+                }
+
+                setVehicles(vehicles.map(vehicle => {
+                    if (vehicle.id === id) {
+                        return { ...vehicle, isFav: !vehicle.isFav }
+                    }
+
+                    return vehicle
+                }))
+
+                onFlowEnd()
+            })
+        } catch ({ message }) {
+            onFlowEnd()
+
+            onFeedback(message, 'warn')
+        }
+    }
 
     return vehicles && vehicles.length ?
         <ul className="results container container--vertical">
@@ -48,7 +77,7 @@ function Results({ onItem, onToggleFav, onFlowStart, onFlowEnd, onFeedback  }) {
                         <button className="button" onClick={event => {
                             event.stopPropagation()
 
-                            onToggleFav(id)
+                            toggleFav(id)
                         }}>{isFav ? '💜' : '🤍'}</button>
                     </div>
                     <img className="results__image" src={thumbnail || image} />

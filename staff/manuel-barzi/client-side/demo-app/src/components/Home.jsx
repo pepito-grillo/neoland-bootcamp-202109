@@ -3,8 +3,6 @@ import logger from '../logger'
 import {
     updateUserPassword,
     unregisterUser,
-    toggleFavVehicle,
-    retrieveFavVehicles,
     addVehicleToCart,
     retrieveVehiclesCart,
     removeVehicleFromCart
@@ -17,14 +15,17 @@ import Profile from './Profile'
 import Favs from './Favs'
 import Cart from './Cart'
 import { Routes, Route, useNavigate } from 'react-router-dom'
+import { useQueryParams } from '../hooks'
 
 function Home({ name, onFlowStart, onFlowEnd, onSignOut, onFeedback }) {
     logger.debug('Home -> render')
 
-    const [vehicles, setVehicles] = useState([])
     const [view, setView] = useState('search')
     const [favs, setFavs] = useState([])
-    const [query, setQuery] = useState(null)
+
+    const queryParams = useQueryParams()
+
+    const [query, setQuery] = useState(queryParams.get('q'))
     const [cart, setCart] = useState([])
     const navigate = useNavigate()
 
@@ -96,63 +97,10 @@ function Home({ name, onFlowStart, onFlowEnd, onSignOut, onFeedback }) {
         }
     }
 
-    const toggleFav = id => {
-        onFlowStart()
-
-        try {
-            toggleFavVehicle(sessionStorage.token, id, error => {
-                if (error) {
-                    onFlowEnd()
-
-                    onFeedback(error.message)
-
-                    return
-                }
-
-                if (vehicles.length)
-                    setVehicles(vehicles.map(vehicle => {
-                        if (vehicle.id === id) {
-                            return { ...vehicle, isFav: !vehicle.isFav }
-                        }
-
-                        return vehicle
-                    }))
-
-                if (favs.length)
-                    setFavs(favs.filter(vehicle => vehicle.id !== id))
-
-                onFlowEnd()
-            })
-        } catch ({ message }) {
-            onFlowEnd()
-
-            onFeedback(message, 'warn')
-        }
-    }
-
     const goToFavs = () => {
-        onFlowStart()
+        setView('favs')
 
-        try {
-            retrieveFavVehicles(sessionStorage.token, (error, favs) => {
-                if (error) {
-                    onFlowEnd()
-
-                    onFeedback(error.message)
-
-                    return
-                }
-
-                onFlowEnd()
-
-                setFavs(favs)
-                setView('favs')
-            })
-        } catch ({ message }) {
-            onFlowEnd()
-
-            onFeedback(message, 'warn')
-        }
+        navigate('/favs')
     }
 
     const addToCart = id => {
@@ -256,15 +204,15 @@ function Home({ name, onFlowStart, onFlowEnd, onSignOut, onFeedback }) {
 
         {
             view === 'search' && <>
-                <Search onSearch={search} query={query} />
-
                 <Routes>
-                    <Route path="/search" element={
-                        <Results onItem={goToItem} onToggleFav={toggleFav} onFlowStart={onFlowStart} onFlowEnd={onFlowEnd} onFeedback={onFeedback} />
-                    } />
-                    <Route path="/vehicles/:id" element={
-                        <Detail onBack={goToSearch} onToggleFav={toggleFav} onAddToCart={addToCart} onFlowStart={onFlowStart} onFlowEnd={onFlowEnd} onFeedback={onFeedback} />
-                    } />
+                    <Route path="/" element={<Search onSearch={search} query={query} />}>
+                        <Route path="search" element={
+                            <Results onItem={goToItem} onFlowStart={onFlowStart} onFlowEnd={onFlowEnd} onFeedback={onFeedback} />
+                        } />
+                        <Route path="vehicles/:id" element={
+                            <Detail onBack={goToSearch} onAddToCart={addToCart} onFlowStart={onFlowStart} onFlowEnd={onFlowEnd} onFeedback={onFeedback} />
+                        } />
+                    </Route>
                 </Routes>
             </>
         }
@@ -272,7 +220,11 @@ function Home({ name, onFlowStart, onFlowEnd, onSignOut, onFeedback }) {
 
         {view === 'profile' && <Profile onBack={goToSearch} onPasswordUpdate={updatePassword} onUnregister={unregister} />}
 
-        {view === 'favs' && <Favs items={favs} onBack={goToSearch} onItem={goToItem} onToggleFav={toggleFav} />}
+        {
+            view === 'favs' && <Routes>
+                <Route path="/favs" element={<Favs items={favs} onBack={goToSearch} onItem={goToItem} onFlowStart={onFlowStart} onFlowEnd={onFlowEnd} onFeedback={onFeedback} />} />
+            </Routes>
+        }
 
         {view === 'cart' && <Cart items={cart} onBack={goToSearch} onItem={goToItem} onAdd={addToCart} onRemove={removeFromCart} />}
     </div>

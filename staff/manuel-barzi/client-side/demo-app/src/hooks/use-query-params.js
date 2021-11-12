@@ -1,18 +1,17 @@
-function useQuery() {
+function useQueryParams() {
     const url = new URL(window.location);
 
     return {
-        getParam(name) {
+        get(name) {
             return url.searchParams.get(name)
         },
 
-        setParam(name, value) {    
+        set(name, value) {    
             url.searchParams.set(name, value);
         
             window.history.pushState({}, '', url);
         }
-        
     }
 }
 
-export default useQuery
+export default useQueryParams

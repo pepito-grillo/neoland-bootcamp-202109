@@ -1,6 +1,6 @@
 import logger from '../logger'
 import { useParams } from 'react-router-dom'
-import { retrieveVehicle } from '../logic'
+import { retrieveVehicle, toggleFavVehicle } from '../logic'
 import { useState, useEffect } from 'react'
 
 function Detail({ onBack, onToggleFav, onAddToCart, onFlowStart, onFlowEnd, onFeedback }) {
@@ -33,13 +33,37 @@ function Detail({ onBack, onToggleFav, onAddToCart, onFlowStart, onFlowEnd, onFe
         }
     }, [id])
 
+    const toggleFav = id => {
+        onFlowStart()
+
+        try {
+            toggleFavVehicle(sessionStorage.token, id, error => {
+                if (error) {
+                    onFlowEnd()
+
+                    onFeedback(error.message)
+
+                    return
+                }
+
+                setVehicle({ ...vehicle, isFav: !vehicle.isFav })
+
+                onFlowEnd()
+            })
+        } catch ({ message }) {
+            onFlowEnd()
+
+            onFeedback(message, 'warn')
+        }
+    }
+
     return <div className="container container--vertical">
         {vehicle && <>
             <h2>{vehicle.name}</h2>
             <div className="container">
                 <button className="button" onClick={onBack}>Go back</button>
                 <button className="button" onClick={() => onAddToCart(id)}>Add to Cart</button>
-                <button className="button" onClick={() => onToggleFav(id)}>{vehicle.isFav ? '💜' : '🤍'}</button>
+                <button className="button" onClick={() => toggleFav(id)}>{vehicle.isFav ? '💜' : '🤍'}</button>
             </div>
             <img className="home__detail-image" src={vehicle.image} alt="" />
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.Nostrum quas sapiente veritatis, magni natus necessitatibus velit aliquam enim iste?Beatae velit explicabo temporibus et blanditiis!Deleniti nemo voluptatem cumque nam.</p>

@@ -1,11 +1,10 @@
-debugger
 const fs = require('fs')
 const { readFile, writeFile } = fs
 
 const { argv: [, , command] } = process
 
 if (command === 'list') // $ node agenda.js list
-    readFile('./agenda.json', 'utf8', (error, json) => {
+    readFile('./contacts.json', 'utf8', (error, json) => {
         if (error) {
             console.error(error)
 
@@ -20,7 +19,7 @@ if (command === 'list') // $ node agenda.js list
         contacts.forEach(({ id, name, phone, email }) => console.log(id, name, phone, email))
     })
 else if (command === 'save') // $ node agenda.js save Mario 456456456 mario@mail.com
-    readFile('./agenda.json', 'utf8', (error, json) => {
+    readFile('./contacts.json', 'utf8', (error, json) => {
         if (error) {
             console.error(error.message)
 
@@ -37,7 +36,7 @@ else if (command === 'save') // $ node agenda.js save Mario 456456456 mario@mail
 
         const json2 = JSON.stringify(contacts, null, 4)
     
-        writeFile('./agenda.json', json2, error => {
+        writeFile('./contacts.json', json2, error => {
             if (error) {
                 console.error(error.message)
 

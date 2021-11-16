@@ -17,7 +17,7 @@ function registerUser(name, username, password, callback) {
         writeFile('./users.json', json2, error => {
             if (error) return callback(error)
 
-            callback()
+            callback(null)
         })
     })
 }

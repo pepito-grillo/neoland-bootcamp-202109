@@ -6,3 +6,7 @@ html, body {
 body {
     background-color: yellow;
 }
+
+.signin__feedback--error {
+    color: red;
+}

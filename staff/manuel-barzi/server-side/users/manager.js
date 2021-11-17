@@ -1,5 +1,7 @@
 const registerUser = require('./logic/register-user')
 const unregisterUser = require('./logic/unregister-user')
+const authenticateUser = require('./logic/authenticate-user')
+const retrieveUser = require('./logic/retrieve-user')
 
 const { argv: [, , command] } = process
 
@@ -17,13 +19,27 @@ if (command === 'register') { // $ node manager register "Peter Pan" peterpan 12
     unregisterUser(id, password, error => {
         if (error) return console.log(error.message)
 
-        console.log(`user ${id} unregistered`)
+        console.log(`user with ${id} unregistered`)
     })
 } else if (command === 'retrieve') { // $ node manager retrieve kw0ms3h9
-    // TODO implement me
+    const { argv: [, , , id] } = process
+
+    retrieveUser(id, (error, user) => {
+        if (error) return console.log(error.message)
+
+        console.log(`user ${user.name} retrieved`)
+    })    
 } else if (command === 'find') { // $ node manager find pan
     // TODO implement me
 } else if (command === 'modify') { // $ node manager modify kw0ms3h9 . . 123123123:234234234
-                                   // $ node manager modify kw0ms3h9 "Juanito Perez" . .
+    // $ node manager modify kw0ms3h9 "Juanito Perez" . .
     // TODO implement me
+} else if (command === 'authenticate') { // $ node manager authenticate <username> <password>
+    const { argv: [, , , username, password] } = process
+
+    authenticateUser(username, password, (error, id) => {
+        if (error) return console.log(error.message)
+
+        console.log(`user with ${id} authenticated`)
+    })
 }

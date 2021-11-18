@@ -2,8 +2,6 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const { registerUser, authenticateUser, retrieveUser } = require('users')
 const { landing, signUp, postSignUp, signIn, home, fail } = require('./components')
-const { getUserId } = require('./helpers')
-const { searchVehicles } = require('vehicles')
 
 const server = express()
 
@@ -12,25 +10,18 @@ server.use(express.static('public')) // middleware
 server.get('/', (req, res) => {
     const { headers: { cookie } } = req
 
-    const id = getUserId(cookie)
+    if (cookie) {
+        const [, id] = cookie.split('=')
 
-    if (id)
-        return retrieveUser(id, (error, user) => {
-            if (error)
-                return res.send(fail({ message: error.message }))
+        if (id) {
+            return retrieveUser(id, (error, user) => {
+                if (error)
+                    return res.send(fail({ message: error.message }))
 
-            const { query: { q } } = req
-
-            if (q)
-                return searchVehicles(q, (error, results) => {
-                    if (error)
-                        return res.send(fail({ message: error.message }))
-
-                    res.send(home({ name: user.name, results }))
-                })
-
-            res.send(home({ name: user.name }))
-        })
+                res.send(home({ name: user.name }))
+            })
+        }
+    }
 
     res.send(landing())
 })
@@ -38,9 +29,12 @@ server.get('/', (req, res) => {
 server.get('/signup', (req, res) => { // http://localhost:8000/signup
     const { headers: { cookie } } = req
 
-    const id = getUserId(cookie)
+    if (cookie) {
+        const [, id] = cookie.split('=')
 
-    if (id) return res.redirect('/')
+        if (id)
+            return res.redirect('/')
+    }
 
     res.send(signUp())
 })
@@ -50,9 +44,12 @@ const formBodyParser = bodyParser.urlencoded({ extended: false })
 server.post('/signup', formBodyParser, (req, res) => {
     const { headers: { cookie } } = req
 
-    const id = getUserId(cookie)
+    if (cookie) {
+        const [, id] = cookie.split('=')
 
-    if (id) return res.redirect('/')
+        if (id)
+            return res.redirect('/')
+    }
 
     const { body: { name, username, password } } = req
 
@@ -70,9 +67,12 @@ server.post('/signup', formBodyParser, (req, res) => {
 server.get('/signin', (req, res) => {
     const { headers: { cookie } } = req
 
-    const id = getUserId(cookie)
+    if (cookie) {
+        const [, id] = cookie.split('=')
 
-    if (id) return res.redirect('/')
+        if (id)
+            return res.redirect('/')
+    }
 
     res.send(signIn())
 })
@@ -80,9 +80,12 @@ server.get('/signin', (req, res) => {
 server.post('/signin', formBodyParser, (req, res) => {
     const { headers: { cookie } } = req
 
-    const id = getUserId(cookie)
+    if (cookie) {
+        const [, id] = cookie.split('=')
 
-    if (id) return res.redirect('/')
+        if (id)
+            return res.redirect('/')
+    }
 
     const { body: { username, password } } = req
 

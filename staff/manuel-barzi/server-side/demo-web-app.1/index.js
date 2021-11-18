@@ -3,7 +3,6 @@ const bodyParser = require('body-parser')
 const { registerUser, authenticateUser, retrieveUser } = require('users')
 const { landing, signUp, postSignUp, signIn, home, fail } = require('./components')
 const { getUserId } = require('./helpers')
-const { searchVehicles } = require('vehicles')
 
 const server = express()
 
@@ -18,16 +17,6 @@ server.get('/', (req, res) => {
         return retrieveUser(id, (error, user) => {
             if (error)
                 return res.send(fail({ message: error.message }))
-
-            const { query: { q } } = req
-
-            if (q)
-                return searchVehicles(q, (error, results) => {
-                    if (error)
-                        return res.send(fail({ message: error.message }))
-
-                    res.send(home({ name: user.name, results }))
-                })
 
             res.send(home({ name: user.name }))
         })

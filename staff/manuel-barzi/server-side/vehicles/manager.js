@@ -1,4 +1,4 @@
-const { searchVehicles } = require('.')
+const { searchVehicles } = require('./logic')
 
 const { argv: [, , command] } = process
 

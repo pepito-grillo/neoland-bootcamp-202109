@@ -1,7 +1,9 @@
 function getUserId(cookie) {
-    const [, id] = cookie.split('=')
+    if (cookie) {
+        const [, id] = cookie.split('=')
 
-    return id
+        return id
+    }
 }
 
 module.exports = {

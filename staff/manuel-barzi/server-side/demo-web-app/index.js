@@ -1,9 +1,13 @@
+require('dotenv').config()
+
 const express = require('express')
 const bodyParser = require('body-parser')
 const { registerUser, authenticateUser, retrieveUser } = require('users')
 const { landing, signUp, postSignUp, signIn, home, fail } = require('./components')
 const { getUserId } = require('./helpers')
 const { searchVehicles } = require('vehicles')
+
+const { env: { PORT }, argv: [, , port = PORT || 8080] } = process
 
 const server = express()
 
@@ -63,7 +67,7 @@ server.post('/signup', formBodyParser, (req, res) => {
             res.send(postSignUp())
         })
     } catch (error) {
-        if (error) return res.send(signUp({ name, username, feedback: error.message }))
+        res.send(signUp({ name, username, feedback: error.message }))
     }
 })
 
@@ -96,7 +100,7 @@ server.post('/signin', formBodyParser, (req, res) => {
             res.redirect('/')
         })
     } catch (error) {
-        return res.send(signIn({ username, feedback: error.message }))
+        res.send(signIn({ username, feedback: error.message }))
     }
 })
 
@@ -110,4 +114,4 @@ server.all('*', (req, res) => {
     res.send(fail({ message: 'sorry, this page isn\'t available' }))
 })
 
-server.listen(8000)
+server.listen(port, () => console.log(`server up and listening on port ${port}`))

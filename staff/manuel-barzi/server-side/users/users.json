@@ -21,12 +21,29 @@
         "id": "kw22iafi",
         "name": "manu",
         "username": "manuelbarzi",
-        "password": "123123123"
+        "password": "123123123",
+        "colors": [
+            "red",
+            "green",
+            "blue",
+            "yellow"
+        ],
+        "score": null,
+        "cart": [
+            {
+                "id": "P123456",
+                "qty": 2
+            },
+            {
+                "id": "P345435",
+                "qty": 10
+            }
+        ]
     },
     {
         "id": "kw66vsst",
-        "name": "Manuel Barzi",
-        "username": "manuelbarzi10",
-        "password": "123123123"
+        "name": "Hello World",
+        "username": "helloworld",
+        "password": "234234234"
     }
 ]

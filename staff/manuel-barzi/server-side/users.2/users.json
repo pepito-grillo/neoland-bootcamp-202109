@@ -1,0 +1,49 @@
+[
+    {
+        "id": "kw0mnxla",
+        "name": "Peter Pan",
+        "username": "peterpan",
+        "password": "123123123"
+    },
+    {
+        "id": "kw0mrmeg",
+        "name": "Wendy Pan",
+        "username": "wendypan",
+        "password": "123123123"
+    },
+    {
+        "id": "kw1ymfpo",
+        "name": "Peter Pan",
+        "username": "peterpan2",
+        "password": "123123123"
+    },
+    {
+        "id": "kw22iafi",
+        "name": "manu",
+        "username": "manuelbarzi",
+        "password": "123123123",
+        "colors": [
+            "red",
+            "green",
+            "blue",
+            "yellow"
+        ],
+        "score": null,
+        "cart": [
+            {
+                "id": "P123456",
+                "qty": 2
+            },
+            {
+                "id": "P345435",
+                "qty": 10
+            }
+        ]
+    },
+    {
+        "id": "kw66vsst",
+        "name": "Hello World",
+        "username": "helloworld",
+        "password": "234234234"
+    }
+]

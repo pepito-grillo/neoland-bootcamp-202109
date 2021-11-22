@@ -10,11 +10,9 @@ const { env: { PORT, SECRET }, argv: [, , port = PORT || 8080] } = process
 
 const server = express()
 
-const api = express.Router()
-
 const jsonBodyParser = bodyParser.json()
 
-api.post('/users', jsonBodyParser, (req, res) => {
+server.post('/api/users', jsonBodyParser, (req, res) => {
     const { body: { name, username, password } } = req
 
     try {
@@ -28,7 +26,7 @@ api.post('/users', jsonBodyParser, (req, res) => {
     }
 })
 
-api.post('/users/auth', jsonBodyParser, (req, res) => {
+server.post('/api/users/auth', jsonBodyParser, (req, res) => {
     const { body: { username, password } } = req
 
     try {
@@ -44,7 +42,7 @@ api.post('/users/auth', jsonBodyParser, (req, res) => {
     }
 })
 
-api.get('/users', (req, res) => {
+server.get('/api/users', (req, res) => {
     const { headers: { authorization } } = req
 
     try {
@@ -64,8 +62,8 @@ api.get('/users', (req, res) => {
     }
 })
 
-api.patch('/users', jsonBodyParser, (req, res) => {
-    const { headers: { authorization }, body: data } = req
+server.patch('/api/users', jsonBodyParser, (req, res) => {
+    const {  headers: { authorization }, body: data } = req
 
     try {
         const [, token] = authorization.split(' ')
@@ -94,24 +92,8 @@ api.patch('/users', jsonBodyParser, (req, res) => {
     }
 })
 
-api.get('/hotwheels/vehicles', (req, res) => {
-    const { query: { q } } = req
-
-    try {
-        searchVehicles(q, (error, vehicles) => {
-            if (error) return res.status(400).json({ error: 'client error' })
-
-            res.json(vehicles)
-        })
-    } catch (error) {
-        res.status(400).json({ error: 'client error' })
-    }
-})
-
-api.all('*', (req, res) => {
-    res.status(404).json({ message: 'sorry, this endpoint isn\'t available' })
-})
-
-server.use('/api', api)
+// server.all('*', (req, res) => {
+//     res.send(fail({ message: 'sorry, this page isn\'t available' }))
+// })
 
 server.listen(port, () => console.log(`server up and listening on port ${port}`))

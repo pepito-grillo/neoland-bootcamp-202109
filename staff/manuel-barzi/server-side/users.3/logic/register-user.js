@@ -1,4 +1,4 @@
-const context = require('./context')
+const { readFile, writeFile } = require('fs')
 
 /**
  * TODO doc me
@@ -24,21 +24,25 @@ function registerUser(name, username, password, callback) {
 
     if (typeof callback !== 'function') throw new TypeError('callback is not a function')
 
-    //const users = this.db.collection('users')
-    const users = context.db.collection('users')
+    readFile(`${__dirname}/../users.json`, 'utf8', (error, json) => {
+        if (error) return callback(error)
 
-    users.insertOne({ name, username, password }, error => {
-        if (error) {
-            if (error.code === 11000)
-                callback(new Error(`user with username ${username} already exists`))
-            else
-                callback(error)
+        const users = JSON.parse(json)
 
-            return
-        }
+        const user = users.find(user => user.username === username)
 
-        callback(null)
+        if (user) return callback(new Error(`user with username ${username} already exists`))
+
+        users.push({ id: Date.now().toString(36), name, username, password })
+
+        const json2 = JSON.stringify(users, null, 4)
+
+        writeFile(`${__dirname}/../users.json`, json2, error => {
+            if (error) return callback(error)
+
+            callback(null)
+        })
     })
 }
 
-module.exports = registerUser//.bind(context)
+module.exports = registerUser

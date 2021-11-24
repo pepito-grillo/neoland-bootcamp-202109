@@ -4,6 +4,7 @@ const retrieveUser = require('./retrieve-user')
 const modifyUser = require('./modify-user')
 // const findUsers = require('./find-users')
 const unregisterUser = require('./unregister-user')
+const context = require('./context')
 
 module.exports = {
     registerUser,
@@ -11,5 +12,6 @@ module.exports = {
     retrieveUser,
     modifyUser,
     // findUsers,
-    unregisterUser
+    unregisterUser,
+    context
 }

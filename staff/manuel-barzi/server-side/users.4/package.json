@@ -17,7 +17,6 @@
     "nyc": "^15.1.0"
   },
   "dependencies": {
-    "errors": "file:../errors",
     "mongodb": "^4.2.0"
   }
 }

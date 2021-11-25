@@ -2,7 +2,6 @@ const { expect } = require('chai')
 const authenticateUser = require('./authenticate-user')
 const { MongoClient } = require('mongodb')
 const context = require('./context')
-const { CredentialsError, FormatError } = require('errors')
 
 describe('authenticateUser', () => {
     let client, db, users
@@ -63,7 +62,6 @@ describe('authenticateUser', () => {
 
         authenticateUser(username, password + '-wrong', (error, id) => {
             expect(error).to.exist
-            expect(error).to.be.instanceOf(CredentialsError)
             expect(error.message).to.equal('wrong credentials')
 
             expect(id).to.be.undefined
@@ -113,19 +111,19 @@ describe('authenticateUser', () => {
             })
 
             it('should fail when username is empty', () => {
-                expect(() => authenticateUser('', '123123123', () => { })).to.throw(FormatError, 'username is empty or blank')
+                expect(() => authenticateUser('', '123123123', () => { })).to.throw(Error, 'username is empty or blank')
 
-                expect(() => authenticateUser('   ', '123123123', () => { })).to.throw(FormatError, 'username is empty or blank')
+                expect(() => authenticateUser('   ', '123123123', () => { })).to.throw(Error, 'username is empty or blank')
             })
 
             it('should fail when username has spaces', () => {
-                expect(() => authenticateUser(' wendypan ', '123123123', () => { })).to.throw(FormatError, 'username has blank spaces')
+                expect(() => authenticateUser(' wendypan ', '123123123', () => { })).to.throw(Error, 'username has blank spaces')
 
-                expect(() => authenticateUser('wendy pan', '123123123', () => { })).to.throw(FormatError, 'username has blank spaces')
+                expect(() => authenticateUser('wendy pan', '123123123', () => { })).to.throw(Error, 'username has blank spaces')
             })
 
             it('should fail when username length is less that 4 characters', () => {
-                expect(() => authenticateUser('wp', '123123123', () => { })).to.throw(FormatError, 'username has less than 4 characters')
+                expect(() => authenticateUser('wp', '123123123', () => { })).to.throw(Error, 'username has less than 4 characters')
             })
         })
 
@@ -143,19 +141,19 @@ describe('authenticateUser', () => {
             })
 
             it('should fail when password is empty', () => {
-                expect(() => authenticateUser('wendypan', '', () => { })).to.throw(FormatError, 'password is empty or blank')
+                expect(() => authenticateUser('wendypan', '', () => { })).to.throw(Error, 'password is empty or blank')
 
-                expect(() => authenticateUser('wendypan', '   ', () => { })).to.throw(FormatError, 'password is empty or blank')
+                expect(() => authenticateUser('wendypan', '   ', () => { })).to.throw(Error, 'password is empty or blank')
             })
 
             it('should fail when password has spaces', () => {
-                expect(() => authenticateUser('wendypan', ' 123123123 ', () => { })).to.throw(FormatError, 'password has blank spaces')
+                expect(() => authenticateUser('wendypan', ' 123123123 ', () => { })).to.throw(Error, 'password has blank spaces')
 
-                expect(() => authenticateUser('wendypan', '123 123 123', () => { })).to.throw(FormatError, 'password has blank spaces')
+                expect(() => authenticateUser('wendypan', '123 123 123', () => { })).to.throw(Error, 'password has blank spaces')
             })
 
             it('should fail when password length is less that 8 characters', () => {
-                expect(() => authenticateUser('wendypan', '123123', () => { })).to.throw(FormatError, 'password has less than 8 characters')
+                expect(() => authenticateUser('wendypan', '123123', () => { })).to.throw(Error, 'password has less than 8 characters')
             })
         })
 

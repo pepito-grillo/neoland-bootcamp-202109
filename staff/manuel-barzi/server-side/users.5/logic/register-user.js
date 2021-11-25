@@ -1,6 +1,5 @@
 const context = require('./context')
 const { validateName, validateUsername, validatePassword, validateCallback } = require('./helpers/validators')
-const { ConflictError } = require('errors')
 
 /**
  * TODO doc me
@@ -20,7 +19,7 @@ function registerUser(name, username, password, callback) {
     users.insertOne({ name, username, password }, error => {
         if (error) {
             if (error.code === 11000)
-                callback(new ConflictError(`user with username ${username} already exists`))
+                callback(new Error(`user with username ${username} already exists`))
             else
                 callback(error)
 

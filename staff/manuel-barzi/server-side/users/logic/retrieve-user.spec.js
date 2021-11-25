@@ -115,5 +115,9 @@ describe('retrieveUser', () => {
         })
     })
 
-    after(done => client.close(done))
+    after(done => users.deleteMany({}, error => {
+        if (error) return done(error)
+
+        client.close(done)
+    }))
 })

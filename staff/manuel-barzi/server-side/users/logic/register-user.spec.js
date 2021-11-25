@@ -181,12 +181,14 @@ describe('registerUser', () => {
         })
     })
 
-    after(done => {
+    after(done => users.deleteMany({}, error => {
+        if (error) return done(error)
+
         // client.close(error => {
         //     if (error) return done(error)
 
         //     done()
         // })
         client.close(done)
-    })
+    }))
 })

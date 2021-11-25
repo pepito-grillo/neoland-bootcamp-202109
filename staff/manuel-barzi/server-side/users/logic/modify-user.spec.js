@@ -3,7 +3,7 @@ const modifyUser = require('./modify-user')
 const { MongoClient, ObjectId } = require('mongodb')
 const context = require('./context')
 
-describe('registerUser', () => {
+describe('modifyUser', () => {
     let client, db, users
 
     before(done => {
@@ -111,7 +111,7 @@ describe('registerUser', () => {
                     username: 'peterpan',
                     password: '123123123'
                 }
-    
+
                 users.insertOne(user, done)
             })
 
@@ -172,15 +172,15 @@ describe('registerUser', () => {
 
         describe('when data is not valid', () => {
             it('should fail when data is not an object', () => {
-                expect(() => modifyUser('abcd1234abcd1234abcd1234', true, () => {})).to.throw(TypeError, 'data is not an object')
+                expect(() => modifyUser('abcd1234abcd1234abcd1234', true, () => { })).to.throw(TypeError, 'data is not an object')
 
-                expect(() => modifyUser('abcd1234abcd1234abcd1234', 123, () => {})).to.throw(TypeError, 'data is not an object')
+                expect(() => modifyUser('abcd1234abcd1234abcd1234', 123, () => { })).to.throw(TypeError, 'data is not an object')
 
-                expect(() => modifyUser('abcd1234abcd1234abcd1234', () => {}, () => {})).to.throw(TypeError, 'data is not an object')
+                expect(() => modifyUser('abcd1234abcd1234abcd1234', () => { }, () => { })).to.throw(TypeError, 'data is not an object')
 
-                expect(() => modifyUser('abcd1234abcd1234abcd1234', '...', () => {})).to.throw(TypeError, 'data is not an object')
+                expect(() => modifyUser('abcd1234abcd1234abcd1234', '...', () => { })).to.throw(TypeError, 'data is not an object')
 
-                expect(() => modifyUser('abcd1234abcd1234abcd1234', [], () => {})).to.throw(TypeError, 'data is not an object')
+                expect(() => modifyUser('abcd1234abcd1234abcd1234', [], () => { })).to.throw(TypeError, 'data is not an object')
             })
         })
 
@@ -195,6 +195,132 @@ describe('registerUser', () => {
                 expect(() => modifyUser('abcd1234abcd1234abcd1234', {}, '...')).to.throw(TypeError, 'callback is not a function')
 
                 expect(() => modifyUser('abcd1234abcd1234abcd1234', {}, [])).to.throw(TypeError, 'callback is not a function')
+            })
+        })
+
+        describe('when properties in data are not valid', () => {
+            describe('when name is not valid', () => {
+                it('should fail when name is not a string', () => {
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { name: true }, () => { })).to.throw(TypeError, 'name is not a string')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { name: 123 }, () => { })).to.throw(TypeError, 'name is not a string')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { name: {} }, () => { })).to.throw(TypeError, 'name is not a string')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { name: () => { } }, () => { })).to.throw(TypeError, 'name is not a string')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { name: [] }, () => { })).to.throw(TypeError, 'name is not a string')
+                })
+
+                it('should fail when name is empty', () => {
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { name: '' }, () => { })).to.throw(Error, 'name is empty or blank')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { name: '   ' }, () => { })).to.throw(Error, 'name is empty or blank')
+                })
+
+                it('should fail when name has spaces around', () => {
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { name: ' Wendy Pan ' }, () => { })).to.throw(Error, 'blank spaces around name')
+                })
+            })
+
+            describe('when username is not valid', () => {
+                it('should fail when username is not a string', () => {
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { username: true }, () => { })).to.throw(TypeError, 'username is not a string')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { username: 123 }, () => { })).to.throw(TypeError, 'username is not a string')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { username: {} }, () => { })).to.throw(TypeError, 'username is not a string')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { username: () => { } }, () => { })).to.throw(TypeError, 'username is not a string')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { username: [] }, () => { })).to.throw(TypeError, 'username is not a string')
+                })
+
+                it('should fail when username is empty', () => {
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { username: '' }, () => { })).to.throw(Error, 'username is empty or blank')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { username: '   ' }, () => { })).to.throw(Error, 'username is empty or blank')
+                })
+
+                it('should fail when username has spaces', () => {
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { username: ' wendypan ' }, () => { })).to.throw(Error, 'username has blank spaces')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { username: 'wendy pan' }, () => { })).to.throw(Error, 'username has blank spaces')
+                })
+
+                it('should fail when username length is less that 4 characters', () => {
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { username: 'wp' }, () => { })).to.throw(Error, 'username has less than 4 characters')
+                })
+            })
+
+            describe('when password is not valid', () => {
+                it('should fail when password is not a string', () => {
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { oldPassword: '123123123', password: true }, () => { })).to.throw(TypeError, 'password is not a string')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { oldPassword: '123123123', password: 123 }, () => { })).to.throw(TypeError, 'password is not a string')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { oldPassword: '123123123', password: {} }, () => { })).to.throw(TypeError, 'password is not a string')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { oldPassword: '123123123', password: () => { } }, () => { })).to.throw(TypeError, 'password is not a string')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { oldPassword: '123123123', password: [] }, () => { })).to.throw(TypeError, 'password is not a string')
+                })
+
+                it('should fail when password is empty', () => {
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { oldPassword: '123123123', password: '' }, () => { })).to.throw(Error, 'password is empty or blank')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { oldPassword: '123123123', password: '   ' }, () => { })).to.throw(Error, 'password is empty or blank')
+                })
+
+                it('should fail when password has spaces', () => {
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { oldPassword: '123123123', password: ' 123123123 ' }, () => { })).to.throw(Error, 'password has blank spaces')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { oldPassword: '123123123', password: '123 123 123' }, () => { })).to.throw(Error, 'password has blank spaces')
+                })
+
+                it('should fail when password length is less that 8 characters', () => {
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { oldPassword: '123123123', password: '123123' }, () => { })).to.throw(Error, 'password has less than 8 characters')
+                })
+            })
+
+            describe('when old password is not valid', () => {
+                it('should fail when password is not a string', () => {
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { password: '123123123', oldPassword: true }, () => { })).to.throw(TypeError, 'password is not a string')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { password: '123123123', oldPassword: 123 }, () => { })).to.throw(TypeError, 'password is not a string')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { password: '123123123', oldPassword: {} }, () => { })).to.throw(TypeError, 'password is not a string')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { password: '123123123', oldPassword: () => { } }, () => { })).to.throw(TypeError, 'password is not a string')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { password: '123123123', oldPassword: [] }, () => { })).to.throw(TypeError, 'password is not a string')
+                })
+
+                it('should fail when password is empty', () => {
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { password: '123123123', oldPassword: '' }, () => { })).to.throw(Error, 'password is empty or blank')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { password: '123123123', oldPassword: '   ' }, () => { })).to.throw(Error, 'password is empty or blank')
+                })
+
+                it('should fail when password has spaces', () => {
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { password: '123123123', oldPassword: ' 123123123 ' }, () => { })).to.throw(Error, 'password has blank spaces')
+
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { password: '123123123', oldPassword: '123 123 123' }, () => { })).to.throw(Error, 'password has blank spaces')
+                })
+
+                it('should fail when password length is less that 8 characters', () => {
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { password: '123123123', oldPassword: '123123' }, () => { })).to.throw(Error, 'password has less than 8 characters')
+                })
+            })
+
+            describe('when password or old password is not present', () => {
+                it('should fail when password is present and old password not', () => {
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { password: '123123123' }, () => { })).to.throw(Error, 'old password is not defined')
+                })
+
+                it('should fail when old password is present and password not', () => {
+                    expect(() => modifyUser('abcd1234abcd1234abcd1234', { oldPassword: '123123123' }, () => { })).to.throw(Error, 'password is not defined')
+                })
             })
         })
     })

@@ -1,16 +1,15 @@
 const { searchVehicles } = require('vehicles')
-const handleError = require('./helpers/handle-error')
 
 module.exports = (req, res) => {
     const { query: { q } } = req
 
     try {
         searchVehicles(q, (error, vehicles) => {
-            if (error) return handleError(error, res)
+            if (error) return res.status(500).json({ error: error.message })
 
             res.json(vehicles)
         })
     } catch (error) {
-        handleError(error, res)
+        res.status(500).json({ error: error.message })
     }
 }

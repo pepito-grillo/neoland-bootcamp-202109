@@ -1,5 +1,5 @@
 const context = require('./context')
-const { mongodb: { ObjectId } } = require('data')
+const { ObjectId } = require('mongodb')
 const { validateId, validateCallback } = require('./helpers/validators')
 const { NotFoundError } = require('errors')
 

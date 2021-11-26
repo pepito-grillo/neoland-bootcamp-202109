@@ -5,9 +5,11 @@ module.exports = (req, res) => {
     const { body: { name, username, password } } = req
 
     try {
-        registerUser(name, username, password)
-            .then(() => res.status(201).send())
-            .catch(error => handleError(error, res))
+        registerUser(name, username, password, function (error) {
+            if (error) return handleError(error, res)
+
+            res.status(201).send()
+        })
     } catch (error) {
         handleError(error, res)
     }

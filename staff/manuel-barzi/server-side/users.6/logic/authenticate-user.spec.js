@@ -1,6 +1,6 @@
 const { expect } = require('chai')
 const authenticateUser = require('./authenticate-user')
-const { mongodb: { MongoClient } } = require('data')
+const { MongoClient } = require('mongodb')
 const context = require('./context')
 const { CredentialsError, FormatError } = require('errors')
 

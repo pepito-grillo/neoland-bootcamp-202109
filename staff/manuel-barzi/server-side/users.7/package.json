@@ -17,7 +17,7 @@
     "nyc": "^15.1.0"
   },
   "dependencies": {
-    "data": "file:../data",
-    "errors": "file:../errors"
+    "errors": "file:../errors",
+    "mongoose": "^6.0.13"
   }
 }

@@ -1,6 +1,6 @@
 const { expect } = require('chai')
 const modifyUser = require('./modify-user')
-const { mongodb: { MongoClient, ObjectId } } = require('data')
+const { MongoClient, ObjectId } = require('mongodb')
 const context = require('./context')
 const { CredentialsError, FormatError, ConflictError, NotFoundError } = require('errors')
 

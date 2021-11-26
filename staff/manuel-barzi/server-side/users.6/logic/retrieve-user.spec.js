@@ -1,6 +1,6 @@
 const { expect } = require('chai')
 const retrieveUser = require('./retrieve-user')
-const { mongodb: { MongoClient, ObjectId } } = require('data')
+const { MongoClient, ObjectId } = require('mongodb')
 const context = require('./context')
 const { NotFoundError, FormatError } = require('errors')
 

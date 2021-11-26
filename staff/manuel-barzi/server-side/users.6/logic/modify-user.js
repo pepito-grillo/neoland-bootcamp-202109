@@ -1,4 +1,4 @@
-const { mongodb: { ObjectId } } = require('data')
+const { ObjectId } = require('mongodb')
 const context = require('./context')
 const { validateId, validateData, validateCallback } = require('./helpers/validators')
 const { NotFoundError, ConflictError, CredentialsError } = require('errors')
@@ -7,7 +7,7 @@ function modifyUser(id, data, callback) {
     validateId(id)
     validateData(data)
     validateCallback(callback)
-
+    
     const users = context.db.collection('users')
 
     const filter = { _id: ObjectId(id) }

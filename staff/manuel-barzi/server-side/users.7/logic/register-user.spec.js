@@ -1,7 +1,8 @@
 const { expect } = require('chai')
 const registerUser = require('./register-user')
-const { mongoose, models: { User } } = require('data')
+const mongoose = require('mongoose')
 const { ConflictError, FormatError } = require('errors')
+const { User } = require('../models')
 
 describe('registerUser', () => {
     before(() => mongoose.connect('mongodb://localhost:27017'))

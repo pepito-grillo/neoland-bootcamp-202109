@@ -1,74 +1,101 @@
-require('dotenv').config()
-
 const { expect } = require('chai')
 const authenticateUser = require('./authenticate-user')
-const { mongoose, models: { User } } = require('data')
+const { mongodb: { MongoClient } } = require('data')
+const context = require('./context')
 const { CredentialsError, FormatError } = require('errors')
 
-const { env: { MONGO_URL } } = process
-
 describe('authenticateUser', () => {
-    before(() => mongoose.connect(MONGO_URL))
+    let client, db, users
 
-    beforeEach(() => User.deleteMany())
+    before(done => {
+        client = new MongoClient('mongodb://localhost:27017')
+
+        client.connect(error => {
+            if (error) return done(error)
+
+            db = client.db('demo')
+
+            context.db = db
+
+            users = db.collection('users')
+
+            done()
+        })
+    })
+
+    beforeEach(done =>
+        users.deleteMany({}, done)
+    )
 
     let user, userId
 
-    beforeEach(() => {
+    beforeEach(done => {
         user = {
             name: 'Wendy Pan',
             username: 'wendypan',
             password: '123123123'
         }
 
-        return User.create(user)
-            .then(user => userId = user.id)
+        users.insertOne(user, (error, result) => {
+            if (error) return done(error)
+
+            userId = result.insertedId.toString()
+
+            done()
+        })
     })
 
-    it('should succeed with correct credentials for an already existing user', () => {
+    it('should succeed with correct credentials for an already existing user', done => {
         const { username, password } = user
 
-        return authenticateUser(username, password)
-            .then(id => {
-                expect(id).to.exist
-                expect(id).to.equal(userId)
-            })
+        authenticateUser(username, password, (error, id) => {
+            if (error) return done(error)
+
+            expect(id).to.exist
+            expect(id).to.equal(userId)
+
+            done()
+        })
     })
 
-    it('should fail with incorrect password', () => {
+    it('should fail with incorrect password', done => {
         const { username, password } = user
 
-        return authenticateUser(username, password + '-wrong')
-            .then(() => { throw new Error('should not reach this point') })
-            .catch(error => {
-                expect(error).to.exist
-                expect(error).to.be.instanceOf(CredentialsError)
-                expect(error.message).to.equal('wrong credentials')
-            })
+        authenticateUser(username, password + '-wrong', (error, id) => {
+            expect(error).to.exist
+            expect(error).to.be.instanceOf(CredentialsError)
+            expect(error.message).to.equal('wrong credentials')
+
+            expect(id).to.be.undefined
+
+            done()
+        })
     })
 
-    it('should fail with incorrect username', () => {
+    it('should fail with incorrect username', done => {
         const { username, password } = user
 
-        return authenticateUser(username + '-wrong', password)
-            .then(() => { throw new Error('should not reach this point') })
-            .catch(error => {
-                expect(error).to.exist
-                expect(error).to.be.instanceOf(CredentialsError)
-                expect(error.message).to.equal('wrong credentials')
-            })
+        authenticateUser(username + '-wrong', password, (error, id) => {
+            expect(error).to.exist
+            expect(error.message).to.equal('wrong credentials')
+
+            expect(id).to.be.undefined
+
+            done()
+        })
     })
 
-    it('should fail with incorrect username and password', () => {
+    it('should fail with incorrect username and password', done => {
         const { username, password } = user
 
-        return authenticateUser(username + '-wrong', password + '-wrong')
-            .then(() => { throw new Error('should not reach this point') })
-            .catch(error => {
-                expect(error).to.exist
-                expect(error).to.be.instanceOf(CredentialsError)
-                expect(error.message).to.equal('wrong credentials')
-            })
+        authenticateUser(username + '-wrong', password + '-wrong', (error, id) => {
+            expect(error).to.exist
+            expect(error.message).to.equal('wrong credentials')
+
+            expect(id).to.be.undefined
+
+            done()
+        })
     })
 
     describe('when parameters are not valid', () => {
@@ -131,10 +158,25 @@ describe('authenticateUser', () => {
                 expect(() => authenticateUser('wendypan', '123123', () => { })).to.throw(FormatError, 'password has less than 8 characters')
             })
         })
+
+        describe('when callback is not valid', () => {
+            it('should fail when callback is not a string', () => {
+                expect(() => authenticateUser('wendypan', '123123123', true)).to.throw(TypeError, 'callback is not a function')
+
+                expect(() => authenticateUser('wendypan', '123123123', 123)).to.throw(TypeError, 'callback is not a function')
+
+                expect(() => authenticateUser('wendypan', '123123123', {})).to.throw(TypeError, 'callback is not a function')
+
+                expect(() => authenticateUser('wendypan', '123123123', '...')).to.throw(TypeError, 'callback is not a function')
+
+                expect(() => authenticateUser('wendypan', '123123123', [])).to.throw(TypeError, 'callback is not a function')
+            })
+        })
     })
 
-    after(() =>
-        User.deleteMany()
-            .then(() => mongoose.disconnect())
-    )
+    after(done => users.deleteMany({}, error => {
+        if (error) return done(error)
+
+        client.close(done)
+    }))
 })

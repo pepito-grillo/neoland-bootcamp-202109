@@ -1,74 +1,52 @@
+require('dotenv').config()
+
 const { expect } = require('chai')
 const retrieveUser = require('./retrieve-user')
-const { mongodb: { MongoClient, ObjectId } } = require('data')
-const context = require('./context')
+const { mongoose, models: { User } } = require('data')
+const { Types: { ObjectId } } = mongoose
 const { NotFoundError, FormatError } = require('errors')
 
+const { env: { MONGO_URL } } = process
+
 describe('retrieveUser', () => {
-    let client, db, users
+    before(() => mongoose.connect(MONGO_URL))
 
-    before(done => {
-        client = new MongoClient('mongodb://localhost:27017')
-
-        client.connect(error => {
-            if (error) return done(error)
-
-            db = client.db('demo')
-
-            context.db = db
-
-            users = db.collection('users')
-
-            done()
-        })
-    })
-
-    beforeEach(done =>
-        users.deleteMany({}, done)
-    )
+    beforeEach(() => User.deleteMany())
 
     let user, userId
 
-    beforeEach(done => {
+    beforeEach(() => {
         user = {
             name: 'Wendy Pan',
             username: 'wendypan',
             password: '123123123'
         }
 
-        users.insertOne(user, (error, result) => {
-            if (error) return done(error)
-
-            userId = result.insertedId.toString()
-
-            done()
-        })
+        return User.create(user)
+            .then(user => userId = user.id)
     })
 
-    it('should succeed with correct id for an already existing user', done => {
+    it('should succeed with correct id for an already existing user', () => {
         const { name, username } = user
 
-        retrieveUser(userId, (error, user) => {
-            if (error) return done(error)
-
-            expect(user).to.exist
-            expect(user.name).to.equal(name)
-            expect(user.username).to.equal(username)
-
-            done()
-        })
+        return retrieveUser(userId)
+            .then(user => {
+                expect(user).to.exist
+                expect(user.name).to.equal(name)
+                expect(user.username).to.equal(username)
+            })
     })
 
-    it('should fail with incorrect id', done => {
-        userId = ObjectId().toString()
+    it('should fail with incorrect id', () => {
+        userId = new ObjectId().toString()
 
-        retrieveUser(userId, (error, user) => {
-            expect(error).to.exist
-            expect(error).to.be.instanceOf(NotFoundError)
-            expect(error.message).to.equal(`user with id ${userId} not found`)
-
-            done()
-        })
+        return retrieveUser(userId)
+            .then(() => { throw new Error('should not reach this point') })
+            .catch(error => {
+                expect(error).to.exist
+                expect(error).to.be.instanceOf(NotFoundError)
+                expect(error.message).to.equal(`user with id ${userId} not found`)
+            })
     })
 
     describe('when parameters are not valid', () => {
@@ -101,25 +79,10 @@ describe('retrieveUser', () => {
                 expect(() => retrieveUser('abc', () => { })).to.throw(FormatError, 'id doesn\'t have 24 characters')
             })
         })
-
-        describe('when callback is not valid', () => {
-            it('should fail when callback is not a string', () => {
-                expect(() => retrieveUser('abcd1234abcd1234abcd1234', true)).to.throw(TypeError, 'callback is not a function')
-
-                expect(() => retrieveUser('abcd1234abcd1234abcd1234', 123)).to.throw(TypeError, 'callback is not a function')
-
-                expect(() => retrieveUser('abcd1234abcd1234abcd1234', {})).to.throw(TypeError, 'callback is not a function')
-
-                expect(() => retrieveUser('abcd1234abcd1234abcd1234', '...')).to.throw(TypeError, 'callback is not a function')
-
-                expect(() => retrieveUser('abcd1234abcd1234abcd1234', [])).to.throw(TypeError, 'callback is not a function')
-            })
-        })
     })
 
-    after(done => users.deleteMany({}, error => {
-        if (error) return done(error)
-
-        client.close(done)
-    }))
+    after(() =>
+        User.deleteMany()
+            .then(() => mongoose.disconnect())
+    )
 })

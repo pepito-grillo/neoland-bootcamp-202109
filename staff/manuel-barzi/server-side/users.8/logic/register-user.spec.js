@@ -1,14 +1,10 @@
-require('dotenv').config()
-
 const { expect } = require('chai')
 const registerUser = require('./register-user')
 const { mongoose, models: { User } } = require('data')
 const { ConflictError, FormatError } = require('errors')
 
-const { env: { MONGO_URL } } = process
-
 describe('registerUser', () => {
-    before(() => mongoose.connect(MONGO_URL))
+    before(() => mongoose.connect('mongodb://localhost:27017'))
 
     beforeEach(() => User.deleteMany())
 
@@ -44,7 +40,6 @@ describe('registerUser', () => {
             const { name, username, password } = user
 
             return registerUser(name, username, password)
-                .then(() => { throw new Error('should not reach this point') })
                 .catch(error => {
                     expect(error).to.exist
                     expect(error).to.be.instanceOf(ConflictError)

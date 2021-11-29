@@ -7,13 +7,13 @@ module.exports = (req, res) => {
     const { body: { username, password } } = req
 
     try {
-        authenticateUser(username, password)
-            .then(id => {
-                const token = jwt.sign({ sub: id, exp: Math.floor(Date.now() / 1000) + 3600 }, SECRET)
+        authenticateUser(username, password, (error, id) => {
+            if (error) return handleError(error, res)
 
-                res.json({ token })
-            })
-            .catch(error => handleError(error, res))
+            const token = jwt.sign({ sub: id, exp: Math.floor(Date.now() / 1000) + 3600 }, SECRET)
+
+            res.json({ token })
+        })
     } catch (error) {
         handleError(error, res)
     }

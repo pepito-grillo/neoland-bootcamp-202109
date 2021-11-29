@@ -1,27 +1,24 @@
-const context = require('./context')
-const { mongodb: { ObjectId } } = require('data')
-const { validateId, validateCallback } = require('./helpers/validators')
+const { models: { User } } = require('data')
+const { validateId } = require('./helpers/validators')
 const { NotFoundError } = require('errors')
 
-function retrieveUser(id, callback) {
+function retrieveUser(id) {
     validateId(id)
-    validateCallback(callback)
 
-    const users = context.db.collection('users')
+    return User.findById(id).lean()
+        .then(user => {
+            if (!user) throw new NotFoundError(`user with id ${id} not found`)
+debugger
+            user.id = user._id.toString()
 
-    users.findOne({ _id: ObjectId(id) }, (error, user) => {
-        if (error) return callback(error)
+            delete user._id
 
-        if (!user) return callback(new NotFoundError(`user with id ${id} not found`))
+            delete user.password
 
-        user.id = user._id.toString()
-        
-        delete user._id
+            delete user.__v
 
-        delete user.password
-
-        callback(null, user)
-    })
+            return user
+        })
 }
 
 module.exports = retrieveUser

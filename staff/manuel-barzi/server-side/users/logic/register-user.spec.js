@@ -18,7 +18,11 @@ describe('registerUser', () => {
         const password = '123123123'
 
         return registerUser(name, username, password)
-            .then(() => User.findOne({ username }))
+            .then(res => {
+                expect(res).to.be.undefined
+
+                return User.findOne({ username })
+            })
             .then(user => {
                 expect(user).to.exist
                 expect(user.name).to.equal(name)

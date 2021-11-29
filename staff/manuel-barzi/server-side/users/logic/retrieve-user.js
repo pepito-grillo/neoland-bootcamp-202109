@@ -8,7 +8,7 @@ function retrieveUser(id) {
     return User.findById(id).lean()
         .then(user => {
             if (!user) throw new NotFoundError(`user with id ${id} not found`)
-debugger
+
             user.id = user._id.toString()
 
             delete user._id

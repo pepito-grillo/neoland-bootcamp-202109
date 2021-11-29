@@ -11,11 +11,9 @@ module.exports = (req, res) => {
 
         const { sub: id } = jwt.verify(token, SECRET)
 
-        modifyUser(id, data, function (error) {
-            if (error) return handleError(error, res)
-
-            res.status(204).send()
-        })
+        modifyUser(id, data)
+            .then(() => res.status(204).send())
+            .catch(error => handleError(error, res))
     } catch (error) {
         handleError(error, res)
     }

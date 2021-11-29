@@ -1,146 +1,121 @@
+require('dotenv').config()
+
 const { expect } = require('chai')
 const modifyUser = require('./modify-user')
-const { mongodb: { MongoClient, ObjectId } } = require('data')
-const context = require('./context')
+const { mongoose, models: { User } } = require('data')
+const { Types: { ObjectId } } = mongoose
 const { CredentialsError, FormatError, ConflictError, NotFoundError } = require('errors')
 
+const { env: { MONGO_URL } } = process
+
 describe('modifyUser', () => {
-    let client, db, users
+    before(() => mongoose.connect(MONGO_URL))
 
-    before(done => {
-        client = new MongoClient('mongodb://localhost:27017')
+    beforeEach(() => User.deleteMany())
 
-        client.connect(error => {
-            if (error) return done(error)
+    let user, userId
 
-            db = client.db('demo')
+    beforeEach(() => {
+        user = {
+            name: 'Wendy Pan',
+            username: 'wendypan',
+            password: '123123123'
+        }
 
-            context.db = db
-
-            users = db.collection('users')
-
-            done()
-        })
+        return User.create(user)
+            .then(user => userId = user.id)
     })
 
-    beforeEach(done => users.deleteMany({}, done))
+    it('should succeed updating name and username on a pre-existing user', () => {
+        let { name, username } = user
 
-    describe('when user already exists', () => {
-        let user, userId
+        name += '-updated'
+        username += '-updated'
 
-        beforeEach(done => {
-            user = {
-                name: 'Wendy Pan',
-                username: 'wendypan',
-                password: '123123123'
-            }
+        const data = { name, username }
 
-            users.insertOne(user, (error, result) => {
-                if (error) return done(error)
+        return modifyUser(userId, data)
+            .then(res => {
+                expect(res).to.be.undefined
 
-                userId = result.insertedId.toString()
-
-                done()
+                return User.findById(userId)
             })
-        })
-
-        it('should succeed updating name and username on a pre-existing user', done => {
-            let { name, username } = user
-
-            name += '-updated'
-            username += '-updated'
-
-            const data = { name, username }
-
-            debugger
-
-            modifyUser(userId, data, error => {
-                if (error) return done(error)
-
-                users.findOne({ _id: ObjectId(userId) }, (error, user) => {
-                    if (error) return done(error)
-
-                    expect(user.name).to.equal(name)
-                    expect(user.username).to.equal(username)
-
-                    done()
-                })
+            .then(user => {
+                expect(user.name).to.equal(name)
+                expect(user.username).to.equal(username)
             })
-        })
+    })
 
-        it('should succeed updating password on a pre-existing user', done => {
-            const { password: oldPassword } = user
+    it('should succeed updating password on a pre-existing user', () => {
+        const { password: oldPassword } = user
 
-            const password = oldPassword + '-updated'
+        const password = oldPassword + '-updated'
 
-            const data = { oldPassword, password }
+        const data = { oldPassword, password }
 
-            modifyUser(userId, data, error => {
-                if (error) return done(error)
+        return modifyUser(userId, data)
+            .then(res => {
+                expect(res).to.be.undefined
 
-                users.findOne({ _id: ObjectId(userId) }, (error, user) => {
-                    if (error) return done(error)
-
-                    expect(user.password).to.equal(password)
-
-                    done()
-                })
+                return User.findById(userId)
             })
-        })
+            .then(user => expect(user.password).to.equal(password))
+    })
 
-        it('should fail updating password on a pre-existing user when old password is wrong', done => {
-            let { password: oldPassword } = user
+    it('should fail updating password on a pre-existing user when old password is wrong', () => {
+        let { password: oldPassword } = user
 
-            const password = oldPassword + '-updated'
+        const password = oldPassword + '-updated'
 
-            oldPassword += '-wrong'
+        oldPassword += '-wrong'
 
-            const data = { oldPassword, password }
+        const data = { oldPassword, password }
 
-            modifyUser(userId, data, error => {
+        return modifyUser(userId, data)
+            .then(() => { throw new Error('should not reach this point') })
+            .catch(error => {
                 expect(error).to.exist
                 expect(error).to.be.instanceOf(CredentialsError)
                 expect(error.message).to.equal('wrong password')
-
-                done()
             })
+    })
+
+    describe('when another user already exists', () => {
+        let user2
+
+        beforeEach(() => {
+            user2 = {
+                name: 'Peter Pan',
+                username: 'peterpan',
+                password: '123123123'
+            }
+
+            return User.create(user2)
         })
 
-        describe('when another user already exists', () => {
-            beforeEach(done => {
-                const user = {
-                    name: 'Peter Pan',
-                    username: 'peterpan',
-                    password: '123123123'
-                }
-
-                users.insertOne(user, done)
-            })
-
-            it('should fail on updating username to a one that already exists', done => {
-                const username = 'peterpan'
-
-                modifyUser(userId, { username }, error => {
+        it('should fail on updating username to a one that already exists', () => {
+            const username = user2.username
+            
+            return modifyUser(userId, { username })
+                .then(() => { throw new Error('should not reach this point') })
+                .catch(error => {
                     expect(error).to.exist
                     expect(error).to.be.instanceOf(ConflictError)
                     expect(error.message).to.equal(`user with username ${username} already exists`)
-
-                    done()
                 })
-            })
         })
     })
 
-    it('should fail when user id does not correspond to any user', done => {
+    it('should fail when user id does not correspond to any user', () => {
         const userId = ObjectId().toString()
 
-        modifyUser(userId, {}, error => {
-            expect(error).to.exist
-            expect(error).to.be.instanceOf(NotFoundError)
-            expect(error.message).to.equal(`user with id ${userId} not found`)
-
-            done()
-        })
+        return modifyUser(userId, {})
+            .then(() => { throw new Error('should not reach this point') })
+            .catch(error => {
+                expect(error).to.exist
+                expect(error).to.be.instanceOf(NotFoundError)
+                expect(error.message).to.equal(`user with id ${userId} not found`)
+            })
     })
 
     describe('when parameters are not valid', () => {
@@ -185,20 +160,6 @@ describe('modifyUser', () => {
                 expect(() => modifyUser('abcd1234abcd1234abcd1234', '...', () => { })).to.throw(TypeError, 'data is not an object')
 
                 expect(() => modifyUser('abcd1234abcd1234abcd1234', [], () => { })).to.throw(TypeError, 'data is not an object')
-            })
-        })
-
-        describe('when callback is not valid', () => {
-            it('should fail when callback is not a string', () => {
-                expect(() => modifyUser('abcd1234abcd1234abcd1234', {}, true)).to.throw(TypeError, 'callback is not a function')
-
-                expect(() => modifyUser('abcd1234abcd1234abcd1234', {}, 123)).to.throw(TypeError, 'callback is not a function')
-
-                expect(() => modifyUser('abcd1234abcd1234abcd1234', {}, {})).to.throw(TypeError, 'callback is not a function')
-
-                expect(() => modifyUser('abcd1234abcd1234abcd1234', {}, '...')).to.throw(TypeError, 'callback is not a function')
-
-                expect(() => modifyUser('abcd1234abcd1234abcd1234', {}, [])).to.throw(TypeError, 'callback is not a function')
             })
         })
 
@@ -329,9 +290,8 @@ describe('modifyUser', () => {
         })
     })
 
-    after(done => users.deleteMany({}, error => {
-        if (error) return done(error)
-
-        client.close(done)
-    }))
+    after(() =>
+        User.deleteMany()
+            .then(() => mongoose.disconnect())
+    )
 })

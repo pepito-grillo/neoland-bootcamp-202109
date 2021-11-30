@@ -1,6 +1,7 @@
 const { validateName, validateUsername, validatePassword } = require('./helpers/validators')
 const { ConflictError } = require('demo-errors')
 const { models: { User } } = require('demo-data')
+const bcrypt = require('bcryptjs')
 
 /**
  * TODO doc me
@@ -14,7 +15,7 @@ function registerUser(name, username, password) {
     validateUsername(username)
     validatePassword(password)
 
-    return User.create({ name, username, password })
+    return User.create({ name, username, password: bcrypt.hashSync(password) })
         .then(() => { })
         .catch(error => {
             if (error.code === 11000)

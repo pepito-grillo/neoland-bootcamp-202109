@@ -3,15 +3,24 @@ require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const { mongoose } = require('demo-data')
-const { registerUser, authenticateUser, retrieveUser, modifyUser, searchVehicles } = require('./handlers')
-const { context } = require('demo-logic')
+
+const {
+    registerUser,
+    authenticateUser,
+    retrieveUser,
+    modifyUser,
+    searchVehicles,
+    addCreditCardToUser
+} = require('./handlers')
+
+const logger = require('./utils/my-logger')
 
 const { env: { PORT, MONGO_URL }, argv: [, , port = PORT || 8080] } = process
 
+logger.info('starting server')
+
 mongoose.connect(MONGO_URL)
     .then(() => {
-        context.db = mongoose.connection.db
-
         const server = express()
 
         const api = express.Router()
@@ -25,8 +34,11 @@ mongoose.connect(MONGO_URL)
         api.get('/users', retrieveUser)
 
         api.patch('/users', jsonBodyParser, modifyUser)
+        
+        api.post('/users/cards', jsonBodyParser, addCreditCardToUser)
 
         api.get('/hotwheels/vehicles', searchVehicles)
+
 
         api.all('*', (req, res) => {
             res.status(404).json({ message: 'sorry, this endpoint isn\'t available' })
@@ -34,6 +46,12 @@ mongoose.connect(MONGO_URL)
 
         server.use('/api', api)
 
-        server.listen(port, () => console.log(`server up and listening on port ${port}`))
+        server.listen(port, () => logger.info(`server up and listening on port ${port}`))
+
+        process.on('SIGINT', () => {
+            logger.info('stopping server')
+
+            process.exit(0)
+        })
     })
-    .catch(error => console.error(error))
+    .catch(error => logger.error(error))

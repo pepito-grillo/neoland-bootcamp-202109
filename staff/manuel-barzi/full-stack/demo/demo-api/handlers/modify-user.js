@@ -1,15 +1,11 @@
 const { modifyUser } = require('demo-logic')
-const jwt = require('jsonwebtoken')
-const { env: { SECRET } } = process
-const handleError = require('./helpers/handle-error')
+const { handleError, validateAuthorizationAndExtractPayload } = require('./helpers')
 
 module.exports = (req, res) => {
     const { headers: { authorization }, body: data } = req
 
     try {
-        const [, token] = authorization.split(' ')
-
-        const { sub: id } = jwt.verify(token, SECRET)
+        const { sub: id } = validateAuthorizationAndExtractPayload(authorization)
 
         modifyUser(id, data)
             .then(() => res.status(204).send())

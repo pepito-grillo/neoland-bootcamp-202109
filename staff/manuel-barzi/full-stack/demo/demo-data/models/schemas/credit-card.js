@@ -9,7 +9,6 @@ const creditCard = new Schema({
     number: {
         type: String,
         required: true,
-        unique: true,
         validate: {
             validator(number) {
                 return number.length === 16

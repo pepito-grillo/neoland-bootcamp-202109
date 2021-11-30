@@ -1,5 +1,5 @@
 const { searchVehicles } = require('demo-logic')
-const handleError = require('./helpers/handle-error')
+const { handleError } = require('./helpers')
 
 module.exports = (req, res) => {
     const { query: { q } } = req

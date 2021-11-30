@@ -1,6 +1,7 @@
 const { mongoose, models: { User } } = require('demo-data')
 const { validateId, validateData } = require('./helpers/validators')
 const { NotFoundError, ConflictError, CredentialsError } = require('demo-errors')
+const bcrypt = require('bcryptjs')
 
 function modifyUser(id, data) {
     validateId(id)
@@ -13,14 +14,18 @@ function modifyUser(id, data) {
             const { password, oldPassword } = data
 
             if (password) {
-                if (oldPassword !== user.password)
+                if (!bcrypt.compareSync(oldPassword, user.password))
                     throw new CredentialsError('wrong password')
                 else
                     delete data.oldPassword
             }
 
-            for (const property in data)
-                user[property] = data[property]
+            for (const property in data) {
+                if (property === 'password')
+                    user[property] = bcrypt.hashSync(data[property])
+                else
+                    user[property] = data[property]
+            }
 
             return user.save()
                 .catch(error => {
@@ -29,7 +34,7 @@ function modifyUser(id, data) {
 
                     throw error
                 })
-                .then(() => {})
+                .then(() => { })
         })
 }
 

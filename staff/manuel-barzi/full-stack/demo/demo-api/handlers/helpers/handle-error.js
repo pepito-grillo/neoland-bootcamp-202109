@@ -1,5 +1,6 @@
 const { CredentialsError, ConflictError, FormatError, NotFoundError } = require('demo-errors')
 const { JsonWebTokenError, TokenExpiredError } = require('jsonwebtoken')
+const logger = require('../../utils/my-logger')
 
 function handleError(error, res) {
     let status = 500
@@ -12,6 +13,11 @@ function handleError(error, res) {
         status = 404
     else if (error instanceof ConflictError)
         status = 409
+
+    if (status < 500)
+        logger.warn(error.message)
+    else
+        logger.error(error.message)
 
     res.status(status).json({ error: error.message })
 }

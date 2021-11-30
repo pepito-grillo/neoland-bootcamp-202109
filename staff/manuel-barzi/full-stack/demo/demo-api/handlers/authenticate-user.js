@@ -1,7 +1,7 @@
 const { authenticateUser } = require('demo-logic')
 const jwt = require('jsonwebtoken')
 const { env: { SECRET } } = process
-const handleError = require('./helpers/handle-error')
+const { handleError } = require('./helpers')
 
 module.exports = (req, res) => {
     const { body: { username, password } } = req

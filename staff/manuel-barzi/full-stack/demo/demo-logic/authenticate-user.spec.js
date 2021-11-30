@@ -4,6 +4,7 @@ const { expect } = require('chai')
 const authenticateUser = require('./authenticate-user')
 const { mongoose, models: { User } } = require('demo-data')
 const { CredentialsError, FormatError } = require('demo-errors')
+const bcrypt = require('bcryptjs')
 
 const { env: { MONGO_URL } } = process
 
@@ -21,7 +22,7 @@ describe('authenticateUser', () => {
             password: '123123123'
         }
 
-        return User.create(user)
+        return User.create({ ...user, password: bcrypt.hashSync(user.password) })
             .then(user => userId = user.id)
     })
 

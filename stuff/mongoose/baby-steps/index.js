@@ -61,6 +61,13 @@ const user = new Schema({
             }
         ]
     },
+    data: {
+        type: Object,
+        // default: {}
+    },
+    favs: {
+        type: [String]
+    },
     creditCards: {
         type: [creditCard]
     }
@@ -107,6 +114,16 @@ mongoose.connect('mongodb://localhost/demo')
 
         return User.create({ name: 'Peter Pan', username: 'peterpan', password: '123123123' })
     })
+    .then(user => {
+        user.data = {}
+        user.data.color = 'red'
+        user.data.drink = 'coca-cola'
+
+        user.favs.push('123TH')
+        user.favs.push('345YU')
+
+        return user.save()
+    })
     // .then(user => {
     //     console.log('user saved')
 
@@ -142,34 +159,34 @@ mongoose.connect('mongodb://localhost/demo')
 
     //     return User.deleteOne({ id })
     // })
-    .then(user => {
-        const creditCard = new CreditCard({ number: '1234123412341234', expirationDate: new Date(2023, 10, 26) })
-        const creditCard2 = new CreditCard({ number: '2345234523452345', expirationDate: new Date(2024, 10, 26) })
+    // .then(user => {
+    //     const creditCard = new CreditCard({ number: '1234123412341234', expirationDate: new Date(2023, 10, 26) })
+    //     const creditCard2 = new CreditCard({ number: '2345234523452345', expirationDate: new Date(2024, 10, 26) })
 
-        //return creditCard.save()
+    //     //return creditCard.save()
 
-        user.creditCards.push(creditCard)
-        user.creditCards.push(creditCard2)
+    //     user.creditCards.push(creditCard)
+    //     user.creditCards.push(creditCard2)
 
-        return user.save()
-    })
-    .then(user => {
-        const property = new Property({ cadastre: '123T', address: 'Barcelona', owners: [user.id] })
+    //     return user.save()
+    // })
+    // .then(user => {
+    //     const property = new Property({ cadastre: '123T', address: 'Barcelona', owners: [user.id] })
 
-        return property.save()
-    })
-    .then(property => {
-        const user = new User({ name: 'Bu Rro', username: 'burro', password: '123123123' })
+    //     return property.save()
+    // })
+    // .then(property => {
+    //     const user = new User({ name: 'Bu Rro', username: 'burro', password: '123123123' })
 
-        property.owners.push(user.id)
+    //     property.owners.push(user.id)
 
-        return Promise.all([user.save(), property.save()])
-    })
-    .then(([user, property]) => {
-        const property2 = new Property({ cadastre: '345T', address: 'Tarragona', owners: [user.id] })
+    //     return Promise.all([user.save(), property.save()])
+    // })
+    // .then(([user, property]) => {
+    //     const property2 = new Property({ cadastre: '345T', address: 'Tarragona', owners: [user.id] })
 
-        return property2.save()
-    })
+    //     return property2.save()
+    // })
     // .then(property => {
     //     const [id] = property.owners
 
@@ -178,15 +195,15 @@ mongoose.connect('mongodb://localhost/demo')
     // .then(properties => {
     //     console.log(properties)
     // })
-    .then(() => {
-        return User.findOne({ username: 'peterpan'})
-    })
-    .then(user => {
-        return Property.find({ owners: user.id })
-    })
-    .then(properties => {
-        console.log(properties)
-    })
+    // .then(() => {
+    //     return User.findOne({ username: 'peterpan'})
+    // })
+    // .then(user => {
+    //     return Property.find({ owners: user.id })
+    // })
+    // .then(properties => {
+    //     console.log(properties)
+    // })
     .catch(error => {
         console.error(error.message)
     })

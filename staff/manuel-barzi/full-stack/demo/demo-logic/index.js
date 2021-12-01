@@ -1,17 +1,11 @@
-const registerUser = require('./register-user')
-const authenticateUser = require('./authenticate-user')
-const retrieveUser = require('./retrieve-user')
-const modifyUser = require('./modify-user')
-const unregisterUser = require('./unregister-user')
-const searchVehicles = require('./search-vehicles')
-const addCreditCardToUser = require('./add-credit-card-to-user')
-
 module.exports = {
-    registerUser,
-    authenticateUser,
-    retrieveUser,
-    modifyUser,
-    unregisterUser,
-    searchVehicles,
-    addCreditCardToUser
+    registerUser: require('./register-user'),
+    authenticateUser: require('./authenticate-user'),
+    retrieveUser: require('./retrieve-user'),
+    modifyUser: require('./modify-user'),
+    unregisterUser: require('./unregister-user'),
+    searchVehicles: require('./search-vehicles'),
+    addCreditCardToUser: require('./add-credit-card-to-user'),
+    registerProperty: require('./register-property'),
+    retrieveOwnersFromProperty: require('./retrieve-owners-from-property')
 }

@@ -45,8 +45,7 @@ const user = new Schema({
     },
     creditCards: {
         type: [creditCard]
-    },
-    
+    }
 })
 
 module.exports = user

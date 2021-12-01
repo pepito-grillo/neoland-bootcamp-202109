@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs')
 
 const { env: { MONGO_URL } } = process
 
-describe('authenticateUser', () => {
+describe.only('authenticateUser', () => {
     before(() => mongoose.connect(MONGO_URL))
 
     beforeEach(() => User.deleteMany())

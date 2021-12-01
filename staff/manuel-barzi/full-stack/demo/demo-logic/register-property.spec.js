@@ -9,7 +9,7 @@ const bcrypt = require('bcryptjs')
 
 const { env: { MONGO_URL } } = process
 
-describe.only('registerProperty', () => {
+describe('registerProperty', () => {
     before(() => mongoose.connect(MONGO_URL))
 
     beforeEach(() => Promise.all([User.deleteMany(), Property.deleteMany()]))
@@ -48,7 +48,6 @@ describe.only('registerProperty', () => {
         return registerProperty(cadastre, address, squareMeters, price, currency, [userId, ObjectId().toString()])
             .then(() => { throw new Error('should not reach this point') })
             .catch(error => {
-                debugger
                 expect(error).to.exist
                 expect(error).to.be.instanceOf(NotFoundError)
                 expect(error.message).to.equal('one or more of the owners do not exist')

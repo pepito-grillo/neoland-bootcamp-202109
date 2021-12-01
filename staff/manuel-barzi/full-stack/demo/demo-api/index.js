@@ -10,7 +10,9 @@ const {
     retrieveUser,
     modifyUser,
     searchVehicles,
-    addCreditCardToUser
+    addCreditCardToUser,
+    registerProperty,
+    retrieveOwnersFromProperty
 } = require('./handlers')
 
 const logger = require('./utils/my-logger')
@@ -39,6 +41,9 @@ mongoose.connect(MONGO_URL)
 
         api.get('/hotwheels/vehicles', searchVehicles)
 
+        api.post('/properties', jsonBodyParser, registerProperty)
+
+        api.get('/properties/:propertyId', retrieveOwnersFromProperty)
 
         api.all('*', (req, res) => {
             res.status(404).json({ message: 'sorry, this endpoint isn\'t available' })

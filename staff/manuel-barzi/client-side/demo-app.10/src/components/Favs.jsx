@@ -1,27 +1,18 @@
-import logger from '../logger'
+import logger from '../logger.js'
+import { useState, useEffect } from 'react'
+import { retrieveFavVehicles, toggleFavVehicle } from '../logic'
+import './Favs.css'
 
-import './Results.css'
-import { useQueryParams } from '../hooks'
-import { useState, useEffect, useContext } from 'react'
-import { searchVehicles, toggleFavVehicle } from '../logic'
-import AppContext from './AppContext'
-
-function Results({ onItem }) {
-    logger.debug('Results -> render')
-
-    const { onFlowStart, onFlowEnd, onFeedback } = useContext(AppContext)
+function Favs({ onBack, onItem, onFlowStart, onFlowEnd, onFeedback }) {
+    logger.debug('Favs -> render')
 
     const [vehicles, setVehicles] = useState()
-
-    const queryParams = useQueryParams()
-
-    const query = queryParams.get('q')
 
     useEffect(() => {
         onFlowStart()
 
         try {
-            searchVehicles(sessionStorage.token, query, (error, vehicles) => {
+            retrieveFavVehicles(sessionStorage.token, (error, vehicles) => {
                 if (error) {
                     onFlowEnd()
 
@@ -30,16 +21,16 @@ function Results({ onItem }) {
                     return
                 }
 
-                setVehicles(vehicles)
-
                 onFlowEnd()
+
+                setVehicles(vehicles)
             })
         } catch ({ message }) {
             onFlowEnd()
 
             onFeedback(message, 'warn')
         }
-    }, [query])
+    }, [])
 
     const toggleFav = id => {
         onFlowStart()
@@ -54,13 +45,7 @@ function Results({ onItem }) {
                     return
                 }
 
-                setVehicles(vehicles.map(vehicle => {
-                    if (vehicle.id === id) {
-                        return { ...vehicle, isFav: !vehicle.isFav }
-                    }
-
-                    return vehicle
-                }))
+                setVehicles(vehicles.filter(vehicle => vehicle.id !== id))
 
                 onFlowEnd()
             })
@@ -71,8 +56,11 @@ function Results({ onItem }) {
         }
     }
 
-    return vehicles && vehicles.length ?
-        <ul className="results container container--vertical">
+    return <>
+        <button className="button" onClick={onBack}>Go back</button>
+
+        {vehicles && vehicles.length ?
+        <ul className="favs container container--vertical">
             {
                 vehicles.map(({ id, name, thumbnail, image, price, isFav }) => <li key={id} className="home__result" onClick={() => onItem(id)}>
                     <div className="container">
@@ -83,13 +71,14 @@ function Results({ onItem }) {
                             toggleFav(id)
                         }}>{isFav ? '💜' : '🤍'}</button>
                     </div>
-                    <img className="results__image" src={thumbnail || image} />
+                    <img className="favs__image" src={thumbnail || image} />
                     <span>{price} $</span>
                 </li>)
             }
         </ul>
         :
-        null
+        null}
+    </>
 }
 
-export default Results
+export default Favs

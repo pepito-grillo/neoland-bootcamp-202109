@@ -1,17 +1,14 @@
 import logger from '../logger'
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect } from 'react'
 import {
     addVehicleToCart,
     retrieveVehiclesCart,
     removeVehicleFromCart
 } from '../logic'
 import './Cart.css'
-import AppContext from './AppContext'
 
-function Cart({ onItem, onBack }) {
+function Cart({ onItem, onBack, onFlowStart, onFlowEnd, onFeedback }) {
     logger.debug('Cart -> render')
-
-    const { onFlowStart, onFlowEnd, onFeedback } = useContext(AppContext)
 
     const [vehicles, setVehicles] = useState()
 

@@ -1,0 +1,9 @@
+.logo__image {
+    width: 5vw;
+}
+
+.logo__text {
+    color: dodgerblue;
+    margin: 0 0 0 1rem;
+    font-family: 'Henny Penny';
+}

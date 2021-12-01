@@ -1,13 +1,10 @@
-import { useState, useContext } from 'react'
+import { useState } from 'react'
 import logger from '../logger'
 import Unregister from './Unregister'
 import { updateUserPassword, unregisterUser } from '../logic'
-import AppContext from './AppContext'
 
-function Profile({ onBack, onSignOut }) {
+function Profile({ onBack, onSignOut, onFlowStart, onFlowEnd, onFeedback }) {
     logger.debug('Profile -> render')
-
-    const { onFlowStart, onFlowEnd, onFeedback } = useContext(AppContext)
 
     const [view, setView] = useState('update-password')
 

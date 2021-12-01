@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext } from 'react'
+import { useState, useEffect } from 'react'
 import logger from '../logger'
 import { retrieveUser, signupUser, signinUser } from '../logic'
 import Logo from './Logo'
@@ -10,7 +10,6 @@ import SignIn from './SignIn'
 import Home from './Home'
 import Spinner from './Spinner'
 import Feedback from './Feedback'
-import AppContext from './AppContext'
 
 function App() {
     logger.debug('App -> render')
@@ -143,38 +142,32 @@ function App() {
     }
 
     return <>
-        <AppContext.Provider value={{
-            onFlowStart: showSpinner,
-            onFlowEnd: hideSpinner,
-            onFeedback: showFeedback
-        }}>
-            <Logo image="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Flat_tick_icon.svg/1200px-Flat_tick_icon.svg.png" text="Demo App" />
-            <Time />
+        <Logo image="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Flat_tick_icon.svg/1200px-Flat_tick_icon.svg.png" text="Demo App" />
+        <Time />
 
-            {view === 'landing' && <Landing
-                onSignIn={goToSignIn}
-                onSignUp={goToSignUp}
+        {view === 'landing' && <Landing
+            onSignIn={goToSignIn}
+            onSignUp={goToSignUp}
+        />}
+
+        {view === 'signup' && <SignUp onSignUp={signUp} onSignIn={goToSignIn} />}
+
+        {view === 'post-signup' && <PostSignUp onSignIn={goToSignIn} />}
+
+        {view === 'signin' && <SignIn onSignIn={signIn} onSignUp={goToSignUp} />}
+
+        {view === 'home' &&
+            <Home
+                name={name}
+                onSignOut={resetTokenAndGoToLanding}
+                onFlowStart={showSpinner}
+                onFlowEnd={hideSpinner}
+                onFeedback={showFeedback}
             />}
 
-            {view === 'signup' && <SignUp onSignUp={signUp} onSignIn={goToSignIn} />}
+        {feedback && <Feedback level={level} message={feedback} onAccept={acceptFeedback} />}
 
-            {view === 'post-signup' && <PostSignUp onSignIn={goToSignIn} />}
-
-            {view === 'signin' && <SignIn onSignIn={signIn} onSignUp={goToSignUp} />}
-
-            {view === 'home' &&
-                <Home
-                    name={name}
-                    onSignOut={resetTokenAndGoToLanding}
-                    onFlowStart={showSpinner}
-                    onFlowEnd={hideSpinner}
-                    onFeedback={showFeedback}
-                />}
-
-            {feedback && <Feedback level={level} message={feedback} onAccept={acceptFeedback} />}
-
-            {spinner && <Spinner />}
-        </AppContext.Provider>
+        {spinner && <Spinner />}
     </>
 }
 

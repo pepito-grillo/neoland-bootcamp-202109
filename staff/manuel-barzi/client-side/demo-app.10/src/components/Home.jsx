@@ -10,7 +10,7 @@ import Cart from './Cart'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { useQueryParams } from '../hooks'
 
-function Home({ name, onSignOut }) {
+function Home({ name, onFlowStart, onFlowEnd, onSignOut, onFeedback }) {
     logger.debug('Home -> render')
 
     const queryParams = useQueryParams()
@@ -49,16 +49,16 @@ function Home({ name, onSignOut }) {
         <Routes>
             <Route path="/" element={<Search onSearch={search} query={query} />}>
                 <Route path="search" element={
-                    <Results onItem={goToItem} />
+                    <Results onItem={goToItem} onFlowStart={onFlowStart} onFlowEnd={onFlowEnd} onFeedback={onFeedback} />
                 } />
                 <Route path="vehicles/:id" element={
-                    <Detail onBack={goToSearch} />
+                    <Detail onBack={goToSearch} onFlowStart={onFlowStart} onFlowEnd={onFlowEnd} onFeedback={onFeedback} />
                 } />
             </Route>
 
-            <Route path="/profile" element={<Profile onBack={goToSearch} onSignOut={onSignOut} />} />
-            <Route path="/favs" element={<Favs onBack={goToSearch} onItem={goToItem} />} />
-            <Route path="/cart" element={<Cart onBack={goToSearch} onItem={goToItem} />} />
+            <Route path="/profile" element={<Profile onBack={goToSearch} onSignOut={onSignOut} onFlowStart={onFlowStart} onFlowEnd={onFlowEnd} onFeedback={onFeedback} />} />
+            <Route path="/favs" element={<Favs onBack={goToSearch} onItem={goToItem} onFlowStart={onFlowStart} onFlowEnd={onFlowEnd} onFeedback={onFeedback} />} />
+            <Route path="/cart" element={<Cart onBack={goToSearch} onItem={goToItem} onFlowStart={onFlowStart} onFlowEnd={onFlowEnd} onFeedback={onFeedback} />} />
         </Routes>
     </div>
 }

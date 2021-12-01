@@ -1,13 +1,10 @@
 import logger from '../logger'
 import { useParams } from 'react-router-dom'
 import { retrieveVehicle, toggleFavVehicle, addVehicleToCart } from '../logic'
-import { useState, useEffect, useContext } from 'react'
-import AppContext from './AppContext'
+import { useState, useEffect } from 'react'
 
-function Detail({ onBack }) {
+function Detail({ onBack, onToggleFav, onAddToCart, onFlowStart, onFlowEnd, onFeedback }) {
     logger.debug('Detail -> render')
-
-    const { onFlowStart, onFlowEnd, onFeedback } = useContext(AppContext)
 
     const { id } = useParams()
     const [vehicle, setVehicle] = useState()

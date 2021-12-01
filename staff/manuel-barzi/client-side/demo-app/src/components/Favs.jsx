@@ -1,10 +1,13 @@
 import logger from '../logger.js'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { retrieveFavVehicles, toggleFavVehicle } from '../logic'
 import './Favs.css'
+import AppContext from './AppContext'
 
-function Favs({ onBack, onItem, onFlowStart, onFlowEnd, onFeedback }) {
+function Favs({ onBack, onItem }) {
     logger.debug('Favs -> render')
+
+    const { onFlowStart, onFlowEnd, onFeedback } = useContext(AppContext)
 
     const [vehicles, setVehicles] = useState()
 

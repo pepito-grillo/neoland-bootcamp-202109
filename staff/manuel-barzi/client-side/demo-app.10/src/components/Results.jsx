@@ -2,14 +2,11 @@ import logger from '../logger'
 
 import './Results.css'
 import { useQueryParams } from '../hooks'
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect } from 'react'
 import { searchVehicles, toggleFavVehicle } from '../logic'
-import AppContext from './AppContext'
 
-function Results({ onItem }) {
+function Results({ onItem, onFlowStart, onFlowEnd, onFeedback }) {
     logger.debug('Results -> render')
-
-    const { onFlowStart, onFlowEnd, onFeedback } = useContext(AppContext)
 
     const [vehicles, setVehicles] = useState()
 

@@ -1,0 +1,29 @@
+.feedback {
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.3);
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.feedback__text {
+    color: black;
+    font-family: 'Bebas Neue';
+}
+
+.feedback__text--info {
+    color: blue;
+}
+
+.feedback__text--warn {
+    color: yellow;
+}
+
+.feedback__text--success {
+    color: green;
+}
+
+.feedback__text--error {
+    color: red;
+}

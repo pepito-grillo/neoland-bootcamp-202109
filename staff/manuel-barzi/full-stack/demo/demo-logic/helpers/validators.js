@@ -83,6 +83,15 @@ function validateCreditCardCVV(cvv) {
     if (isNaN(cvv)) throw new FormatError('cvv is not numeric')
 }
 
+function validateString(string) {
+    if (typeof string !== 'string') throw new TypeError(`${string} is not a string`)
+    if (!string.trim().length) throw new FormatError('string is empty or blank')
+}
+
+function validateNumber(number) {
+    if (typeof number !== 'number') throw new TypeError(`${number} is not a number`)
+}
+
 module.exports = {
     validateId,
     validateUsername,
@@ -93,5 +102,7 @@ module.exports = {
     validateCallback,
     validateCreditCardNumber,
     validateDate,
-    validateCreditCardCVV
+    validateCreditCardCVV,
+    validateString,
+    validateNumber
 }

@@ -1,7 +1,8 @@
 const { model } = require('mongoose')
-const { user, creditCard } = require('./schemas')
+const { user, creditCard, property } = require('./schemas')
 
 module.exports = {
     User: model('User', user),
-    CreditCard: model('CreditCard', creditCard)
+    CreditCard: model('CreditCard', creditCard),
+    Property: model('Property', property)
 }

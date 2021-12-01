@@ -18,6 +18,18 @@ const property = new Schema({
         }],
         required: true
     },
+    squareMeters: {
+        type: Number,
+        required: true
+    },
+    price: {
+        type: Number,
+        required: true
+    },
+    currency: {
+        type: String,
+        required: true
+    },
     notes: {
         type: [note]
     }

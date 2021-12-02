@@ -26,3 +26,8 @@
 
 ![blocks](./images/blocks.jpg)
 
+### Sequences
+
+![register sequence](./images/register-sequence.jpg)
+
+

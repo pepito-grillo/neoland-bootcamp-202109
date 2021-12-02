@@ -36,4 +36,19 @@
 
 ![data model](./images/data-model.jpg)
 
+### Code coverage
 
+![code coverage]('./../images/code-coverage.jpg)
+
+### Technologies
+
+<table>
+    <row>
+        <td>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Unofficial_JavaScript_logo_2.svg/1024px-Unofficial_JavaScript_logo_2.svg.png" title="JS" width="50"/>
+        </td>
+        <td>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d9/Node.js_logo.svg" title="JS" width="50"/>
+        <td>
+    </row>
+</table>

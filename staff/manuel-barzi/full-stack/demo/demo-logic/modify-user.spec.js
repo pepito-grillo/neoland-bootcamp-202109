@@ -1,5 +1,7 @@
 require('dotenv').config()
 
+const mocha = require('mocha')
+
 const { expect } = require('chai')
 const modifyUser = require('./modify-user')
 const { mongoose, models: { User } } = require('demo-data')

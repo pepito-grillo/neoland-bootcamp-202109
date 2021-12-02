@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha *.spec.js",
-    "test-inspect": "mocha --inspect *.spec.js",
-    "test-inspect-brk": "mocha --inspect-brk *.spec.js",
-    "test-coverage": "nyc --reporter=html --reporter=text mocha *.spec.js"
+    "test": "mocha --timeout 5000 *.spec.js",
+    "test-inspect": "mocha --timeout 5000 --inspect *.spec.js",
+    "test-inspect-brk": "mocha --timeout 5000 --inspect-brk *.spec.js",
+    "test-coverage": "nyc --reporter=html --reporter=text mocha --timeout 5000 *.spec.js"
   },
   "keywords": [],
   "author": "",

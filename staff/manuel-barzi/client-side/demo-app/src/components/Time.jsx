@@ -1,6 +1,6 @@
 import { Component } from 'react'
 import logger from '../logger'
-import './Time.css'
+import './Time.sass'
 
 class Time extends Component {
     constructor() {

@@ -5,7 +5,7 @@ import {
     retrieveVehiclesCart,
     removeVehicleFromCart
 } from '../logic'
-import './Cart.css'
+import './Cart.sass'
 import AppContext from './AppContext'
 
 function Cart({ onItem, onBack }) {

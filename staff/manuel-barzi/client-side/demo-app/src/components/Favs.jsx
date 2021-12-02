@@ -1,7 +1,7 @@
 import logger from '../logger.js'
 import { useState, useEffect, useContext } from 'react'
 import { retrieveFavVehicles, toggleFavVehicle } from '../logic'
-import './Favs.css'
+import './Favs.sass'
 import AppContext from './AppContext'
 
 function Favs({ onBack, onItem }) {

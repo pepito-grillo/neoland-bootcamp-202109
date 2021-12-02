@@ -1,6 +1,6 @@
 import logger from '../logger'
 
-import './Results.css'
+import './Results.sass'
 import { useQueryParams } from '../hooks'
 import { useState, useEffect, useContext } from 'react'
 import { searchVehicles, toggleFavVehicle } from '../logic'

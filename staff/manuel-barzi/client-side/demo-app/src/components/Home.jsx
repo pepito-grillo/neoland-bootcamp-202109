@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import logger from '../logger'
-import './Home.css'
+import './Home.sass'
 import Search from './Search'
 import Results from './Results'
 import Detail from './Detail'

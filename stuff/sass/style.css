@@ -1,0 +1,43 @@
+body {
+  background-color: lightgray;
+}
+
+h1 {
+  color: black;
+}
+
+.panel {
+  background-color: lightgray;
+  padding: 1.5rem;
+  border: 1px solid black;
+}
+
+.button {
+  background-color: white;
+  padding: 1rem;
+  border: 1px solid black;
+}
+
+.error, .warning, .success, .message {
+  background-color: lightgray;
+  padding: 1.5rem;
+  border: 1px solid black;
+}
+
+.message {
+  background-color: white;
+}
+
+.success {
+  background-color: green;
+}
+
+.warning {
+  background-color: yellow;
+}
+
+.error {
+  background-color: red;
+}
+
+/*# sourceMappingURL=style.css.map */

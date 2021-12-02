@@ -1,0 +1,18 @@
+%feedback
+    @include rectangle($padding: 1.5rem)
+
+.message
+    @extend %feedback
+    background-color: white
+
+.success
+    @extend %feedback
+    background-color: green
+
+.warning
+    @extend %feedback
+    background-color: yellow
+
+.error
+    @extend %feedback
+    background-color: red

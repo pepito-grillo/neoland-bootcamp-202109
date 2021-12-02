@@ -32,4 +32,8 @@
 
 ![register sequence](./images/register-sequence.jpg)
 
+### Data model
+
+![data model](./images/data-model.jpg)
+
 

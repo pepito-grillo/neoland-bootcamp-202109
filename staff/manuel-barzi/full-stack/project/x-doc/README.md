@@ -28,6 +28,8 @@
 
 ### Sequences
 
+#### Register user
+
 ![register sequence](./images/register-sequence.jpg)
 
 

@@ -72,17 +72,18 @@ function App() {
         showSpinner()
 
         try {
-            signupUser(name, username, password)
-                .then(() => {
-                    hideSpinner()
-
-                    setView('post-signup')
-                })
-                .catch(error => {
+            signupUser(name, username, password, error => {
+                if (error) {
                     hideSpinner()
 
                     showFeedback(error.message)
-                })
+
+                    return
+                }
+
+                setView('post-signup')
+                setSpinner(false)
+            })
         } catch ({ message }) {
             hideSpinner()
 

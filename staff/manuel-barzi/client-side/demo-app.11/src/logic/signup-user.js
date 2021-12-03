@@ -9,7 +9,7 @@
  * @throws {TypeError} When any of the arguments does not match the correct type.
  * @throws {Error} When any of the arguments does not contain the correct format.
  */
-function signupUser(name, username, password) {
+ function signupUser(name, username, password, callback) {
     if (typeof name !== 'string') throw new TypeError(name + ' is not a string')
     if (!name.trim().length) throw new Error('name is empty or blank')
     if (name.trim() !== name) throw new Error('blank spaces around name')
@@ -24,27 +24,31 @@ function signupUser(name, username, password) {
     if (/\r?\n|\r|\t| /g.test(password)) throw new Error('password has blank spaces')
     if (password.length < 6) throw new Error('password has less than 6 characters')
 
-    return fetch('https://b00tc4mp.herokuapp.com/api/v2/users', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name, username, password })
-    })
-        .then(res => {
-            const { status } = res
+    if (typeof callback !== 'function') throw new TypeError(`${callback} is not a function`)
 
-            if (status === 201)
-                return
-            else if (status === 409 || status === 400) {
-                return res.json()
-                    .then(content => {
-                        throw new Error(content.error)
-                    })
-            } else {
-                throw new Error('unknown error')
-            }
-        })
+    const xhr = new XMLHttpRequest
+
+    xhr.onload = () => {
+        const { status, responseText } = xhr
+
+        if (status === 409 || status === 400) {
+            const response = JSON.parse(responseText)
+
+            const message = response.error
+
+            callback(new Error(message))
+        } else if (status === 201) {
+            callback(null)
+        }
+    }
+
+    xhr.open('POST', 'https://b00tc4mp.herokuapp.com/api/v2/users')
+
+    xhr.setRequestHeader('Content-Type', 'application/json')
+
+    const body = { name, username, password }
+
+    xhr.send(JSON.stringify(body))
 }
 
 export default signupUser

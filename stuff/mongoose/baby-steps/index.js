@@ -70,6 +70,11 @@ const user = new Schema({
     },
     creditCards: {
         type: [creditCard]
+    },
+    role: {
+        type: String,
+        enum: ['NORMAL', 'ADMIN'],
+        default: 'NORMAL'
     }
 })
 
@@ -112,7 +117,7 @@ mongoose.connect('mongodb://localhost/demo')
 
         //return user.save()
 
-        return User.create({ name: 'Peter Pan', username: 'peterpan', password: '123123123' })
+        return User.create({ name: 'Peter Pan', username: 'peterpan', password: '123123123', role: 'ADMIN' })
     })
     .then(user => {
         user.data = {}

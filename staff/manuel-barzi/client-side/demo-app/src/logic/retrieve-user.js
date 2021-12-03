@@ -1,35 +1,26 @@
-function retrieveUser(token, callback) {
-    // if (!token) throw new Error('invalid token')
+import context from './context'
+
+function retrieveUser(token) {
     if (typeof token !== 'string') throw new TypeError(`${token} is not a string`)
     if (!/[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)$/.test(token)) throw new Error('invalid token')
 
-    if (typeof callback !== 'function') throw new TypeError(`${callback} is not a function`)
+    return (async () => {
+        const res = await fetch(`${context.API_URL}/v2/users`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
 
-    const xhr = new XMLHttpRequest
+        const { status } = res
 
-    xhr.onload = () => {
-        const { status, responseText } = xhr
+        if (status === 200) {
+            return await res.json()
+        } else if (status === 401 || status === 404) {
+            const { error } = res.json()
 
-        if (status === 401 || status === 404) {
-            const response = JSON.parse(responseText)
-
-            const message = response.error
-
-            callback(new Error(message))
-        } else if (status === 200) {
-            const response = responseText
-
-            const user = JSON.parse(response)
-
-            callback(null, user)
-        }
-    }
-
-    xhr.open('GET', 'https://b00tc4mp.herokuapp.com/api/v2/users')
-
-    xhr.setRequestHeader('Authorization', `Bearer ${token}`)
-
-    xhr.send()
+            throw new Error(error)
+        } else throw new Error('unknow error')
+    })()
 }
 
 export default retrieveUser

@@ -10,6 +10,7 @@ import retrieveFavVehicles from './retrieve-fav-vehicles'
 import addVehicleToCart from './add-vehicle-to-cart'
 import retrieveVehiclesCart from './retrieve-vehicles-cart'
 import removeVehicleFromCart from './remove-vehicle-from-cart'
+import context from './context'
 
 export {
     signinUser,
@@ -23,5 +24,6 @@ export {
     retrieveFavVehicles,
     addVehicleToCart,
     retrieveVehiclesCart,
-    removeVehicleFromCart
+    removeVehicleFromCart,
+    context
 }

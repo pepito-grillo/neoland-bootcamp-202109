@@ -1,31 +1,14 @@
-import logger from '../logger'
-import { useContext } from 'react'
-import AppContext from './AppContext'
-import { signupUser } from '../logic'
+import logger from '../../../demo-app.11/src/logger'
 
-function SignUp({ onSignedUp, onSignIn }) {
+function SignUp({ onSignUp, onSignIn }) {
     logger.debug('SignUp -> render')
 
-    const { onFlowStart, onFlowEnd, onFeedback } = useContext(AppContext)
-
-    return <form className="container container--vertical container--gapped" onSubmit={async event => {
+    return <form className="container container--vertical container--gapped" onSubmit={event => {
         event.preventDefault()
 
         const { target: { name: { value: name }, username: { value: username }, password: { value: password } } } = event
 
-        try {
-            onFlowStart()
-        
-            await signupUser(name, username, password)
-
-            onFlowEnd()
-
-            onSignedUp()
-        } catch ({ message }) {
-            onFlowEnd()
-
-            onFeedback(message, 'warn')
-        }
+        onSignUp(name, username, password)
     }}>
         <input className="field" type="text" name="name" id="name" placeholder="name" />
         <input className="field" type="text" name="username" id="username" placeholder="username" />

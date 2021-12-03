@@ -13,9 +13,11 @@ function Detail({ onBack }) {
     const [vehicle, setVehicle] = useState()
 
     useEffect(() => {
-        onFlowStart()
+        logger.debug('Detail -> useEffect (componentDidMount)')
 
         try {
+            onFlowStart()
+
             retrieveVehicle(sessionStorage.token, id, (error, vehicle) => {
                 if (error) {
                     onFlowEnd()
@@ -37,9 +39,9 @@ function Detail({ onBack }) {
     }, [id])
 
     const toggleFav = id => {
-        onFlowStart()
-
         try {
+            onFlowStart()
+
             toggleFavVehicle(sessionStorage.token, id, error => {
                 if (error) {
                     onFlowEnd()
@@ -61,9 +63,9 @@ function Detail({ onBack }) {
     }
 
     const addToCart = id => {
-        onFlowStart()
-
         try {
+            onFlowStart()
+
             addVehicleToCart(sessionStorage.token, id, error => {
                 if (error) {
                     onFlowEnd()

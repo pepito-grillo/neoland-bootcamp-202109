@@ -26,25 +26,25 @@ function signupUser(name, username, password) {
     if (/\r?\n|\r|\t| /g.test(password)) throw new Error('password has blank spaces')
     if (password.length < 6) throw new Error('password has less than 6 characters')
 
-    return (async () => {
-        const res = await fetch(`${context.API_URL}/v2/users`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ name, username, password })
+    return fetch(`${context.API_URL}/v2/users`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name, username, password })
+    })
+        .then(res => {
+            const { status } = res
+
+            if (status === 201)
+                return
+            else if (status === 409 || status === 400) {
+                return res.json()
+                    .then(content => {
+                        throw new Error(content.error)
+                    })
+            } else throw new Error('unknown error')
         })
-
-        const { status } = res
-
-        if (status === 201)
-            return
-        else if (status === 409 || status === 400) {
-            const { error } = await res.json()
-
-            throw new Error(error)
-        } else throw new Error('unknown error')
-    })()
 }
 
 export default signupUser

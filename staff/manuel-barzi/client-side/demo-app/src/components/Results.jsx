@@ -18,9 +18,11 @@ function Results({ onItem }) {
     const query = queryParams.get('q')
 
     useEffect(() => {
-        onFlowStart()
+        logger.debug('Results -> useEffect (componentDidMount)')
 
         try {
+            onFlowStart()
+        
             searchVehicles(sessionStorage.token, query, (error, vehicles) => {
                 if (error) {
                     onFlowEnd()
@@ -30,9 +32,9 @@ function Results({ onItem }) {
                     return
                 }
 
-                setVehicles(vehicles)
-
                 onFlowEnd()
+
+                setVehicles(vehicles)
             })
         } catch ({ message }) {
             onFlowEnd()
@@ -42,9 +44,9 @@ function Results({ onItem }) {
     }, [query])
 
     const toggleFav = id => {
-        onFlowStart()
-
         try {
+            onFlowStart()
+        
             toggleFavVehicle(sessionStorage.token, id, error => {
                 if (error) {
                     onFlowEnd()
@@ -53,6 +55,8 @@ function Results({ onItem }) {
 
                     return
                 }
+                
+                onFlowEnd()
 
                 setVehicles(vehicles.map(vehicle => {
                     if (vehicle.id === id) {
@@ -61,8 +65,6 @@ function Results({ onItem }) {
 
                     return vehicle
                 }))
-
-                onFlowEnd()
             })
         } catch ({ message }) {
             onFlowEnd()

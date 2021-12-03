@@ -18,27 +18,26 @@ function signinUser(username, password) {
     if (/\r?\n|\r|\t| /g.test(password)) throw new Error('password has blank spaces')
     if (password.length < 6) throw new Error('password has less than 6 characters')
 
-    return (async () => {
-        const res = await fetch(`${context.API_URL}/v2/users/auth`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ username, password })
+    return fetch(`${context.API_URL}/v2/users/auth`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+    })
+        .then(res => {
+            const { status } = res
+
+            if (status === 200) {
+                return res.json()
+                    .then(content => content.token)
+            } else if (status === 401) {
+                return res.json()
+                    .then(content => {
+                        throw new Error(content.error)
+                    })
+            } else throw new Error('unknown error')
         })
-
-        const { status } = res
-
-        if (status === 200) {
-            const { token } = await res.json()
-
-            return token
-        } else if (status === 401) {
-            const { error } = await res.json()
-
-            throw new Error(error)
-        } else throw new Error('unknown error')
-    })()
 }
 
 export default signinUser

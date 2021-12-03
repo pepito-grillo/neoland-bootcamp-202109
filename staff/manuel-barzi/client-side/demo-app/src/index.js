@@ -4,6 +4,14 @@ import './style.sass'
 import App from './components/App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from 'react-router-dom'
+import logger from './logger'
+import { context } from './logic'
+
+logger.level = process.env.REACT_APP_LOGGER_LEVEL
+
+context.API_URL = process.env.REACT_APP_API_URL
+
+logger.info('Starting app...')
 
 ReactDOM.render(
   <React.StrictMode>

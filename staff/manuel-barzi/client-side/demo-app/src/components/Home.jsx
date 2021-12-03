@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import logger from '../logger'
 import './Home.sass'
 import Search from './Search'
@@ -9,9 +9,15 @@ import Favs from './Favs'
 import Cart from './Cart'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { useQueryParams } from '../hooks'
+import { retrieveUser } from '../logic'
+import AppContext from './AppContext'
 
-function Home({ name, onSignOut }) {
+function Home({ onSignOut, onAuthError }) {
     logger.debug('Home -> render')
+
+    const { onFlowStart, onFlowEnd, onFeedback } = useContext(AppContext)
+
+    const [name, setName] = useState(null)
 
     const queryParams = useQueryParams()
 
@@ -20,6 +26,32 @@ function Home({ name, onSignOut }) {
     const navigate = useNavigate()
 
     const location = useLocation()
+
+    useEffect(async () => {
+        logger.debug('Home -> useEffect (componentDidMount)')
+
+        const { token } = sessionStorage
+        
+        if (token) {
+            try {
+                onFlowStart()
+        
+                const user = await retrieveUser(token)
+
+                onFlowEnd()
+                
+                const { name } = user
+                
+                setName(name)
+            } catch ({ message }) {
+                onFlowEnd()
+                
+                onFeedback(message, 'warn')
+
+                onAuthError()
+            }
+        }
+    }, [])
 
     const search = query => {
         setQuery(query)

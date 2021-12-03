@@ -10,13 +10,13 @@ function registerProperty(cadastre, address, squareMeters, price, currency, owne
     validateString(currency)
     owners.forEach(validateId)
 
-    return (async () => {
-        const users = await User.find({ _id: { $in: owners.map(id => ObjectId(id)) } })
+    return User.find({ _id: { $in: owners.map(id => ObjectId(id)) } })
+        .then(users => {
+            if (users.length !== owners.length) throw new NotFoundError('one or more of the owners do not exist')
 
-        if (users.length !== owners.length) throw new NotFoundError('one or more of the owners do not exist')
-
-        await Property.create({ cadastre, address, squareMeters, price, currency, owners })
-    })()
+            return Property.create({ cadastre, address, squareMeters, price, currency, owners })
+        })
+        .then(() => {})
 }
 
 module.exports = registerProperty

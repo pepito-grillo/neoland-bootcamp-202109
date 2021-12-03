@@ -15,16 +15,14 @@ function registerUser(name, username, password) {
     validateUsername(username)
     validatePassword(password)
 
-    return (async () => {
-        try {
-            await User.create({ name, username, password: bcrypt.hashSync(password) })
-        } catch (error) {
+    return User.create({ name, username, password: bcrypt.hashSync(password) })
+        .then(() => { })
+        .catch(error => {
             if (error.code === 11000)
                 throw new ConflictError(`user with username ${username} already exists`)
 
             throw error
-        }
-    })() // IIFE
+        })
 }
 
 module.exports = registerUser

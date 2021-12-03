@@ -15,68 +15,61 @@ describe('authenticateUser', () => {
 
     let user, userId
 
-    beforeEach(async () => {
+    beforeEach(() => {
         user = {
             name: 'Wendy Pan',
             username: 'wendypan',
             password: '123123123'
         }
 
-        const user2 = await User.create({ ...user, password: bcrypt.hashSync(user.password) })
-
-        userId = user2.id
+        return User.create({ ...user, password: bcrypt.hashSync(user.password) })
+            .then(user => userId = user.id)
     })
 
-    it('should succeed with correct credentials for an already existing user', async () => {
+    it('should succeed with correct credentials for an already existing user', () => {
         const { username, password } = user
 
-        const id = await authenticateUser(username, password)
-
-        expect(id).to.exist
-        expect(id).to.equal(userId)
+        return authenticateUser(username, password)
+            .then(id => {
+                expect(id).to.exist
+                expect(id).to.equal(userId)
+            })
     })
 
-    it('should fail with incorrect password', async () => {
+    it('should fail with incorrect password', () => {
         const { username, password } = user
 
-        try {
-            await authenticateUser(username, password + '-wrong')
-
-            throw new Error('should not reach this point')
-        } catch (error) {
-            expect(error).to.exist
-            expect(error).to.be.instanceOf(CredentialsError)
-            expect(error.message).to.equal('wrong credentials')
-        }
+        return authenticateUser(username, password + '-wrong')
+            .then(() => { throw new Error('should not reach this point') })
+            .catch(error => {
+                expect(error).to.exist
+                expect(error).to.be.instanceOf(CredentialsError)
+                expect(error.message).to.equal('wrong credentials')
+            })
     })
 
-    it('should fail with incorrect username', async () => {
+    it('should fail with incorrect username', () => {
         const { username, password } = user
 
-        try {
-            await authenticateUser(username + '-wrong', password)
-
-            throw new Error('should not reach this point')
-        } catch (error) {
-            expect(error).to.exist
-            expect(error).to.be.instanceOf(CredentialsError)
-            expect(error.message).to.equal('wrong credentials')
-        }
+        return authenticateUser(username + '-wrong', password)
+            .then(() => { throw new Error('should not reach this point') })
+            .catch(error => {
+                expect(error).to.exist
+                expect(error).to.be.instanceOf(CredentialsError)
+                expect(error.message).to.equal('wrong credentials')
+            })
     })
 
-    it('should fail with incorrect username and password', async () => {
+    it('should fail with incorrect username and password', () => {
         const { username, password } = user
 
-        try {
-            await authenticateUser(username + '-wrong', password + '-wrong')
-
-            throw new Error('should not reach this point')
-        } catch (error) {
-            expect(error).to.exist
-            expect(error).to.be.instanceOf(CredentialsError)
-            expect(error.message).to.equal('wrong credentials')
-        }
-
+        return authenticateUser(username + '-wrong', password + '-wrong')
+            .then(() => { throw new Error('should not reach this point') })
+            .catch(error => {
+                expect(error).to.exist
+                expect(error).to.be.instanceOf(CredentialsError)
+                expect(error.message).to.equal('wrong credentials')
+            })
     })
 
     describe('when parameters are not valid', () => {
@@ -141,9 +134,8 @@ describe('authenticateUser', () => {
         })
     })
 
-    after(async () => {
-        await User.deleteMany()
-
-        await mongoose.disconnect()
-    })
+    after(() =>
+        User.deleteMany()
+            .then(() => mongoose.disconnect())
+    )
 })

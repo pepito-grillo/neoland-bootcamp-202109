@@ -13,22 +13,24 @@ describe('registerUser', () => {
 
     beforeEach(() => User.deleteMany())
 
-    it('should succeed with new user', async () => {
+    it('should succeed with new user', () => {
         const name = 'Wendy Pan'
         const username = 'wendypan'
         const password = '123123123'
 
-        const res = await registerUser(name, username, password)
+        return registerUser(name, username, password)
+            .then(res => {
+                expect(res).to.be.undefined
 
-        expect(res).to.be.undefined
+                return User.findOne({ username })
+            })
+            .then(user => {
+                expect(user).to.exist
+                expect(user.name).to.equal(name)
+                expect(user.username).to.equal(username)
 
-        const user = await User.findOne({ username })
-
-        expect(user).to.exist
-        expect(user.name).to.equal(name)
-        expect(user.username).to.equal(username)
-
-        expect(bcrypt.compareSync(password, user.password)).to.be.true
+                expect(bcrypt.compareSync(password, user.password)).to.be.true
+            })
     })
 
     describe('when user already exists', () => {
@@ -44,18 +46,16 @@ describe('registerUser', () => {
             return User.create(user)
         })
 
-        it('should fail when user already exists', async () => {
+        it('should fail when user already exists', () => {
             const { name, username, password } = user
 
-            try {
-                await registerUser(name, username, password)
-
-                throw new Error('should not reach this point')
-            } catch (error) {
-                expect(error).to.exist
-                expect(error).to.be.instanceOf(ConflictError)
-                expect(error.message).to.equal(`user with username ${username} already exists`)
-            }
+            return registerUser(name, username, password)
+                .then(() => { throw new Error('should not reach this point') })
+                .catch(error => {
+                    expect(error).to.exist
+                    expect(error).to.be.instanceOf(ConflictError)
+                    expect(error.message).to.equal(`user with username ${username} already exists`)
+                })
         })
     })
 
@@ -145,9 +145,8 @@ describe('registerUser', () => {
         })
     })
 
-    after(async () => {
-        await User.deleteMany()
-
-        await mongoose.disconnect()
-    })
+    after(() =>
+        User.deleteMany()
+            .then(() => mongoose.disconnect())
+    )
 })

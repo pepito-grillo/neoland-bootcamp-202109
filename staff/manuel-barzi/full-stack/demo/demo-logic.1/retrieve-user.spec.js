@@ -15,46 +15,38 @@ describe('retrieveUser', () => {
 
     let user, userId
 
-    beforeEach(async () => {
+    beforeEach(() => {
         user = {
             name: 'Wendy Pan',
             username: 'wendypan',
             password: '123123123'
         }
 
-        const user2 = await User.create(user)
-
-        userId = user2.id
-
-        debugger // 1
+        return User.create(user)
+            .then(user => userId = user.id)
     })
 
-    it('should succeed with correct id for an already existing user', async () => {
-        debugger // 2
-
+    it('should succeed with correct id for an already existing user', () => {
         const { name, username } = user
 
-        const user2 = await retrieveUser(userId)
-
-        expect(user2).to.exist
-        expect(user2.name).to.equal(name)
-        expect(user2.username).to.equal(username)
+        return retrieveUser(userId)
+            .then(user => {
+                expect(user).to.exist
+                expect(user.name).to.equal(name)
+                expect(user.username).to.equal(username)
+            })
     })
 
-    it('should fail with incorrect id', async () => {
-        debugger // 3
-
+    it('should fail with incorrect id', () => {
         userId = new ObjectId().toString()
 
-        try {
-            await retrieveUser(userId)
-
-            throw new Error('should not reach this point')
-        } catch (error) {
-            expect(error).to.exist
-            expect(error).to.be.instanceOf(NotFoundError)
-            expect(error.message).to.equal(`user with id ${userId} not found`)
-        }
+        return retrieveUser(userId)
+            .then(() => { throw new Error('should not reach this point') })
+            .catch(error => {
+                expect(error).to.exist
+                expect(error).to.be.instanceOf(NotFoundError)
+                expect(error.message).to.equal(`user with id ${userId} not found`)
+            })
     })
 
     describe('when parameters are not valid', () => {
@@ -89,9 +81,8 @@ describe('retrieveUser', () => {
         })
     })
 
-    after(async () => {
-        await User.deleteMany()
-
-        await mongoose.disconnect()
-    })
+    after(() =>
+        User.deleteMany()
+            .then(() => mongoose.disconnect())
+    )
 })

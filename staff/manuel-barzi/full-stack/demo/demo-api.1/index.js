@@ -19,12 +19,10 @@ const logger = require('./utils/my-logger')
 
 const { env: { PORT, MONGO_URL }, argv: [, , port = PORT || 8080] } = process
 
-logger.info('starting server');
+logger.info('starting server')
 
-(async () => {
-    try {
-        await mongoose.connect(MONGO_URL)
-
+mongoose.connect(MONGO_URL)
+    .then(() => {
         const server = express()
 
         const api = express.Router()
@@ -38,7 +36,7 @@ logger.info('starting server');
         api.get('/users', retrieveUser)
 
         api.patch('/users', jsonBodyParser, modifyUser)
-
+        
         api.post('/users/cards', jsonBodyParser, addCreditCardToUser)
 
         api.get('/hotwheels/vehicles', searchVehicles)
@@ -60,7 +58,5 @@ logger.info('starting server');
 
             process.exit(0)
         })
-    } catch (error) {
-        logger.error(error)
-    }
-})()
+    })
+    .catch(error => logger.error(error))

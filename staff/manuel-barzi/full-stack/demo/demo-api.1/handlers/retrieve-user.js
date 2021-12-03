@@ -1,15 +1,15 @@
 const { retrieveUser } = require('demo-logic')
 const { handleError, validateAuthorizationAndExtractPayload } = require('./helpers')
 
-module.exports = async (req, res) => {
+module.exports = (req, res) => {
     const { headers: { authorization } } = req
 
     try {
         const { sub: id } = validateAuthorizationAndExtractPayload(authorization)
 
-        const user = await retrieveUser(id)
-
-        res.json(user)
+        retrieveUser(id)
+            .then(user => res.json(user))
+            .catch(error => handleError(error, res))
     } catch (error) {
         handleError(error, res)
     }

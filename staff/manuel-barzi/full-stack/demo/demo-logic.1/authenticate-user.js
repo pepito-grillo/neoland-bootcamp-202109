@@ -7,13 +7,12 @@ function authenticateUser(username, password) {
     validateUsername(username)
     validatePassword(password)
 
-    return (async () => {
-        const user = await User.findOne({ username })
+    return User.findOne({ username })
+        .then(user => {
+            if (!user || !bcrypt.compareSync(password, user.password)) throw new CredentialsError('wrong credentials')
 
-        if (!user || !bcrypt.compareSync(password, user.password)) throw new CredentialsError('wrong credentials')
-
-        return user.id
-    })()
+            return user.id
+        })
 }
 
 module.exports = authenticateUser

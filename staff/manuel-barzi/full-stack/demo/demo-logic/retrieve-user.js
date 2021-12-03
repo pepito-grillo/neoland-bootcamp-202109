@@ -5,22 +5,23 @@ const { NotFoundError } = require('demo-errors')
 function retrieveUser(id) {
     validateId(id)
 
-    return User.findById(id).lean()
-        .then(user => {
-            if (!user) throw new NotFoundError(`user with id ${id} not found`)
+    return (async () => {
+        const user = await User.findById(id).lean()
 
-            user.id = user._id.toString()
+        if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
-            delete user._id
+        user.id = user._id.toString()
 
-            delete user.password
+        delete user._id
 
-            delete user.__v
+        delete user.password
 
-            delete user.creditCards
+        delete user.__v
 
-            return user
-        })
+        delete user.creditCards
+
+        return user
+    })()
 }
 
 module.exports = retrieveUser

@@ -4,5 +4,6 @@ module.exports = {
     retrieveUser: require('./retrieve-user'),
     modifyUser: require('./modify-user'),
     searchVehicles: require('./search-vehicles'),
-    addCreditCardToUser: require('./add-credit-card-to-user')
+    addCreditCardToUser: require('./add-credit-card-to-user'),
+    searchItems: require('./search-items')
 }

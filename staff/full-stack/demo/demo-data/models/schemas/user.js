@@ -1,5 +1,4 @@
 const { Schema } = require('mongoose')
-const creditCard = require('./credit-card')
 
 const user = new Schema({
     name: {
@@ -42,6 +41,9 @@ const user = new Schema({
                 message: 'password has white spaces'
             }
         ]
+    },
+    gameFavs: {
+        type: String
     }
 })
 

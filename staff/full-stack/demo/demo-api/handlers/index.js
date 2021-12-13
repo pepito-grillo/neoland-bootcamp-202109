@@ -5,5 +5,6 @@ module.exports = {
     modifyUser: require('./modify-user'),
     searchVehicles: require('./search-vehicles'),
     addCreditCardToUser: require('./add-credit-card-to-user'),
-    searchItems: require('./search-items')
+    searchGames: require('./search-games'),
+    retrieveGame: require('./retrieve-game')
 }

@@ -4,8 +4,8 @@ const retrieveUser = require('./retrieve-user')
 const modifyUser = require('./modify-user')
 const unregisterUser = require('./unregister-user')
 const searchVehicles = require('./search-vehicles')
-const addCreditCardToUser = require('./add-credit-card-to-user')
-const searchItems = require('./search-items')
+const searchGames = require('./search-games')
+const retrieveGame = require('./retrieve-game')
 
 module.exports = {
     registerUser,
@@ -14,6 +14,6 @@ module.exports = {
     modifyUser,
     unregisterUser,
     searchVehicles,
-    addCreditCardToUser,
-    searchItems
+    searchGames,
+    retrieveGame
 }

@@ -11,7 +11,8 @@ const {
     modifyUser,
     searchVehicles,
     addCreditCardToUser,
-    searchItems
+    searchGames,
+    retrieveGame
 } = require('./handlers')
 
 const logger = require('./utils/my-logger')
@@ -40,7 +41,9 @@ mongoose.connect(MONGO_URL)
 
         api.get('/hotwheels/vehicles', searchVehicles)
 
-        api.get('/myapp/moviesandfilms', searchItems)
+        api.get('/games', searchGames)
+
+        api.get('/games/:gameId', retrieveGame)
 
         api.all('*', (req, res) => {
             res.status(404).json({ message: 'sorry, this endpoint isn\'t available' })

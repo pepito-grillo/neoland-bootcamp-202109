@@ -1,6 +1,6 @@
 const { XMLHttpRequest } = require("xmlhttprequest")
 
-function searchItems(query, callback) {
+function searchGames(query, callback) {
     if (typeof query !== 'string') throw new TypeError(query + ' is not a string')
 
     const xhr = new XMLHttpRequest
@@ -9,9 +9,9 @@ function searchItems(query, callback) {
         const { status, responseText } = xhr
 
         if (status === 200) {
-            const items = JSON.parse(responseText)
+            const games = JSON.parse(responseText)
 
-            callback(null, items)
+            callback(null, games)
         } else {
             const res = JSON.parse(responseText)
 
@@ -19,9 +19,9 @@ function searchItems(query, callback) {
         }
     }
 
-    xhr.open('GET', 'https://imdb-api.com/en/API/Search/k_8kl21rl4/' + query)
+    xhr.open('GET', `https://api.rawg.io/api/games?search=${query}&key=8cc91cc3d7094411940ec44617d66d39`)
 
     xhr.send()
 }
 
-module.exports = searchItems
+module.exports = searchGames

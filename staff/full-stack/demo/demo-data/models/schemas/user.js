@@ -42,11 +42,7 @@ const user = new Schema({
                 message: 'password has white spaces'
             }
         ]
-    },
-    creditCards: {
-        type: [creditCard]
-    },
-    
+    }
 })
 
 module.exports = user

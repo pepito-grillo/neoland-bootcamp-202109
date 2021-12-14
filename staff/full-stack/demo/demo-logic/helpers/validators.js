@@ -73,7 +73,7 @@ function validateCreditCardNumber(number) {
 
 function validateDate(date) {
     if (!(date instanceof Date)) throw new TypeError('date is not a date')
-} 
+}
 
 function validateCreditCardCVV(cvv) {
     if (typeof cvv !== 'string') throw new TypeError('cvv is not a string')
@@ -81,6 +81,11 @@ function validateCreditCardCVV(cvv) {
     if (/\r?\n|\r|\t| /g.test(cvv)) throw new FormatError('cvv has blank spaces')
     if (cvv.length > 4 || cvv.length < 3) throw new FormatError('cvv doesn\'t have 3 or 4 digits')
     if (isNaN(cvv)) throw new FormatError('cvv is not numeric')
+}
+
+function validateQuery(query) {
+    if (typeof query !== 'string') throw new TypeError('query is not a string')
+    if (!query.trim().length) throw new FormatError('query is empty or blank')
 }
 
 module.exports = {
@@ -93,5 +98,6 @@ module.exports = {
     validateCallback,
     validateCreditCardNumber,
     validateDate,
-    validateCreditCardCVV
+    validateCreditCardCVV,
+    validateQuery
 }

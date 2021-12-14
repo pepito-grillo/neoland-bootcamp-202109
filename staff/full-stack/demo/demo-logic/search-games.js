@@ -1,27 +1,22 @@
-const { XMLHttpRequest } = require("xmlhttprequest")
+const { models: { Game } } = require('demo-data')
+const { validateQuery } = require('./helpers/validators')
+const { NotFoundError } = require('demo-errors')
 
-function searchGames(query, callback) {
-    if (typeof query !== 'string') throw new TypeError(query + ' is not a string')
+function searchGames(query) {
+    debugger
+    validateQuery(query)
 
-    const xhr = new XMLHttpRequest
+    // const regex = new RegExp(`\\b[${query}]\\w*\\b`, 'gi')
+    // console.log(query.match(regex))
+    // $regex: `\\b[${query}]\\w*\\b`, $options: 'gi'
+    const regex = new RegExp(query, 'i')
 
-    xhr.onload = () => {
-        const { status, responseText } = xhr
+    return Game.find({ name: regex }).lean()
+        .then(games => {
+            if (!games) throw new NotFoundError(`game with that ${query} doesn't found`)
 
-        if (status === 200) {
-            const games = JSON.parse(responseText)
-
-            callback(null, games)
-        } else {
-            const res = JSON.parse(responseText)
-
-            callback(new Error(res.error))
-        }
-    }
-
-    xhr.open('GET', `https://api.rawg.io/api/games?search=${query}&key=8cc91cc3d7094411940ec44617d66d39`)
-
-    xhr.send()
+            return games
+        })
 }
 
 module.exports = searchGames

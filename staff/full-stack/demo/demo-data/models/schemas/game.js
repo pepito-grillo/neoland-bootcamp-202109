@@ -1,25 +1,22 @@
 const { Schema } = require('mongoose')
 
 const game = new Schema({
+    id: {
+        type: Number
+    },
     name: {
         type: String,
-        required: true
     },
-    released: {
-        type: Date,
-        required: true,
-        default: new Date
+    platform: {
+        type: Number
     },
     description: {
         type: String
     },
-    backgroundImage: {
-        type: String
+    released: {
+        type: Date
     },
-    platform: {
-        type: String
-    },
-    genres: {
+    background_image: {
         type: String
     }
 })

@@ -1,15 +1,13 @@
-//const fetch = require('node-fetch')
-//import fetch from 'node-fetch'
 const axios = require('axios')
 const fs = require('fs').promises
 const path = require('path')
+const mongoose = require('mongoose')
+const { models: { Game, Platform } } = require('../index')
 
-    ; (async () => {
+const uri = 'mongodb://localhost/demo'
+
+    ; (async function () {
         try {
-            //const res = await fetch('https://api.rawg.io/api/platforms?key=8cc91cc3d7094411940ec44617d66d39')
-
-            //const data = await res.json()
-
             const res = await axios.get('https://api.rawg.io/api/platforms?key=8cc91cc3d7094411940ec44617d66d39')
 
             const { results } = res.data
@@ -34,19 +32,26 @@ const path = require('path')
                 })
             })
 
-            await fs.writeFile(path.join(__dirname, 'platforms.json'), JSON.stringify(platforms), 'utf8')
+            await mongoose.connect(uri)
+            await Platform.create(platforms)
+
+            // await fs.writeFile(path.join(__dirname, 'platforms.json'), JSON.stringify(platforms), 'utf8')
 
             const detailRequests = games.map(async game => {
                 const res = await axios.get(`https://api.rawg.io/api/games/${game.id}?key=8cc91cc3d7094411940ec44617d66d39`)
 
-                const { description } = res.data
+                const { released, background_image, description_raw } = res.data
 
-                game.description = description
+                game.description = description_raw
+                game.released = released
+                game.background_image = background_image
             })
 
             await Promise.all(detailRequests)
+            await Game.create(games)
+            await mongoose.disconnect()
 
-            await fs.writeFile(path.join(__dirname, 'games.json'), JSON.stringify(games), 'utf8')
+            // await fs.writeFile(path.join(__dirname, 'games.json'), JSON.stringify(games), 'utf8')
         } catch (error) {
             console.error(error)
         }

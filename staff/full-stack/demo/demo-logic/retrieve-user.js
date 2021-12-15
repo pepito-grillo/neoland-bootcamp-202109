@@ -1,5 +1,5 @@
 const { models: { User } } = require('demo-data')
-const { validateId } = require('./helpers/validators')
+const { validateId, validateMongoId } = require('./helpers/validators')
 const { NotFoundError } = require('demo-errors')
 
 function retrieveUser(id) {

@@ -8,50 +8,39 @@ const uri = 'mongodb://localhost/demo'
 
     ; (async function () {
         try {
+            await mongoose.connect(uri)
+
+            await Platform.deleteMany()
+            await Game.deleteMany()
+
             const res = await axios.get('https://api.rawg.io/api/platforms?key=8cc91cc3d7094411940ec44617d66d39')
 
             const { results } = res.data
-            const platforms = [], games = []
 
-            results.forEach(({ id, name, games: _games }) => {
-                const platform = {}
+            const insertions = results.map(async ({ name, games }) => {
+                const platform = await Platform.create({ name })
 
-                platform.id = id
-                platform.name = name
-
-                platforms.push(platform)
-
-                _games.forEach(({ id, name }) => {
+                const insertions = games.map(async ({ id, name }) => {
                     const game = {}
 
-                    game.id = id
                     game.name = name
-                    game.platform = platform.id
+                    game.platform = platform._id
 
-                    games.push(game)
+                    const { data: { released, background_image, description_raw } } = await axios.get(`https://api.rawg.io/api/games/${id}?key=8cc91cc3d7094411940ec44617d66d39`)
+
+                    game.description = description_raw
+                    game.released = released
+                    game.backgroundImage = background_image
+
+                    await Game.create(game)
                 })
+
+                await Promise.all(insertions)
             })
 
-            await mongoose.connect(uri)
-            await Platform.create(platforms)
+            await Promise.all(insertions)
 
-            // await fs.writeFile(path.join(__dirname, 'platforms.json'), JSON.stringify(platforms), 'utf8')
-
-            const detailRequests = games.map(async game => {
-                const res = await axios.get(`https://api.rawg.io/api/games/${game.id}?key=8cc91cc3d7094411940ec44617d66d39`)
-
-                const { released, background_image, description_raw } = res.data
-
-                game.description = description_raw
-                game.released = released
-                game.background_image = background_image
-            })
-
-            await Promise.all(detailRequests)
-            await Game.create(games)
             await mongoose.disconnect()
-
-            // await fs.writeFile(path.join(__dirname, 'games.json'), JSON.stringify(games), 'utf8')
         } catch (error) {
             console.error(error)
         }

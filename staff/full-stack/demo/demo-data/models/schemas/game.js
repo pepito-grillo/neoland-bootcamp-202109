@@ -1,14 +1,13 @@
 const { Schema } = require('mongoose')
+const { Types: { ObjectId } } = Schema
 
 const game = new Schema({
-    id: {
-        type: Number
-    },
     name: {
         type: String,
     },
     platform: {
-        type: Number
+        type: ObjectId,
+        ref: 'Platform'
     },
     description: {
         type: String
@@ -16,7 +15,7 @@ const game = new Schema({
     released: {
         type: Date
     },
-    background_image: {
+    backgroundImage: {
         type: String
     }
 })

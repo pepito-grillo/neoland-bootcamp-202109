@@ -3,7 +3,6 @@ const { validateQuery } = require('./helpers/validators')
 const { NotFoundError } = require('demo-errors')
 
 function searchGames(query) {
-    debugger
     validateQuery(query)
 
     // const regex = new RegExp(`\\b[${query}]\\w*\\b`, 'gi')
@@ -14,6 +13,10 @@ function searchGames(query) {
     return Game.find({ name: regex }).lean()
         .then(games => {
             if (!games) throw new NotFoundError(`game with that ${query} doesn't found`)
+
+            games.forEach(game => {
+                delete game.__v
+            })
 
             return games
         })

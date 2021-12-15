@@ -1,23 +1,20 @@
-const { validateId } = require('./helpers/validators')
-const { NotFoundError } = require('demo-errors')
-const { models: { User } } = require('demo-data')
+// const { validateId } = require('./helpers/validators')
+// const { NotFoundError } = require('demo-errors')
+// const { models: { User }, mongoose } = require('demo-data')
 
-function toggleFavGame(userId, gameId) {
-    validateId(userId)
-    // Validate gameId
-    return User.findById(userId)
-        .then(user => {
-            if (!user) throw new NotFoundError(`user with id ${userId} not found`)
+// async function toggleFavGame(userId, gameId) {
+//     debugger
+//     validateId(userId)
+//     // Validate gameId
+//     const user = await User.findById({ userId })
 
-            const gameFavs = { gameId }
+//     if (!user) throw new NotFoundError(`user with id ${userId} not found`)
 
-            user.gameFavs.push(gameFavs)
+//     user.gameFavs = user.gameFavs.concat(gameId)
 
-            return user.save()
-        })
-        .then(() => { })
-}
+//     await user.save()
+// }
 
-module.exports = toggleFavGame
+// module.exports = toggleFavGame
 
 // Comprobrar que el gameId existe

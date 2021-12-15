@@ -1,15 +1,12 @@
 const { searchGames } = require('demo-logic')
 const { handleError } = require('./helpers')
 
-module.exports = (req, res) => {
+module.exports = async (req, res) => {
     const { query: { q } } = req
 
     try {
-        searchGames(q, (error, items) => {
-            if (error) return handleError(error, res)
-
-            res.json(items)
-        })
+        const games = await searchGames(q)
+        res.json(games)
     } catch (error) {
         handleError(error, res)
     }

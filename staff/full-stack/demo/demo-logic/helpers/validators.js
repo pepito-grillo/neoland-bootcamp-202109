@@ -1,4 +1,5 @@
 const { FormatError, ConflictError } = require('demo-errors')
+const { mongoose } = require('demo-data')
 
 function validateId(id) {
     if (typeof id !== 'string') throw new TypeError('id is not a string')
@@ -63,29 +64,17 @@ function validateCallback(callback) {
     if (typeof callback !== 'function') throw new TypeError('callback is not a function')
 }
 
-function validateCreditCardNumber(number) {
-    if (typeof number !== 'string') throw new TypeError('credit card number is not a string')
-    if (!number.trim().length) throw new FormatError('credit card number is empty or blank')
-    if (/\r?\n|\r|\t| /g.test(number)) throw new FormatError('credit card number has blank spaces')
-    if (number.length !== 16) throw new FormatError('credit card number doesn\'t have 16 digits')
-    if (isNaN(number)) throw new FormatError('credit card number is not numeric')
-}
-
-function validateDate(date) {
-    if (!(date instanceof Date)) throw new TypeError('date is not a date')
-}
-
-function validateCreditCardCVV(cvv) {
-    if (typeof cvv !== 'string') throw new TypeError('cvv is not a string')
-    if (!cvv.trim().length) throw new FormatError('cvv is empty or blank')
-    if (/\r?\n|\r|\t| /g.test(cvv)) throw new FormatError('cvv has blank spaces')
-    if (cvv.length > 4 || cvv.length < 3) throw new FormatError('cvv doesn\'t have 3 or 4 digits')
-    if (isNaN(cvv)) throw new FormatError('cvv is not numeric')
-}
+// function validateDate(date) {
+//     if (!(date instanceof Date)) throw new TypeError('date is not a date')
+// }
 
 function validateQuery(query) {
     if (typeof query !== 'string') throw new TypeError('query is not a string')
     if (!query.trim().length) throw new FormatError('query is empty or blank')
+}
+
+function validateMongoId(id) {
+    if (!mongoose.isValidObjectId(id)) throw new FormatError('id is not valid')
 }
 
 module.exports = {
@@ -96,8 +85,6 @@ module.exports = {
     validateData,
     validateName,
     validateCallback,
-    validateCreditCardNumber,
-    validateDate,
-    validateCreditCardCVV,
-    validateQuery
+    validateQuery,
+    validateMongoId
 }

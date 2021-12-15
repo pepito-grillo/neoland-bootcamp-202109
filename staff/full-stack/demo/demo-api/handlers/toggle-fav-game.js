@@ -1,13 +1,13 @@
-const { addCreditCardToUser } = require('demo-logic')
+const { toggleFavGame } = require('demo-logic')
 const { handleError, validateAuthorizationAndExtractPayload } = require('./helpers')
 
 module.exports = (req, res) => {
-    const { headers: { authorization }, body: { name, number, expirationDate, cvv } } = req
+    const { headers: { authorization }, body: gameId } = req
 
     try {
         const { sub: id } = validateAuthorizationAndExtractPayload(authorization)
 
-        addCreditCardToUser(id, name, number, new Date(expirationDate), cvv)
+        toggleFavGame(id, gameId)
             .then(() => res.status(201).send())
             .catch(error => handleError(error, res))
     } catch (error) {
